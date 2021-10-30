@@ -1,0 +1,11 @@
+<div class="card">
+    <div class="header">
+        <h2>Lucid Activities</h2>
+    </div>
+    <div class="body">
+
+        <ng-container *ngFor="let post of posts">
+            <app-activity-post [post]="post"></app-activity-post>
+        </ng-container>
+    </div>
+</div>

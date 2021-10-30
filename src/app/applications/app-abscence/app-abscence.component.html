@@ -1,0 +1,90 @@
+<div class="container-fluid">
+
+  <div class="block-header">
+    <div class="row">
+      <div class="col-lg-5 col-md-8 col-sm-12">
+        <h2>
+          <a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth" (click)="toggleFullWidth()">
+            <i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+            <i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+          </a>
+          Abscences
+        </h2>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a [routerLink]="['/app']"><i class="icon-home"></i></a></li>
+          <li class="breadcrumb-item">Abscences</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="card">
+      <div class="header">
+        <h2>Vos Abscences</h2>
+      </div>
+      <div *ngIf="!loading && abscences?.length == 0" class="body">
+        <div class="alert alert-primary">
+          Vous n'avez aucune Abscence
+        </div>
+      </div>
+      <div *ngIf="!loading && abscences?.length > 0" class="body table-responsive">
+        <table class="table m-b-0" *ngIf="getRole() === 'ROLE_ETUDIANT' ">
+          <thead>
+          <tr>
+            <th>Date</th>
+            <th>Matiere</th>
+            <th>Séance</th>
+            <th>Justification</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let abscence of abscences">
+            <td>
+              {{getDayName(getDate(abscence.date).getDay())}} {{getDate(abscence.date).getDate()}} {{getMonthName(getDate(abscence.date).getMonth())}} {{getDate(abscence.date).getFullYear()}}
+            </td>
+            <td>
+              <span>{{abscence.matiere.nom}}</span>
+            </td>
+            <td>
+              <span class="text-info">{{abscence.seance.heure_debut.substring(0,5)}} => {{abscence.seance.heure_fin.substring(0,5)}}</span>
+            </td>
+            <td>
+              <span [ngClass]="abscence.justifie ? 'badge badge-success' : 'badge badge-warning' ">{{abscence.justifie ? 'Justifié' : 'Non Justifié' }}</span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <table class="table m-b-0" *ngIf="getRole() === 'ROLE_PROFESSEUR' ">
+          <thead>
+          <tr>
+            <th>Date</th>
+            <th>Classe</th>
+            <th>Matiere</th>
+            <th>Séance</th>
+            <th>Justification</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let abscence of abscences">
+            <td>
+              {{getDayName(getDate(abscence.date).getDay())}} {{getDate(abscence.date).getDate()}} {{getMonthName(getDate(abscence.date).getMonth())}} {{getDate(abscence.date).getFullYear()}}
+            </td>
+            <td>{{abscence.classe.abbreviation}} {{abscence.classe.niveau.specialite.nom}} {{abscence.classe.niveau.nom}}</td>
+            <td>
+              <span>{{abscence.matiere.nom}}</span>
+            </td>
+            <td>
+              <span class="text-info">{{abscence.seance.heure_debut.substring(0,5)}} => {{abscence.seance.heure_fin.substring(0,5)}}</span>
+            </td>
+            <td>
+              <span [ngClass]="abscence.justifie ? 'badge badge-success' : 'badge badge-warning' ">{{abscence.justifie ? 'Justifié' : 'Non Justifié' }}</span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>

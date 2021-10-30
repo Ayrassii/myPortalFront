@@ -1,0 +1,25 @@
+<div *ngIf="!selectionne">
+  <div class="form-group">
+    <h3>Partie {{ (partie.indice) }} : {{partie.titre}}</h3>
+    <button class="btn btn-primary" (click)="editpartie(partie.indice)">Modifier</button>
+  </div>
+  <div class="form-group">
+    <video controls class="img-thumbnail" [src]="'https://gestion-scolarite.io/api/'+partie.uuid+'/view?token='+getToken()" width="100%"></video>
+  </div>
+</div>
+<div *ngIf="selectionne">
+  <div formArrayName="oldparties">
+    <hr>
+    <div [formGroup]="editForm">
+      <div class="form-group">
+        <label [for]="'titrepartie' + (partie.indice)">Titre Partie {{ (partie.indice) }}</label>
+        <input [id]="'titrepartie' + (partie.indice)" formControlName="titrepartie" [value]="partie.titre" type="text" class="form-control" [placeholder]="'Titre Partie' + (partie.indice)" />
+      </div>
+      <div class="form-group">
+        <label [for]="'videopartie' + (partie.indice)">Video Partie {{(partie.indice)}}</label>
+        <app-file-upload [type]="'video'" (change)="readVideoUrl($event, (partie.indice))" formControlName="videopartie" [id]="'videopartie' + (partie.indice)"></app-file-upload>
+        <video controls class="img-thumbnail" [src]="findsrc((partie.indice))" width="100%"></video>
+      </div>
+    </div>
+  </div>
+</div>

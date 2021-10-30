@@ -1,0 +1,42 @@
+<div class="container-fluid blog-page">
+  <div class="block-header">
+    <div class="row">
+      <div class="col-lg-5 col-md-8 col-sm-12">
+        <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"
+               (click)="toggleFullWidth()">
+          <i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+          <i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+        </a> {{feed.titre}}</h2>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a [routerLink]="['/app']"><i class="icon-home"></i></a></li>
+          <li class="breadcrumb-item active">{{feed.titre}}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-lg-12 col-md-12 left-box">
+      <div class="card single_post">
+        <div class="body">
+          <div class="user-account">
+            <img *ngIf="feed.user?.role == 'ROLE_PROFESSEUR' " [src]="getImage(feed.user)" class="rounded-circle user-photo" alt="User Profile Picture">
+            <img *ngIf="feed.user?.role != 'ROLE_PROFESSEUR'" src="assets/images/method-draw-image.svg" style="width: 50px;height: 50px;" class="rounded-circle user-photo" alt="User Profile Picture" >
+            <div class="dropdown">
+              <a href="javascript:void(0);" class="user-name">
+                <strong *ngIf="feed.user?.role == 'ROLE_PROFESSEUR' ">{{feed.user.gendre == 'male' ? 'Mr.' : 'Mme.'}}{{feed.user.nom}} {{feed.user.prenom}}</strong>
+                <strong *ngIf="feed.user?.role != 'ROLE_PROFESSEUR' ">Administration</strong>
+              </a>
+              <span class="datetime">{{ago(feed.date)}}</span>
+            </div>
+          </div>
+          <div class="img-post">
+            <img *ngIf="feed.image && feed.image != 'null'" style="width: 100%" class="d-block img-fluid" [src]="'https://gestion-scolarite.io/images/feeds/' + feed.image " alt="First slide">
+          </div>
+          <h3>{{feed.titre}}</h3>
+          <p [innerHTML]="feed.contenu"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

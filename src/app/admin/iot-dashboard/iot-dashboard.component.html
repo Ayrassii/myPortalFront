@@ -1,0 +1,108 @@
+<div class="container-fluid" *ngIf="!isResizing">
+    <div class="block-header">
+        <div class="row">
+            <div class="col-lg-5 col-md-8 col-sm-12">
+                <h2>
+                    <a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"
+                        (click)="toggleFullWidth()">
+                        <i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+                        <i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+                    </a>
+                    IoT Dashboard
+                </h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="['/admin']"><i class="icon-home"></i></a></li>
+                    <li class="breadcrumb-item">Dashboard</li>
+                    <li class="breadcrumb-item active">IoT Dashboard</li>
+                </ul>
+            </div>
+            <div class="col-lg-7 col-md-4 col-sm-12 text-right">
+                <div class="inlineblock text-center m-r-15 m-l-15 hidden-sm pt-2">
+                    <div echarts [options]="visitorsOptions" class="echart-line-chart" [autoResize]="true" style="height: 20px;"></div>
+                    <span>Visitors</span>
+                </div>
+                <div class="inlineblock text-center m-r-15 m-l-15 hidden-sm pt-2">
+                    <div echarts [options]="visitsOptions" class="echart-line-chart" [autoResize]="true" style="height: 20px;"></div>
+                    <span>Visits</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row clearfix">
+        <div class="col-lg-4 col-md-4 col-md-12">
+            <app-detail-tiles 
+                [title]="'Energy Use'" 
+                [value]="'250 kw/h'" 
+                [details]="'89% compared to average monthly use'"
+                [chartOptions]="energyOptions"
+            ></app-detail-tiles>
+        </div>
+        <div class="col-lg-4 col-md-4 col-md-12">
+            <app-detail-tiles 
+                [title]="'Lights'" 
+                [value]="'6 Lights are ON'" 
+                [details]="'5% less than daily average'"
+                [chartOptions]="lightOptions"
+            ></app-detail-tiles>
+        </div>
+        <div class="col-lg-4 col-md-4 col-md-12">
+            <app-detail-tiles 
+                [title]="'Daily Avg Temprature'" 
+                [value]="'20° C'" 
+                [details]="'Outside Avg temprature is 32° C'"
+                [chartOptions]="tempratureOptions"
+            ></app-detail-tiles>
+        </div>
+    </div>
+
+    <div class="row clearfix">
+        <div class="col-lg-6 col-md-6 col-md-12">
+            <app-system-widget [options]="securitySystemOptions" (toggleEvent)="onToggleSecuritySystem()">
+            </app-system-widget>
+        </div>
+    
+        <div class="col-lg-6 col-md-6 col-md-12">
+            <app-system-widget [options]="mainGateOptions" (toggleEvent)="onToggleMainGate()"></app-system-widget>
+        </div>
+    </div>
+
+    <div class="row clearfix">
+        <div class="col-lg-4 col-md-4 col-sm-12">
+            <app-appliance-status-widget [options]="acOptions"></app-appliance-status-widget>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-12">
+            <app-appliance-status-widget [options]="fridgeOptions"></app-appliance-status-widget>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-12">
+            <app-appliance-status-widget [options]="washingMachineOptions"></app-appliance-status-widget>
+        </div>
+    </div>
+
+    <div class="row clearfix">
+        <div class="col-lg-4 col-md-4 col-sm-12">
+            <app-appliances-widget
+                [options]="IndoorLightOptions"
+                (toggleEvent)="toggleIndoorLight($event)"
+                (allOnEvent)="allIndoorLightsOn()"
+                (allOffEvent)="allIndoorLightsOff()"
+            ></app-appliances-widget>
+        </div>
+
+        <div class="col-lg-4 col-md-4 col-sm-12">
+            <app-appliances-widget
+                [options]="outdoorLightOptions"
+                (toggleEvent)="toggleOutdoorLight($event)"
+                (allOnEvent)="allOutdoorLightsOn()"
+                (allOffEvent)="allOutdoorLightsOff()"
+            ></app-appliances-widget>
+        </div>
+
+        <div class="col-lg-4 col-md-4 col-sm-12">
+            <app-appliances-widget
+                [options]="otherAppliencesOptions"
+                (toggleEvent)="toggleAppliences($event)"
+            ></app-appliances-widget>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,133 @@
+<div class="container-fluid">
+
+  <div class="block-header">
+    <div class="row">
+      <div class="col-lg-5 col-md-8 col-sm-12">
+        <h2>
+          <a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth" (click)="toggleFullWidth()">
+            <i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+            <i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+          </a>
+          {{formation?.titre}}
+        </h2>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a [routerLink]="['/app']"><i class="icon-home"></i></a></li>
+          <li class="breadcrumb-item"><a [routerLink]="['/app/formations']">Formations</a></li>
+          <li class="breadcrumb-item">{{formation?.slug}}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row clearfix" *ngIf="!loading">
+    <div class="card mb-3">
+      <div class="row no-gutters">
+        <div class="col-md-4">
+          <img  *ngIf="formation.image" [src]="'https://gestion-scolarite.io/images/formations/' + formation.image" alt="" class="card-img">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <small>titre: </small><br>
+            <h5 class="card-title">{{formation.titre}}</h5>
+            <small>description: </small><br>
+            <p class="card-text">{{formation.description}}</p>
+            <small>niveau: </small><br>
+            <h5 class="card-title">{{formation.niveau.specialite.nom}} {{formation.niveau.nom}}</h5>
+            <p class="card-text"><small class="text-muted">ajouté {{ago(formation.created_at)}}</small></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row clearfix" *ngIf="!loading">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="header">
+          <h2>Lecteur Welearn</h2>
+        </div>
+        <div class="body">
+          <vg-player (onPlayerReady)="onPlayerReady($event)">
+            <vg-controls>
+              <vg-play-pause></vg-play-pause>
+              <vg-playback-button></vg-playback-button>
+
+              <vg-time-display vgProperty="current" vgFormat="mm:ss"></vg-time-display>
+
+              <vg-scrub-bar>
+                <vg-scrub-bar-current-time></vg-scrub-bar-current-time>
+                <vg-scrub-bar-buffering-time></vg-scrub-bar-buffering-time>
+              </vg-scrub-bar>
+
+              <vg-time-display vgProperty="total" vgFormat="mm:ss"></vg-time-display>
+
+              <vg-mute></vg-mute>
+              <vg-volume></vg-volume>
+
+              <vg-fullscreen></vg-fullscreen>
+              <div class='my-button iconButton'>
+                <a target='_blank'>
+                  <img src="../../../assets/images/logo-white.svg" alt="logo" style="margin-top: 17px;width: 60px;margin-left: -14px;">
+                </a>
+              </div>
+            </vg-controls>
+
+            <video #media
+                   [vgMedia]="media"
+                   [src]="currentItem.src"
+                   id="singleVideo"
+                   preload="auto"
+                   crossorigin>
+            </video>
+          </vg-player>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="header">
+          <h2>Parties</h2>
+        </div>
+        <div class="body">
+          <ol class="list-unstyled list-referrals">
+            <li *ngFor="let item of playlist; let $index = index">
+              <p>
+                <span class="value" [ngClass]="{'partieselected' : item === currentItem}">
+                  <a (click)="onClickPlaylistItem(item, $index)" style="cursor: pointer">
+                    {{($index+1)}}- {{ item.title }}
+                  </a>
+                </span>
+              </p>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="card">
+        <div class="header">
+          <h2>Progression Etudiants</h2>
+        </div>
+        <div class="card-body">
+          <table class="table m-b-0">
+            <thead>
+            <tr>
+              <th>Etudiant</th>
+              <th>Progression</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let etudiant of etudiants">
+              <td>
+                <a [routerLink]="['/app/user/' + etudiant.cin]">{{etudiant.prenom}} {{etudiant.nom}}</a>
+              </td>
+              <td>
+                <h6>{{calculProgress(formation, etudiant)}} %</h6>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

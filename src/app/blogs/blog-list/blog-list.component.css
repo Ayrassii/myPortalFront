@@ -1,0 +1,25 @@
+@import "../../../assets/css/blog.css";
+/* width */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 8px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #7695b3;
+    border-radius: 8px;
+}
+.scrollable-khalil {
+    overflow-y: scroll;
+    height: 500px;
+}
+.primary-zied {
+    background: #7695B3;
+    color: #fff;
+}

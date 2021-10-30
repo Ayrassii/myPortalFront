@@ -1,0 +1,8 @@
+<div class="file-drop-area">
+  <img [src]="imgURL" width="200" *ngIf="imgURL" class="img-thumbnail" style="display: list-item">
+  <br>
+  <span class="fake-btn"><i class="fa fa-picture-o"></i></span>
+  <span class="file-msg">{{file ? file.name : 'ou glissez et déposez le fichier ici' }}</span>
+  <input [accept]="type + '/*'" class="file-input" type="file">
+</div>
+<app-progress [progress]="progress"></app-progress>

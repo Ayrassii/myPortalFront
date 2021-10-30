@@ -1,0 +1,65 @@
+<div class="container-fluid">
+    <div class="block-header">
+        <div class="row">
+            <div class="col-lg-5 col-md-8 col-sm-12">                        
+                <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth" (click)="toggleFullWidth()">
+                    <i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+                    <i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+                </a> Notifications</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="['/admin']"><i class="icon-home"></i></a></li>                            
+                    <li class="breadcrumb-item">UI Elements</li>
+                    <li class="breadcrumb-item active">Notifications</li>
+                </ul>
+            </div>            
+            <div class="col-lg-7 col-md-4 col-sm-12 text-right">
+                <div class="inlineblock text-center m-r-15 m-l-15 hidden-sm pt-2">
+                    <div echarts [options]="visitorsOptions" class="echart-line-chart" [autoResize]="true" style="height: 20px;">
+                    </div>
+                    <span>Visitors</span>
+                </div>
+                <div class="inlineblock text-center m-r-15 m-l-15 hidden-sm pt-2">
+                    <div echarts [options]="visitsOptions" class="echart-line-chart" [autoResize]="true" style="height: 20px;">
+                    </div>
+                    <span>Visits</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row clealfix">
+        <div class="col-lg-12">
+                  <div class="card">
+                      <div class="header">
+                          <h2>Message Context</h2>
+                      </div>
+                      <div class="body">
+                          <button type="button" class="btn btn-primary btn-toastr mr-1" (click)="showInfo()">General Info</button>
+                          <button type="button" class="btn btn-success btn-toastr mr-1" (click)="showSuccess()">Success Info</button>
+                          <button type="button" class="btn btn-warning btn-toastr mr-1" (click)="showWarning()">Warning Info</button>
+                          <button type="button" class="btn btn-danger btn-toastr mr-1" (click)="showError()">Error Info</button>
+                      </div>
+                  </div>
+        </div>
+    </div>
+
+    <div class="row clealfix">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Popup Positions</h2>
+                </div>
+                <div class="body">
+                    <button type="button" class="btn btn-default btn-toastr mr-1" (click)="showBottomRight()">Bottom Right</button>
+                    <button type="button" class="btn btn-default btn-toastr mr-1" (click)="showBottomLeft()">Bottom Left</button>
+                    <button type="button" class="btn btn-default btn-toastr mr-1" (click)="showTopLeft()">Top Left</button>
+                    <button type="button" class="btn btn-default btn-toastr mr-1" (click)="showTopRight()">Top Right</button>
+                    <button type="button" class="btn btn-default btn-toastr mr-1" (click)="showTopFull()">Top Full Width</button>
+                    <button type="button" class="btn btn-default btn-toastr mr-1" (click)="showBottomFull()">Bottom Full Width</button>
+                    <button type="button" class="btn btn-default btn-toastr mr-1" (click)="showTopCenter()">Top Center</button>
+                    <button type="button" class="btn btn-default btn-toastr mr-1" (click)="showBottomCenter()">Bottom Center</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

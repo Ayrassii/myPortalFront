@@ -1,0 +1,56 @@
+<div class="container-fluid">
+    <div class="block-header">
+        <div class="row">
+            <div class="col-lg-5 col-md-8 col-sm-12">                        
+                <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth" (click)="toggleFullWidth()">
+                    <i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+                    <i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+                </a> Compose</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="['/admin']"><i class="icon-home"></i></a></li>                            
+                    <li class="breadcrumb-item">App</li>
+                    <li class="breadcrumb-item"><a [routerLink]="['/admin/app/app-inbox']">Inbox</a></li>
+                    <li class="breadcrumb-item active">Compose</li>
+                </ul>
+            </div>            
+            <div class="col-lg-7 col-md-4 col-sm-12 text-right">
+                <div class="inlineblock text-center m-r-15 m-l-15 hidden-sm pt-2">
+                    <div echarts [options]="visitorsOptions" class="echart-line-chart" [autoResize]="true" style="height: 20px;">
+                    </div>
+                    <span>Visitors</span>
+                </div>
+                <div class="inlineblock text-center m-r-15 m-l-15 hidden-sm pt-2">
+                    <div echarts [options]="visitsOptions" class="echart-line-chart" [autoResize]="true" style="height: 20px;">
+                    </div>
+                    <span>Visits</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="body">
+                    <form>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="To">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Subject">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="CC">
+                        </div>
+                    </form>
+                    <hr>
+                    <ejs-richtexteditor #toolsRTE id='alltoolRTE' [toolbarSettings]='config' [(value)]='htmlContent'></ejs-richtexteditor>
+                    <div class="m-t-30">
+                        <button type="button" class="btn btn-success mr-1">Send Message</button>
+                        <button type="button" class="btn btn-secondary mr-1">Draft</button>
+                        <a [routerLink]="['/admin/app/app-inbox']" class="btn btn-outline-secondary mr-1">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

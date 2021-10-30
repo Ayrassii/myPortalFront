@@ -1,0 +1,86 @@
+<div class="container-fluid">
+    <div class="block-header">
+        <div class="row">
+            <div class="col-lg-5 col-md-8 col-sm-12">                        
+                <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i class="fa fa-arrow-left"></i></a> Tabs</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html"><i class="icon-home"></i></a></li>                            
+                    <li class="breadcrumb-item">UI Elements</li>
+                    <li class="breadcrumb-item active">Tabs</li>
+                </ul>
+            </div>            
+            <div class="col-lg-7 col-md-4 col-sm-12 text-right">
+                <div class="inlineblock text-center m-r-15 m-l-15 hidden-sm pt-2">
+                    <div echarts [options]="visitorsOptions" class="echart-line-chart" [autoResize]="true" style="height: 20px;">
+                    </div>
+                    <span>Visitors</span>
+                </div>
+                <div class="inlineblock text-center m-r-15 m-l-15 hidden-sm pt-2">
+                    <div echarts [options]="visitsOptions" class="echart-line-chart" [autoResize]="true" style="height: 20px;">
+                    </div>
+                    <span>Visits</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row clearfix">
+
+        <div class="col-lg-6 col-md-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Bootstrap Simple Example Tab                                
+                        <small>Takes the basic nav from above and adds the <code class="highlighter-rouge">.nav-tabs</code> class to generate a tabbed interface. Use them to create tabbable regions with our <a href="#javascript-behavior">tab JavaScript plugin</a>.</small>
+                    </h2>
+                </div>
+                <app-tabs [tabs]="tabs"></app-tabs>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Example Tab 2 <small><code class="highlighter-rouge">.nav-tabs-new</code></small></h2>
+                </div>
+                <app-tabs [tabs]="tabs" [type]="2"></app-tabs>
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Example Tab 3 <small><code class="highlighter-rouge">.nav-tabs-new2</code></small></h2>
+                </div>
+                <app-tabs [tabs]="tabs" [type]="3"></app-tabs>
+            </div>
+        </div>
+    </div>
+
+    <div class="row clearfix">
+
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Tabs With Icon</h2>
+                </div>
+                <app-tabs [tabs]="tabsWithIcons" [type]="1"></app-tabs>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Tabs With Only Icon Title</h2>
+                </div>
+                <app-tabs [tabs]="tabsWithoutTitle" [type]="1"></app-tabs>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Tabs with dropdowns</h2>
+                </div>
+                <app-tabs [tabs]="tabsWithDropdown" [type]="1"></app-tabs>
+            </div>
+        </div>
+    </div>
+</div>

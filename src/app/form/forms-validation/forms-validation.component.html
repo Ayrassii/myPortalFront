@@ -1,0 +1,150 @@
+<div class="container-fluid">
+	<div class="block-header">
+		<div class="row">
+			<div class="col-lg-5 col-md-8 col-sm-12">
+				<h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"
+						(click)="toggleFullWidth()">
+						<i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+						<i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+					</a> Validation</h2>
+				<ul class="breadcrumb">
+					<li class="breadcrumb-item"><a [routerLink]="['/admin']"><i class="icon-home"></i></a></li>
+					<li class="breadcrumb-item">Form</li>
+					<li class="breadcrumb-item active">Validation</li>
+				</ul>
+			</div>
+            <div class="col-lg-7 col-md-4 col-sm-12 text-right">
+                <div class="inlineblock text-center m-r-15 m-l-15 hidden-sm pt-2">
+                    <div echarts [options]="visitorsOptions" class="echart-line-chart" [autoResize]="true" style="height: 20px;">
+                    </div>
+                    <span>Visitors</span>
+                </div>
+                <div class="inlineblock text-center m-r-15 m-l-15 hidden-sm pt-2">
+                    <div echarts [options]="visitsOptions" class="echart-line-chart" [autoResize]="true" style="height: 20px;">
+                    </div>
+                    <span>Visits</span>
+                </div>
+            </div>
+		</div>
+	</div>
+
+	<div class="row clearfix">
+		<div class="col-md-12">
+			<div class="card">
+				<div class="header">
+					<h2>Basic Validation</h2>
+				</div>
+				<div class="body">
+					<form #profileForm="ngForm" (ngSubmit)="onSubmit(profileForm.valid)">
+						<div class="form-group">
+							<label>Text Input</label>
+							<input [(ngModel)]="data.text" class="form-control" name="text" #text="ngModel" required [ngClass]="{'parsley-error':!text.valid && (text.touched || profileForm.submitted)}">
+							<ul class="parsley-errors-list filled" *ngIf="!text.valid && (text.touched || profileForm.submitted)">
+								<li class="parsley-required" *ngIf="text.hasError('required')">This value is required.</li>
+							</ul>
+						</div>
+						<div class="form-group">
+							<label>Email Input</label>
+							<input type="email" class="form-control" required [(ngModel)]="data.email" name="email" #email="ngModel" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" [ngClass]="{'parsley-error':!email.valid && (email.touched || profileForm.submitted)}">
+							<ul class="parsley-errors-list filled" *ngIf="!email.valid && (email.touched || profileForm.submitted)">
+								<li class="parsley-required" *ngIf="email.hasError('required')">This value is required.</li>
+								<li class="parsley-type" *ngIf="email.hasError('pattern')">This value should be a valid email.</li>
+							</ul>
+						</div>
+						<div class="form-group">
+							<label>Text Area</label>
+							<textarea class="form-control" rows="5" cols="30" [(ngModel)]="data.textarea" name="textarea" #textarea="ngModel" required [ngClass]="{'parsley-error':!textarea.valid && (textarea.touched || profileForm.submitted)}"></textarea>
+							<ul class="parsley-errors-list filled" *ngIf="!textarea.valid && (textarea.touched || profileForm.submitted)">
+								<li class="parsley-required" *ngIf="textarea.hasError('required')">This value is required.</li>
+							</ul>
+						</div>
+						<div class="form-group">
+							<label>Checkbox</label>
+							<br />
+							<label class="fancy-checkbox">
+								<input type="checkbox" name="checkbox">
+								<span>Option 1</span>
+							</label>
+							<label class="fancy-checkbox">
+								<input type="checkbox" name="checkbox">
+								<span>Option 2</span>
+							</label>
+							<label class="fancy-checkbox">
+								<input type="checkbox" name="checkbox">
+								<span>Option 3</span>
+							</label>
+						</div>
+						<div class="form-group">
+							<label>Radio Button</label>
+							<br />
+							<label class="fancy-radio">
+								<input type="radio" name="gender" value="male" required
+									data-parsley-errors-container="#error-radio">
+								<span><i></i>Male</span>
+							</label>
+							<label class="fancy-radio">
+								<input type="radio" name="gender" value="female">
+								<span><i></i>Female</span>
+							</label>
+						</div>
+						<div class="form-group">
+							<label for="food">Multiselect</label>
+							<br />
+							<ng-multiselect-dropdown name="multiSelect" #multiSelect="ngModel" [placeholder]="'None Selected'" [data]="dropdownList" [(ngModel)]="selectedItems"
+								[settings]="dropdownSettings">
+								</ng-multiselect-dropdown>
+						</div>
+						<br>
+						<button type="submit" class="btn btn-primary">Validate</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-12">
+			<div class="card">
+				<div class="header">
+					<h2>Advanced Validation</h2>
+				</div>
+				<div class="body">
+					<form #advForm="ngForm" (ngSubmit)="onSubmit(advForm.valid)">
+						<div class="form-group">
+							<label for="text-input1">Min. 8 Characters</label>
+							<input type="text" [(ngModel)]="data.textminlength" class="form-control" name="textminlength" #textminlength="ngModel" [ngClass]="{'parsley-error':!textminlength.valid && (textminlength.touched || advForm.submitted)}" required minlength="8">
+							<ul class="parsley-errors-list filled" *ngIf="!textminlength.valid && (textminlength.touched || advForm.submitted)">
+								<li class="parsley-required" *ngIf="textminlength.hasError('required')">This value is required.</li>
+								<li class="parsley-required" *ngIf="textminlength.hasError('minlength')">This value is too short. It should have 8 characters or more.</li>
+							</ul>
+						</div>
+						<div class="form-group">
+							<label for="text-input2">Between 5-10 Characters</label>
+							<input type="text" [(ngModel)]="data.textminmaxlength" class="form-control" name="textminmaxlength" #textminmaxlength="ngModel" [ngClass]="{'parsley-error':!textminmaxlength.valid && (textminmaxlength.touched || advForm.submitted)}" required minlength="5" maxlength="10">
+							<ul class="parsley-errors-list filled" *ngIf="!textminmaxlength.valid && (textminmaxlength.touched || advForm.submitted)">
+								<li class="parsley-required" *ngIf="textminmaxlength.hasError('required')">This value is required.</li>
+								<li class="parsley-required" *ngIf="textminmaxlength.hasError('minlength') || textminmaxlength.hasError('maxlength')">This value length is invalid. It should be between 5 and 10 characters long.</li>
+							</ul>
+						</div>
+						<div class="form-group">
+							<label for="text-input3">Min. Number ( >= 5 )</label>
+							<input type="text" [(ngModel)]="data.minval" class="form-control" name="minval" #minval="ngModel" required [ngClass]="{'parsley-error':(!minval.valid || !(data && data.minval && data.minval >= 5)) && (minval.touched || advForm.submitted)}">
+							<ul class="parsley-errors-list filled" *ngIf="(!minval.valid || !(data && data.minval && data.minval >= 5)) && (minval.touched || advForm.submitted)">
+								<li class="parsley-required" *ngIf="minval.hasError('required')">This value is required.</li>
+								<li class="parsley-required" *ngIf="!minval.hasError('required') && !(data && data.minval && data.minval >= 5)">This value should be greater than or equal to 5.</li>
+							</ul>
+						</div>
+						<div class="form-group">
+							<label for="text-input4">Between 20-30</label>
+							<input type="text" [(ngModel)]="data.range" class="form-control" name="range" #range="ngModel" required [ngClass]="{'parsley-error':(!range.valid || !(data && data.range && data.range >= 20 && data.range <= 30 )) && (range.touched || advForm.submitted)}">
+							<ul class="parsley-errors-list filled"
+								*ngIf="(!range.valid || !(data && data.range && data.range >= 20 && data.range <= 30 )) && (range.touched || advForm.submitted)">
+								<li class="parsley-required" *ngIf="range.hasError('required')">This value is required.</li>
+								<li class="parsley-required" *ngIf="!range.hasError('required') && !(data && data.range && data.range >= 20 && data.range <= 30)">This value should be between 20 and 30.</li>
+							</ul>
+						</div>
+						<br />
+						<button type="submit" class="btn btn-primary">Validate</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

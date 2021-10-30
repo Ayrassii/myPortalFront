@@ -1,0 +1,57 @@
+<div class="container-fluid">
+	<div class="block-header">
+		<div class="row">
+			<div class="col-lg-5 col-md-8 col-sm-12">
+				<h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"
+					   (click)="toggleFullWidth()">
+					<i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+					<i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+				</a> Nouveau Post</h2>
+				<ul class="breadcrumb">
+					<li class="breadcrumb-item"><a [routerLink]="['/app/index']"><i class="icon-home"></i></a></li>
+					<li class="breadcrumb-item active">Nouveau Post</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="row clearfix">
+		<div class="col-lg-12">
+			<form [formGroup]="feedForm" (ngSubmit)="onFeedSubmit(feedForm.value)">
+				<div class="card">
+					<div class="body">
+						<div class="form-group">
+							<input formControlName="titre" (keyup)="genslug()" type="text" class="form-control" placeholder="Titre" />
+						</div>
+						<select class="form-control show-tick" formControlName="type" required (change)="setType()">
+							<option value="" disabled >Selectionner Type</option>
+							<option value="public" selected>Publique</option>
+							<option value="classes">Classes</option>
+							<option value="professeurs">Professeurs</option>
+							<option value="etudiants">Etudiants</option>
+						</select>
+						<br>
+						<div *ngIf="type !== 'public' " class="form-group">
+							<ng-multiselect-dropdown *ngIf="type == 'professeurs' "  formControlName="professeurs" [placeholder]="'Selectionner Professeur(s)'" [data]="dpprofesseurs"
+													 [settings]="dropdownSettings">
+							</ng-multiselect-dropdown>
+							<ng-multiselect-dropdown *ngIf="type == 'etudiants' "  formControlName="etudiants" [placeholder]="'Selectionner Etudiant(s)'" [data]="dpetudiants"
+													 [settings]="dropdownSettings">
+							</ng-multiselect-dropdown>
+							<ng-multiselect-dropdown *ngIf="type == 'classes' "  formControlName="classes" [placeholder]="'Selectionner Classe(s)'" [data]="dpclasses"
+													 [settings]="dropdownSettings">
+							</ng-multiselect-dropdown>
+						</div>
+						<div class="form-group m-t-20 m-b-20">
+							<label for="image">Image</label>
+							<app-file-upload id="image" [type]="'image'" formControlName="image" [progress]="progress"></app-file-upload>
+							<small id="fileHelp" class="form-text text-muted">Image : (png|jpg)</small>
+						</div>
+						<ejs-richtexteditor #toolsRTE id='alltoolRTE' [toolbarSettings]='config' [(value)]='htmlContent'></ejs-richtexteditor>
+						<button [disabled]="!feedForm.valid" type="submit" class="btn btn-block btn-primary m-t-20">Publier</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

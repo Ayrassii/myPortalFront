@@ -1,0 +1,37 @@
+<div class="body">
+    <ul class="nav" [ngClass]="{'nav-tabs': (type == 1 || !type),'nav-tabs-new':type == 2,'nav-tabs-new2':type == 3}">
+        <ng-container *ngFor="let tab of tabs;let i = index;">
+            <ng-container *ngIf="!tab.isDropdown && !tab.isDisabled" >
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="javascript:void();" [ngClass]="{'active show': (i == activeTab || (activeTab == '' && i == 0))}" (click)="tabChange(i)">
+                        <i class="fa {{tab.icon}}" *ngIf="tab.icon"></i>&nbsp;<span *ngIf="tab.title">{{tab.title}}</span>
+                    </a>
+                </li>
+            </ng-container>
+            <ng-container *ngIf="tab.isDropdown">
+                <li class="nav-item dropdown" ngbDropdown>
+                    <a class="nav-link dropdown-toggle" href="javascript:void(0);" role="button" ngbDropdownToggle>Dropdown</a>
+                    <div class="dropdown-menu" ngbDropdownMenu>
+                        <ng-container *ngFor="let item of tab.dropdown">
+                            <a class="dropdown-item" href="{{ item.url }}" *ngIf="item.type != 'divider'">{{item.title}}</a> 
+                            <div class="dropdown-divider" *ngIf="item.type == 'divider'"></div>   
+                        </ng-container>
+                    </div>
+                </li>
+            </ng-container>
+            <ng-container *ngIf="tab.isDisabled">
+                <li class="nav-item">
+                    <a class="nav-link disabled" data-toggle="tab" href="javascript:void();" [ngClass]="{'active show': (i == activeTab || (activeTab == '' && i == 0))}">
+                        <i class="fa {{tab.icon}}" *ngIf="tab.icon"></i>&nbsp;<span *ngIf="tab.title">{{tab.title}}</span>
+                    </a>
+                </li>
+            </ng-container>
+        </ng-container>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane" *ngFor="let tab of tabs;let i = index;" [ngClass]="{'active show': (i == activeTab || (activeTab == '' && i == 0))}">
+            <h6 *ngIf="!tab.hideTitle && tab.title">{{tab.title}}</h6>
+            <p>{{tab.content}}</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,226 @@
+<div class="container-fluid">
+
+	<div class="block-header">
+		<div class="row">
+			<div class="col-lg-5 col-md-8 col-sm-12">
+				<h2>
+					<a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth" (click)="toggleFullWidth()">
+						<i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+						<i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+					</a>
+					Pricing
+				</h2>
+				<ul class="breadcrumb">
+					<li class="breadcrumb-item"><a [routerLink]="['/admin']"><i class="icon-home"></i></a></li>
+					<li class="breadcrumb-item">Pages</li>
+					<li class="breadcrumb-item active">Pricing</li>
+				</ul>
+			</div>
+            <div class="col-lg-7 col-md-4 col-sm-12 text-right">
+                <div class="inlineblock text-center m-r-15 m-l-15 hidden-sm pt-2">
+                    <div echarts [options]="visitorsOptions" class="echart-line-chart" [autoResize]="true" style="height: 20px;">
+                    </div>
+                    <span>Visitors</span>
+                </div>
+                <div class="inlineblock text-center m-r-15 m-l-15 hidden-sm pt-2">
+                    <div echarts [options]="visitsOptions" class="echart-line-chart" [autoResize]="true" style="height: 20px;">
+                    </div>
+                    <span>Visits</span>
+                </div>
+            </div>
+		</div>
+	</div>
+
+	<div class="row clearfix">
+		<div class="col-lg-3 cool-md-6 col-sm-12">
+			<div class="card">
+				<ul class="pricing body">
+					<li><h2>Start</h2></li>
+					<li>Responsive Design</li>
+					<li>Color Customization</li>
+					<li>HTML5 &amp; CSS3</li>
+					<li>Styled elements</li>
+					<li>
+						<h3>$199</h3>
+						<span>per month</span>
+					</li>
+					<li><button class="btn btn-outline-secondary">Join Now</button></li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-lg-3 cool-md-6 col-sm-12">
+			<div class="card">
+				<ul class="pricing body active">
+					<li><h2>Good</h2></li>
+					<li>Responsive Design</li>
+					<li>Color Customization</li>
+					<li>HTML5 &amp; CSS3</li>
+					<li>Styled elements</li>
+					<li>
+						<h3>$299</h3>
+						<span>per month</span>
+					</li>
+					<li><button class="btn btn-primary ">Join Now</button></li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-lg-3 cool-md-6 col-sm-12">
+			<div class="card">
+				<ul class="pricing body">
+					<li><h2>Ultima</h2></li>
+					<li>Responsive Design</li>
+					<li>Color Customization</li>
+					<li>HTML5 &amp; CSS3</li>
+					<li>Styled elements</li>
+					<li>
+						<h3>$399</h3>
+						<span>per month</span>
+					</li>
+					<li><button class="btn btn-outline-secondary">Join Now</button></li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-lg-3 cool-md-6 col-sm-12">
+			<div class="card">
+				<ul class="pricing body">
+					<li><h2>Vip</h2></li>
+					<li>Responsive Design</li>
+					<li>Color Customization</li>
+					<li>HTML5 &amp; CSS3</li>
+					<li>Styled elements</li>
+					<li>
+						<h3>$799</h3>
+						<span>per month</span>
+					</li>
+					<li><button class="btn btn-outline-secondary">Join Now</button></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="row clearfix">
+		<div class="col-12">
+			<h5>Pricing Table Option 2</h5>
+			<hr>
+		</div>
+		<div class="col-lg-4 col-md-12">
+			<div class="card pricing2">
+				<div class="body">
+					<div class="pricing-plan">
+						<img src="assets/images/paper-plane.png" alt="" class="pricing-img">
+						<h2 class="pricing-header">Start</h2>
+						<ul class="pricing-features">
+							<li>Responsive Design</li>
+							<li>Color Customization</li>
+							<li>HTML5 &amp; CSS3</li>
+							<li>Styled elements</li>
+						</ul>
+						<span class="pricing-price">Free</span>
+						<a href="javascript:void(0);" class="btn btn-outline-primary">Sign up</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4 col-md-12">
+			<div class="card pricing2">
+				<div class="body">
+					<div class="pricing-plan">
+						<img src="assets/images/plane.png" alt="" class="pricing-img">
+						<h2 class="pricing-header">Good</h2>
+						<ul class="pricing-features">
+							<li>Responsive Design</li>
+							<li>Color Customization</li>
+							<li>HTML5 &amp; CSS3</li>
+							<li>Styled elements</li>
+						</ul>
+						<span class="pricing-price">$149</span>
+						<a href="javascript:void(0);" class="btn btn-primary">Join Now</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4 col-md-12">
+			<div class="card pricing2">
+				<div class="body">
+					<div class="pricing-plan">
+						<img src="assets/images/space-ship.png" alt="" class="pricing-img">
+						<h2 class="pricing-header">Ultima</h2>
+						<ul class="pricing-features">
+							<li>Responsive Design</li>
+							<li>Color Customization</li>
+							<li>HTML5 &amp; CSS3</li>
+							<li>Styled elements</li>
+						</ul>
+						<span class="pricing-price">$349</span>
+						<a href="javascript:void(0);" class="btn btn-outline-primary">Join Now</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row clearfix">
+		<div class="col-12">
+			<h5>Pricing Table Option 3</h5>
+			<hr>
+		</div>
+		<div class="col-lg-4 col-md-12">
+			<div class="card pricing3">
+				<div class="body">
+					<div class="pricing-option">
+						<i class="icon-screen-desktop"></i>
+						<h5>Ui design</h5>
+						<hr>
+						<div class="m-t-30 m-b-30">
+							<h6>Files</h6>
+							<p>.PSD .AI .PNG .SVG<br>Licensed for 1 project</p>
+						</div>
+						<div class="price">
+							<span class="price">149 <b>$</b></span>
+						</div>
+						<a href="javascript:void(0);" class="btn btn-outline-secondary">Purchase now</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4 col-md-12">
+			<div class="card pricing3">
+				<div class="body">
+					<div class="pricing-option">
+						<i class="icon-user"></i>
+						<h5>Ux design</h5>
+						<hr>
+						<div class="m-t-30 m-b-30">
+							<h6>Files</h6>
+							<p>.PSD .AI .PNG .SVG<br>Licensed for 5 project</p>
+						</div>
+						<div class="price">
+							<span class="price">249 <b>$</b></span>
+						</div>
+						<a href="javascript:void(0);" class="btn btn-outline-secondary">Purchase now</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4 col-md-12">
+			<div class="card pricing3">
+				<div class="body">
+					<div class="pricing-option">
+						<i class="icon-printer"></i>
+						<h5>Print design</h5>
+						<hr>
+						<div class="m-t-30 m-b-30">
+							<h6>Files</h6>
+							<p>.PSD .AI .PNG .SVG<br>Licensed for 1 project</p>
+						</div>
+						<div class="price">
+							<span class="price">349 <b>$</b></span>
+						</div>
+						<a href="javascript:void(0);" class="btn btn-outline-secondary">Purchase now</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>

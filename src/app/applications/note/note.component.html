@@ -1,0 +1,145 @@
+<div class="container-fluid">
+
+  <div class="block-header">
+    <div class="row">
+      <div class="col-lg-5 col-md-8 col-sm-12">
+        <h2>
+          <a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth" (click)="toggleFullWidth()">
+            <i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+            <i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+          </a>
+          Notes
+        </h2>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a [routerLink]="['/app']"><i class="icon-home"></i></a></li>
+          <li class="breadcrumb-item">Notes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row clearfix" *ngIf="getRole() === 'ROLE_ETUDIANT' ">
+    <div class="card">
+      <div class="header">
+        <h2>Vos Notes</h2>
+      </div>
+      <div *ngIf="!loading && notes?.length == 0" class="body">
+        <div class="alert alert-primary">
+          Vous n'avez aucune Note
+        </div>
+      </div>
+      <div *ngIf="!loading && notes?.length > 0" class="body table-responsive">
+        <table class="table m-b-0">
+          <thead>
+          <tr>
+            <th>Matiere</th>
+            <th>Devoir</th>
+            <th>Note</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let note of notes">
+            <td>
+              {{note.devoir.matiere.nom}}
+            </td>
+            <td>
+              {{note.devoir.type}} ({{getDate(note.devoir.date).getDate()}} {{getMonthName(getDate(note.devoir.date).getMonth())}} {{getDate(note.devoir.date).getFullYear()}}) Coef : {{note.devoir.coeficient}}
+            </td>
+            <td>
+              <p *ngIf="note.mark < 10"><span class="text-danger">{{note.mark}}</span>/20</p>
+              <p *ngIf="note.mark >= 10 && note.mark < 15 "><span class="text-primary">{{note.mark}} </span>/20</p>
+              <p *ngIf="note.mark >= 15"><span class="text-success">{{note.mark}}</span>/20</p>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+  <div class="row clearfix" *ngIf="getRole() === 'ROLE_PROFESSEUR' && detailsopened === false">
+    <div class="card">
+      <div class="header">
+        <h2>Vos Examens</h2>
+      </div>
+      <div *ngIf="!loading && devoirs?.length == 0" class="body">
+        <div class="alert alert-primary">
+          Vous n'avez aucun Examen écoulé
+        </div>
+      </div>
+      <div *ngIf="!loading && devoirs?.length > 0" class="body table-responsive">
+        <table class="table m-b-0">
+          <thead>
+          <tr>
+            <th>Classe</th>
+            <th>Matiere</th>
+            <th>Devoir</th>
+            <th>Moyenne Classe</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let devoir of devoirs">
+            <td>
+              {{devoir.classe.abbreviation}} {{devoir.classe.niveau.specialite.nom}} {{devoir.classe.niveau.nom}}
+            </td>
+            <td>
+              {{devoir.matiere.nom}}
+            </td>
+            <td>
+              <a style="cursor: pointer" (click)="details(devoir) ">{{devoir.type}} ({{getDate(devoir.date).getDate()}} {{getMonthName(getDate(devoir.date).getMonth())}} {{getDate(devoir.date).getFullYear()}}) Coef : {{devoir.coeficient}}</a>
+            </td>
+            <td>
+              <p *ngIf=" calculMoyenne(devoir) < 10 ">
+                <span class="text-danger">{{calculMoyenne(devoir)}}</span>/20
+              </p>
+              <p *ngIf=" calculMoyenne(devoir) >= 10 && calculMoyenne(devoir) < 15 "><span class="text-primary">
+                {{calculMoyenne(devoir)}} </span>/20
+              </p>
+              <p *ngIf="calculMoyenne(devoir) >= 15">
+                <span class="text-success">{{calculMoyenne(devoir)}}</span>/20
+              </p>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+  <div class="row clearfix" *ngIf="getRole() === 'ROLE_PROFESSEUR' && detailsopened === true">
+    <div class="card">
+      <div class="header">
+        <h2>Notes Devoir : {{devoir.type}} ({{getDate(devoir.date).getDate()}} {{getMonthName(getDate(devoir.date).getMonth())}} {{getDate(devoir.date).getFullYear()}}) Coef : {{devoir.coeficient}}</h2>
+        <h3 (click)="getDevoirs()" style="cursor: pointer; color: green">Retour a la liste</h3>
+      </div>
+      <div *ngIf="devoir.notes.length === 0 " class="body">
+        <div class="alert alert-primary">
+          Ce devoir n'as aucune note
+        </div>
+      </div>
+      <div *ngIf=" devoir.notes.length > 0" class="body table-responsive">
+        <table class="table m-b-0">
+          <thead>
+          <tr>
+            <th>Etudiant</th>
+            <th>Note</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let note of devoir.notes">
+            <td>
+              <a [routerLink]="['/app/user/' + note.user.cin]">{{note.user.prenom}} {{note.user.nom}}</a>
+            </td>
+            <td>
+              <p *ngIf="note.mark < 10"><span class="text-danger">{{note.mark}}</span>/20</p>
+              <p *ngIf="note.mark >= 10 && note.mark < 15 "><span class="text-primary">{{note.mark}} </span>/20</p>
+              <p *ngIf="note.mark >= 15"><span class="text-success">{{note.mark}}</span>/20</p>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>

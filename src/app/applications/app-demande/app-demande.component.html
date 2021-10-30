@@ -1,0 +1,142 @@
+<div class="container-fluid">
+
+  <div class="block-header">
+    <div class="row">
+      <div class="col-lg-5 col-md-8 col-sm-12">
+        <h2>
+          <a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth" (click)="toggleFullWidth()">
+            <i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+            <i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+          </a>
+          Demandes
+        </h2>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a [routerLink]="['/app']"><i class="icon-home"></i></a></li>
+          <li class="breadcrumb-item">Demandes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-lg-12 col-md-12">
+      <div class="card">
+        <div *ngIf="demandes.length == 0" class="body">
+          Vos Demandes
+          <hr>
+          <div class="alert alert-primary">
+            Vous n'avez aucune Demande
+          </div>
+        </div>
+        <div *ngIf="demandes.length > 0" class="body table-responsive">
+          Vos Demandes
+          <!--<div class="pull-right">-->
+          <!--<button class="btn btn-danger" (click)="openModalToutSupprimer(toutsupprimer, 'md')">Tout Supprimer</button>-->
+          <!--</div>-->
+          <hr>
+          <table class="table table-hover m-b-0" style="border-top-style: hidden;">
+            <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let demande of demandes">
+              <td>
+                {{demande.created_at}}
+              </td>
+              <td>
+                {{demande.type}}
+              </td>
+              <td>
+                <span class="badge badge-warning">En Cours</span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-12">
+      <div class="card">
+        <div class="header">
+          <h2>Attestation d'Inscription</h2>
+        </div>
+        <div *ngIf="!loading && getInscription()" class="body">
+          <div class="col-md-6">
+            <p>Demande Envoyée {{ago(getInscription().created_at)}}</p>
+          </div>
+          <div class="col-md-6">
+            <button  type="button" disabled class="btn btn-lg btn-primary mr-1">
+              <span>Envoyer Demande</span>
+            </button>
+          </div>
+        </div>
+        <div *ngIf="!loading && !getInscription()" class="body">
+          <form [formGroup]="incriptionForm" (ngSubmit)="onIncriptionSubmit()">
+            <button *ngIf="insbtnloading" type="button" class="btn btn-lg btn-primary mr-1" disabled="disabled"><i class="fa fa-spinner fa-spin"></i>&nbsp;<span>Chargement...</span></button>
+            <button  *ngIf="!insbtnloading" type="submit" class="btn btn-lg btn-primary mr-1">
+              <span>Envoyer Demande</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-12">
+      <div class="card">
+        <div class="header">
+          <h2>Attestation de Presence</h2>
+        </div>
+        <div *ngIf="!loading && getPresence()" class="body">
+          <div class="col-md-6">
+            <p>Demande Envoyée {{ago(getPresence().created_at)}}</p>
+          </div>
+          <div class="col-md-6">
+            <button  type="button" disabled class="btn btn-lg btn-primary mr-1">
+              <span>Envoyer Demande</span>
+            </button>
+          </div>
+        </div>
+        <div *ngIf="!loading && !getPresence()" class="body">
+          <form [formGroup]="presenceForm" (ngSubmit)="onPresenceSubmit()">
+            <button *ngIf="presbtnloading" type="button" class="btn btn-lg btn-primary mr-1" disabled="disabled"><i class="fa fa-spinner fa-spin"></i>&nbsp;<span>Chargement...</span></button>
+            <button *ngIf="!presbtnloading" type="submit" class="btn btn-lg btn-primary mr-1">
+              <span>Envoyer Demande</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-12 col-md-12">
+      <div class="card">
+        <div class="header">
+          <h2>Attestation Personnalisée</h2>
+        </div>
+        <div *ngIf="!loading && getPersonnalise()" class="body">
+          <div class="col-md-6">
+            <p>Demande Envoyée {{ago(getPersonnalise().created_at)}}</p>
+          </div>
+          <div class="col-md-6">
+            <button  type="button" disabled class="btn btn-lg btn-primary mr-1">
+              <span>Envoyer Demande</span>
+            </button>
+          </div>
+        </div>
+        <div *ngIf="!loading && !getPersonnalise()" class="body">
+          <form [formGroup]="personnaliseForm" (ngSubmit)="onPersonnaliseSubmit()">
+            <div class="form-group">
+              <label>Description</label>
+              <textarea formControlName="description" required="required" cols="30" rows="5" class="form-control" placeholder="Spécifier la nature de votre demande..."></textarea>
+            </div>
+            <button *ngIf="persobtnloading" type="button" class="btn btn-lg btn-primary mr-1" disabled="disabled"><i class="fa fa-spinner fa-spin"></i>&nbsp;<span>Chargement...</span></button>
+            <button [disabled]="!personnaliseForm.valid" *ngIf="!persobtnloading" type="submit" class="btn btn-lg btn-primary mr-1">
+              <span>Envoyer Demande</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

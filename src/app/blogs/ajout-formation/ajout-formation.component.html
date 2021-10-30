@@ -1,0 +1,96 @@
+<div class="container-fluid">
+
+  <div class="block-header">
+    <div class="row">
+      <div class="col-lg-5 col-md-8 col-sm-12">
+        <h2>
+          <a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth" (click)="toggleFullWidth()">
+            <i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+            <i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+          </a>
+          Ajout Formation
+        </h2>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a [routerLink]="['/app']"><i class="icon-home"></i></a></li>
+          <li class="breadcrumb-item"><a [routerLink]="['/app/formations']">Formations</a></li>
+          <li class="breadcrumb-item">Ajout Formation</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="card">
+      <div class="header">
+        <h2>Ajout Formation</h2>
+      </div>
+      <div class="body">
+        <form [formGroup]="formationForm" (ngSubmit)="onFormationSubmit(formationForm.value)">
+          <div class="form-group">
+            <div class="form-line">
+              <label for="titre">Titre</label>
+              <input (keyup)="genslug()" required id="titre" type="text" class="form-control" formControlName="titre" placeholder="Titre Formation">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-line">
+              <label for="description">Description</label>
+              <textarea placeholder="Description de la Formation" required class="form-control" formControlName="description" id="description" cols="30" rows="10"></textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-line">
+              <label for="niveau">Niveau</label>
+              <select id="niveau" required formControlName="niveau_id" class="form-control">
+                <option value="" disabled>Selectionnez Niveau</option>
+                <option *ngFor="let n of niveaux" [value]="n.id">{{n.nom}} {{n.specialite?.nom}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-line">
+              <label>Image</label>
+              <app-file-upload formControlName="image" [type]="'image'"></app-file-upload>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-line">
+              <label for="parties">Parties</label>
+              <select (change)="Genererpartiesform()" id="parties" required formControlName="nbr_parties" class="form-control">
+                <option value="" disabled >Selectionnez Nombre de Partie</option>
+                <option value="1">une partie</option>
+                <option value="2">2 parties</option>
+                <option value="3">3 parties</option>
+                <option value="4">4 parties</option>
+                <option value="5">5 parties</option>
+                <option value="6">6 parties</option>
+                <option value="7">7 parties</option>
+                <option value="8">8 parties</option>
+                <option value="9">9 parties</option>
+                <option value="10">10 parties</option>
+              </select>
+            </div>
+          </div>
+          <div formArrayName="parties" *ngFor="let parties of getformArray().controls; let i = index">
+            <hr>
+            <div [formGroupName]="i">
+              <div class="form-group">
+                <label [for]="'titrepartie' + (i + 1)">Titre Partie {{ (i + 1) }}</label>
+                <input [id]="'titrepartie' + (i + 1)" formControlName="titrepartie" type="text" class="form-control" [placeholder]="'Titre Partie' + (i + 1)" />
+              </div>
+              <div class="form-group">
+                <label [for]="'videopartie' + (i + 1)">Video Partie {{(i + 1)}}</label>
+                <app-file-upload [type]="'video'" (change)="readVideoUrl($event, (i+1))" formControlName="videopartie" [id]="'videopartie' + (i + 1)"></app-file-upload>
+                <video controls class="img-thumbnail" [src]="findsrc((i+1))" width="100%"></video>
+              </div>
+            </div>
+          </div>
+          <button  [disabled]="!formationForm.valid || progress > 0" type="submit" class="btn btn-simple btn-primary m-t-20">Ajouter Formation</button>
+          <br>
+          <ngb-progressbar *ngIf="progress > 0" type="success" showValue="true" [striped]="true" [value]="progress" [animated]="true" height="20px"></ngb-progressbar>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

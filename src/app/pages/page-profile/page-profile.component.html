@@ -1,0 +1,89 @@
+<div class="container-fluid profilepage_2 blog-page">
+
+	<div class="block-header">
+		<div class="row">
+			<div class="col-lg-5 col-md-8 col-sm-12">
+				<h2>
+					<a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth" (click)="toggleFullWidth()">
+						<i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+						<i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+					</a>
+					Mon Profil
+				</h2>
+				<ul class="breadcrumb">
+					<li class="breadcrumb-item"><a [routerLink]="['/app']"><i class="icon-home"></i></a></li>
+					<li class="breadcrumb-item active">Mon Profil</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="row clearfix">
+
+		<div *ngIf="!loading" class="col-lg-4 col-md-12">
+			<div class="card profile-header">
+				<div class="body">
+					<div class="profile-image">
+						<img [src] = "getImage(me)" class="rounded-circle" style="width: 250px;height: 250px;object-fit: cover;" alt="User Image">
+					</div>
+					<div>
+						<h4 class="m-b-0">
+							<strong>{{me.prenom}}</strong> {{me.nom}}
+						</h4>
+						<span>{{getRole(me)}}</span>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="col-lg-8 col-md-12">
+<!--			<div class="card">-->
+<!--				<div class="header">-->
+<!--					<h3 *ngIf="getRole(me) === 'Etudiant' ">Vos Camarades</h3>-->
+<!--					<h3 *ngIf="getRole(me) === 'Professeur' ">Vos Collègues</h3>-->
+<!--				</div>-->
+<!--				<div class="body">-->
+<!--					<div class="row">-->
+<!--						<div *ngFor="let user of classmates" class="col-lg-4 col-md-6 col-sm-12">-->
+<!--							<div class="card">-->
+<!--								<div class="body text-center">-->
+<!--									<div class="chart easy-pie-chart-1" data-percent="75">-->
+<!--										<span [routerLink]="['/app/user/' + user.cin]" style="cursor: pointer; color: #0c8ec3">-->
+<!--											<img [src]="getImage(user)" alt="user" class="rounded-circle">-->
+<!--										</span>-->
+<!--										<canvas height="100" width="100"></canvas>-->
+<!--									</div>-->
+<!--									<h6><a [routerLink]="['/app/user/' + user.cin]">{{user.nom}} {{user.prenom}}</a></h6>-->
+<!--									<small>{{user.email}}</small>-->
+<!--								</div>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+
+			<div class="card">
+				<div class="header">
+					<h2>Info</h2>
+				</div>
+				<div class="body">
+					<small class="text-muted">CIN: </small>
+					<p>{{me.cin}}</p>
+					<hr>
+					<small class="text-muted">Email: </small>
+					<p>{{me.email}}</p>
+					<hr>
+					<div *ngIf="getRole(me) === 'Etudiant' ">
+						<small class="text-muted">Niveau: </small>
+						<p>{{me.classe.niveau.nom}}</p>
+						<hr>
+						<small class="text-muted">Classe: </small>
+						<p class="m-b-0">{{me.classe.abbreviation}} {{me.classe.niveau.specialite.nom}}</p>
+						<hr>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

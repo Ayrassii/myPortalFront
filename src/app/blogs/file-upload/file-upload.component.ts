@@ -1,0 +1,54 @@
+import { Component, ElementRef, HostListener, Input } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+
+@Component({
+  selector: 'app-file-upload',
+  templateUrl: './file-upload.component.html',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: FileUploadComponent,
+      multi: true
+    }
+  ],
+  styleUrls: ['./file-upload.component.css']
+})
+export class FileUploadComponent implements ControlValueAccessor {
+  imgURL;
+  @Input() progress;
+  @Input() type;
+  onChange: Function;
+  public file: File | null = null;
+
+  @HostListener('change', ['$event.target.files']) emitFiles( event: FileList ) {
+    const file = event && event.item(0);
+    this.onChange(file);
+    this.file = file;
+    const mimeType = file.type;
+    if (mimeType.match(/image\/*/) == null) {
+      this.imgURL =  '';
+    } else {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (_event) => {
+        this.imgURL = reader.result;
+      };
+    }
+  }
+
+  constructor( private host: ElementRef<HTMLInputElement> ) {
+  }
+
+  writeValue( value: null ) {
+    // clear file input
+    this.host.nativeElement.value = '';
+    this.file = null;
+  }
+
+  registerOnChange( fn: Function ) {
+    this.onChange = fn;
+  }
+
+  registerOnTouched( fn: Function ) {
+  }
+}

@@ -1,0 +1,82 @@
+<div class="container-fluid">
+  <div class="block-header">
+    <div class="row">
+        <div class="col-lg-5 col-md-8 col-sm-12">                        
+            <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth" (click)="toggleFullWidth()">
+                <i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+                <i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+            </a> Modals</h2>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a [routerLink]="['/admin']"><i class="icon-home"></i></a></li>                            
+                <li class="breadcrumb-item">UI Elements</li>
+                <li class="breadcrumb-item active">Modals</li>
+            </ul>
+        </div>            
+        <div class="col-lg-7 col-md-4 col-sm-12 text-right">
+            <div class="inlineblock text-center m-r-15 m-l-15 hidden-sm pt-2">
+                <div echarts [options]="visitorsOptions" class="echart-line-chart" [autoResize]="true" style="height: 20px;">
+                </div>
+                <span>Visitors</span>
+            </div>
+            <div class="inlineblock text-center m-r-15 m-l-15 hidden-sm pt-2">
+                <div echarts [options]="visitsOptions" class="echart-line-chart" [autoResize]="true" style="height: 20px;">
+                </div>
+                <span>Visits</span>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-lg-4 col-md-12">
+        <div class="card">
+            <div class="header">
+                <h2>Modal Default Size</h2>
+            </div>
+            <div class="body">
+                <a href="javascript:void(0)" (click)="openModal(content,'md')">
+                    <img class="img-thumbnail img-fluid" src="assets/images/model1.jpg" alt="User">
+                </a>                        
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <div class="card">
+            <div class="header">
+                <h2>Modal Large Size</h2>
+            </div>
+            <div class="body">
+                <a href="javascript:void(0)" (click)="openModal(content,'lg')">
+                    <img class="img-thumbnail img-fluid" src="assets/images/model2.jpg" alt="User">
+                </a>                        
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <div class="card">
+            <div class="header">
+                <h2>Modal Small Size</h2>
+            </div>
+            <div class="body">
+                <a href="javascript:void(0)" (click)="openModal(content,'sm')">
+                    <img class="img-thumbnail img-fluid" src="assets/images/model3.jpg" alt="User">
+                </a>                        
+            </div>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+<ng-template #content let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">Modal title</h4>
+    </div>
+    <div class="modal-body">
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sodales orci ante, sed ornare eros vestibulum ut. Ut accumsan vitae eros sit amet Integer dapibus, mi ac tempor varius, purus nibh mattis erat, vitae porta nunc nisi non tellus. Vivamus mollis ante non massa egestas fringilla. Vestibulum egestas consectetur nunc at ultricies. Morbi quis consectetur nunc.</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="modal.close('Ok click')">Save Changes</button>
+      <button type="button" class="btn btn-danger" (click)="modal.dismiss('Close click')">Close</button>
+    </div>
+</ng-template>

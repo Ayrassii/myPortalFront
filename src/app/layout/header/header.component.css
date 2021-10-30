@@ -1,0 +1,15 @@
+.container-fluid {
+    background: #7695b3;
+}
+.navbar-nav .icon-menu i{
+    color: #fff;
+}
+.navbar-fixed-top {
+    top: 0;
+}
+.navbar-nav .dropdown-menu{
+    background: #fff;
+}
+.navbar-nav .icon-menu .notification-dot{
+    background-color: #FA383E;
+}

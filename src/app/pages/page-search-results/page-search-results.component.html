@@ -1,0 +1,124 @@
+<div class="container-fluid">
+
+	<div class="block-header">
+		<div class="row">
+			<div class="col-lg-5 col-md-8 col-sm-12">
+				<h2>
+					<a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth" (click)="toggleFullWidth()">
+						<i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+						<i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+					</a>
+					Search Results
+				</h2>
+				<ul class="breadcrumb">
+					<li class="breadcrumb-item"><a [routerLink]="['/admin']"><i class="icon-home"></i></a></li>
+					<li class="breadcrumb-item">Pages</li>
+					<li class="breadcrumb-item active">Search Results</li>
+				</ul>
+			</div>
+            <div class="col-lg-7 col-md-4 col-sm-12 text-right">
+                <div class="inlineblock text-center m-r-15 m-l-15 hidden-sm pt-2">
+                    <div echarts [options]="visitorsOptions" class="echart-line-chart" [autoResize]="true" style="height: 20px;">
+                    </div>
+                    <span>Visitors</span>
+                </div>
+                <div class="inlineblock text-center m-r-15 m-l-15 hidden-sm pt-2">
+                    <div echarts [options]="visitsOptions" class="echart-line-chart" [autoResize]="true" style="height: 20px;">
+                    </div>
+                    <span>Visits</span>
+                </div>
+            </div>
+		</div>
+	</div>
+
+	<div class="row clearfix">
+		<div class="col-md-12">
+			<div class="card">
+				<div class="body">
+					<div class="input-group" id="adv-search">
+						<input type="text" class="form-control mr-1" placeholder="Search here..." />
+						<button type="button" class="btn btn-primary"><span class="icon-magnifier" aria-hidden="true"></span></button>
+					</div>
+				</div>
+				<div class="body">
+					<ul class="nav nav-tabs-new m-b-20">
+						<li class="nav-item mr-1"><a class="nav-link" (click)="toggleResults('Web')" [ngClass]="{'active': results == 'Web'}">Web</a></li>
+						<li class="nav-item mr-1"><a class="nav-link" (click)="toggleResults('Images')" [ngClass]="{'active': results == 'Images'}">Images</a></li>
+						<li class="nav-item"><a class="nav-link" (click)="toggleResults('Videos')" [ngClass]="{'active': results == 'Videos'}">Videos</a></li>
+					</ul>
+					<p class="m-b-0">Search Result For "Bootstrap 4 admin"</p>
+					<strong> About 16,853 result ( 0.13 seconds)</strong>
+				</div>
+			</div>
+			<div class="tab-content padding-0">
+				<div class="tab-pane card" [ngClass]="{'active': results == 'Web'}">
+					<div class="body">
+						<h6 class="mb-0"><a target="_blank" href="javascript:void(0);">sQuare - Bootstrap 4 Light & Dark Admin with Free
+								Angular5 + UI Kit</a></h6>
+						<small>https://themeforest.net/user/wraptheme/portfolio</small>
+						<p class="m-t-10">sQuare Admin is Material Design premium admin dashboard theme. It’s builded on popular Twitter
+							Bootstrap4 framework. sQuare is fully based on HTML5 + CSS3 Standards. Is fully responsive and clean on every
+							device and every browser.</p>
+						<a class="m-r-20" target="_blank" href="javascript:void(0);">AdminCC</a>
+						<a class="m-r-20" target="_blank" href="javascript:void(0);">Swift Admin</a>
+					</div>
+					<hr>
+					<div class="body">
+						<h6 class="mb-0"><a target="_blank" href="javascript:void(0);">InfiniO - Bootstrap 4 Admin Dashboard Template </a></h6>
+						<small>https://themeforest.net/user/wraptheme/portfolio</small>
+						<p class="m-t-10">InfiniO is fully professional, responsive, modern, multi-purpose and featured Admin template
+							which can be used to create various website, Admin templates, Admin dashboards, Backend Websites, CMS, CRM or
+							one can aldo build Blog, Business website and time line as well as portfolio. InfiniO Admin makes the
+							development process easy and fast for you and aims to help you implement your idea to real time.</p>
+						<a class="m-r-20" target="_blank" href="javascript:void(0);">Oakleaf Admin</a>
+						<a class="m-r-20" target="_blank" href="javascript:void(0);">sQuare</a>
+					</div>
+					<hr>
+					<div class="body">
+						<h6 class="mb-0"><a target="_blank" href="javascript:void(0);">Compass - The ultimate Bootstrap 4 Admin Dashboard
+							</a></h6>
+						<small>https://themeforest.net/user/wraptheme/portfolio</small>
+						<p class="m-t-10">Compass Admin is Material Design premium admin dashboard theme. It’s builded on popular Twitter
+							Bootstrap4 framework. Compass is fully based on HTML5 + CSS3 Standards. Is fully responsive and clean on every
+							device and every browser.</p>
+						<a class="m-r-20" target="_blank" href="javascript:void(0);">AdminCC</a>
+						<a class="m-r-20" target="_blank" href="javascript:void(0);">Oakleaf Admin</a>
+						<a class="m-r-20" target="_blank" href="javascript:void(0);">sQuare</a>
+					</div>
+					<hr>
+					<div class="body">
+						<h6 class="mb-0"><a target="_blank" href="javascript:void(0);">Alpino - Bootstrap 4 Admin Dashboard Template</a></h6>
+						<small>https://themeforest.net/user/wraptheme/portfolio</small>
+						<p class="m-t-10">15+ Dashboard, 100+ Integrated Plugins, 400+ Pages, Light and Dark Menu, The Multistep Form,
+							Timeline view, Summermnote Editor, Image Cropping Tool, Easy to access Menu Styles</p>
+						<a class="m-r-20" target="_blank" href="javascript:void(0);">Oakleaf Admin</a>
+						<a class="m-r-20" target="_blank" href="javascript:void(0);">sQuare</a>
+						<a class="m-r-20" target="_blank" href="javascript:void(0);">AdminCC</a>
+					</div>
+					<hr>
+					<ul class="body pagination pagination-primary">
+						<li class="page-item"><a class="page-link" href="javascript:void(0);">Previous</a></li>
+						<li class="page-item active"><a class="page-link" href="javascript:void(0);">1</a></li>
+						<li class="page-item"><a class="page-link" href="javascript:void(0);">2</a></li>
+						<li class="page-item"><a class="page-link" href="javascript:void(0);">3</a></li>
+						<li class="page-item"><a class="page-link" href="javascript:void(0);">Next</a></li>
+					</ul>
+				</div>
+				<div class="tab-pane card" [ngClass]="{'active': results == 'Images'}">
+					<div class="body text-center">
+						<div class="not_found">
+							<h4 class="m-b-0">Sorry No result found.</h4>
+						</div>
+					</div>
+				</div>
+				<div class="tab-pane card" [ngClass]="{'active': results == 'Videos'}">
+					<div class="body text-center">
+						<div class="not_found">
+							<h4 class="m-b-0">Sorry No result found.</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

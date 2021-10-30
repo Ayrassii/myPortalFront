@@ -1,0 +1,110 @@
+<div class="container-fluid" *ngIf="!loading">
+
+  <div class="block-header">
+    <div class="row">
+      <div class="col-lg-5 col-md-8 col-sm-12">
+        <h2>
+          <a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth" (click)="toggleFullWidth()">
+            <i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+            <i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+          </a>
+          Modifier la formation : {{formation?.titre}}
+        </h2>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a [routerLink]="['/app']"><i class="icon-home"></i></a></li>
+          <li class="breadcrumb-item"><a [routerLink]="['/app/formations']">Formations</a></li>
+          <li class="breadcrumb-item">Modifier la formation : {{formation?.titre}}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="card">
+      <div class="header">
+        <h2>Modifier la formation : {{formation?.titre}}</h2>
+      </div>
+      <div class="body">
+        <form [formGroup]="editForm" (ngSubmit)="onEditSubmit(editForm.value)">
+          <div class="form-group">
+            <div class="form-line">
+              <label for="titre">Titre</label>
+              <input (keyup)="genslug()" required id="titre" type="text" class="form-control" formControlName="titre" placeholder="Titre Formation">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-line">
+              <label for="description">Description</label>
+              <textarea placeholder="Description de la Formation" required class="form-control" formControlName="description" id="description" cols="30" rows="10"></textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-line">
+              <label for="niveau">Niveau</label>
+              <select id="niveau" required formControlName="niveau_id" class="form-control">
+                <option value="" disabled>Selectionnez Niveau</option>
+                <option [selected]="n.id === formation?.niveau.id" *ngFor="let n of niveaux" [value]="n.id">{{n.nom}} {{n.specialite?.nom}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-line">
+              <label>Image</label>
+              <img alt="imageformation" [src]="'https://gestion-scolarite.io/images/formations/' + formation?.image"  width="200" class="img-thumbnail">
+              <app-file-upload formControlName="image" [type]="'image'"></app-file-upload>
+            </div>
+          </div>
+          <label>Parties</label>
+          <hr>
+          <div *ngFor="let oldpartie of formation?.partieformations">
+            <div class="user-account">
+                <h6>Partie {{ (oldpartie.indice) }} : {{oldpartie.titre}} <button type="button" class="btn btn-danger" (click)="openModal(deletemodal,'lg', oldpartie)">Supprimer</button></h6>
+            </div>
+            <div class="form-group">
+              <video controls class="img-thumbnail" [src]="'https://gestion-scolarite.io/api/'+oldpartie.uuid+'/view?token='+getToken()" width="100%"></video>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-line">
+              <label for="parties">Parties à ajouter</label>
+              <select (change)="Genererpartiesform()" id="parties" required formControlName="nbr_parties" class="form-control">
+                <option value="0" >Aucune Partie</option>
+                <option *ngFor="let item of resteparties;let i = index" [value]="i + 1">{{item.texte}}</option>
+              </select>
+            </div>
+          </div>
+          <div formArrayName="parties" *ngFor="let parties of getformArray().controls; let i = index">
+            <hr>
+            <div [formGroupName]="i">
+              <div class="form-group">
+                <label [for]="'titrepartie' + (i + 1)">Titre Partie {{ (i + 1) }}</label>
+                <input [id]="'titrepartie' + (i + 1)" formControlName="titrepartie" type="text" class="form-control" [placeholder]="'Titre Partie' + (i + 1)" />
+              </div>
+              <div class="form-group">
+                <label [for]="'videopartie' + (i + 1)">Video Partie {{(i + 1)}}</label>
+                <app-file-upload [type]="'video'" (change)="readVideoUrl($event, (i+1))" formControlName="videopartie" [id]="'videopartie' + (i + 1)"></app-file-upload>
+                <video controls class="img-thumbnail" [src]="findsrc((i+1))" width="100%"></video>
+              </div>
+            </div>
+          </div>
+          <button  [disabled]="!editForm.valid || progress > 0" type="submit" class="btn btn-simple btn-primary m-t-20">Modifier Formation</button>
+          <br>
+          <ngb-progressbar *ngIf="progress > 0" type="success" showValue="true" [striped]="true" [value]="progress" [animated]="true" height="20px"></ngb-progressbar>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #deletemodal let-modal>
+  <div class="modal-header">
+    <h4 class="title" >Suppression d'une Partie</h4>
+  </div>
+  <div class="modal-body">
+    Etes vous sûr de vouloir supprimer la partie : <h2>{{selectedpartie.titre}}</h2>
+  </div>
+  <div class="modal-footer">
+    <button (click)="deletePartie()" type="button" class="btn btn-danger">Oui</button>
+    <button type="button" class="btn btn-simple" data-dismiss="modal" (click)="modal.dismiss('Close click')">Fermer</button>
+  </div>
+</ng-template>

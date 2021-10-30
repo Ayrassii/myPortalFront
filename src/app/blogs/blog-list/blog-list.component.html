@@ -1,0 +1,328 @@
+<div class="container-fluid blog-page">
+	<div class="block-header">
+		<div class="row">
+			<div class="col-lg-5 col-md-8 col-sm-12">
+				<h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"
+					   (click)="toggleFullWidth()">
+					<i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+					<i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+				</a> Accueil</h2>
+				<ul class="breadcrumb">
+					<li class="breadcrumb-item"><a [routerLink]="['/app']"><i class="icon-home"></i> Accueil</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="row clearfix">
+		<div class="col-lg-8 col-md-12 left-box" *ngIf="loading">
+			Veuillez Patienter...
+		</div>
+		<div class="col-lg-8 col-md-12 left-box" *ngIf="!loading && feeds.length == 0">
+			<button  class="btn btn-block mb-4 primary-zied" (click)="showAddPost = !showAddPost">Publier</button>
+			<div class="card" *ngIf="showAddPost">
+				<form [formGroup]="feedForm" (ngSubmit)="onFeedSubmit(feedForm.value)">
+					<div class="header">
+						<div class="col-md-8">
+							<h2>Nouveau Post</h2>
+						</div>
+					</div>
+					<div class="body">
+						<div class="new_post">
+							<div class="form-group">
+								<input type="text" formControlName="titre" (keyup)="genslug()" class="form-control no-resize" placeholder="Titre">
+							</div>
+							<div class="form-group">
+							<textarea formControlName="contenu" rows="4" class="form-control no-resize"
+									  placeholder="Quoi de neuf User ?"></textarea>
+							</div>
+							<label for="image">Image</label>
+							<app-file-upload id="image" [type]="'image'" formControlName="image" [progress]="progress"></app-file-upload>
+							<div class="post-toolbar-b">
+								<button type="submit" class="btn primary-zied" [disabled]="!feedForm.valid">Publier</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="alert alert-primary">
+				Vous n'avez Pas d'actualités...
+			</div>
+			<div class="card mt-5">
+				<div class="body">
+					<div *ngIf="calendarOptions">
+						<ng-fullcalendar id="myCalendar" #ucCalendar [options]="calendarOptions" (eventClick)="eventClick($event.detail, informations, 'md')" (eventDrop)="updateEvent($event.detail)"
+										 (eventDestroy)="displayEvent"  (eventResize)="updateEvent($event.detail)" (clickButton)="clickButton($event.detail)"></ng-fullcalendar>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-8 col-md-12 left-box" *ngIf="!loading && feeds.length > 0">
+			<button class="btn primary-zied btn-block mb-4" (click)="showAddPost = !showAddPost">Publier</button>
+			<div class="card" *ngIf="showAddPost">
+				<form [formGroup]="feedForm" (ngSubmit)="onFeedSubmit(feedForm.value)">
+					<div class="header">
+						<div class="col-md-8">
+							<h2>Nouveau Post</h2>
+						</div>
+					</div>
+					<div class="body">
+						<div class="new_post">
+							<div class="form-group">
+								<input type="text" formControlName="titre" (keyup)="genslug()" class="form-control no-resize" placeholder="Titre">
+							</div>
+							<div class="form-group">
+							<textarea formControlName="contenu" rows="4" class="form-control no-resize"
+									  placeholder="Quoi de neuf User ?"></textarea>
+							</div>
+							<label for="image">Image</label>
+							<app-file-upload id="image" [type]="'image'" formControlName="image" [progress]="progress"></app-file-upload>
+							<div class="post-toolbar-b">
+								<button type="submit" class="btn primary-zied" [disabled]="!feedForm.valid">Publier</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="scrollable-khalil">
+				<div class="card single_post" *ngFor="let feed of feeds">
+					<div class="body">
+						<div class="user-account">
+							<a [routerLink]="feed.user?.role === 'ROLE_PROFESSEUR' || feed.user?.role === 'ROLE_ETUDIANT' ? ['/app/user/' + feed.user?.cin]: '' " >
+								<img *ngIf="feed.user?.role == 'ROLE_PROFESSEUR' " [src]="getImage(feed.user)" class="rounded-circle user-photo" alt="User Profile Picture">
+							</a>
+							<a [routerLink]="feed.user?.role === 'ROLE_PROFESSEUR' || feed.user?.role === 'ROLE_ETUDIANT' ? ['/app/user/' + feed.user?.cin]: '' " >
+								<img *ngIf="feed.user?.role != 'ROLE_PROFESSEUR'" src="assets/images/method-draw-image.svg" style="width: 50px;height: 50px;" class="rounded-circle user-photo" alt="User Profile Picture" >
+							</a>
+							<div class="dropdown">
+								<a [routerLink]="feed.user?.role === 'ROLE_PROFESSEUR' || feed.user?.role === 'ROLE_ETUDIANT' ? ['/app/user/' + feed.user?.cin]: '' " class="user-name">
+									<strong *ngIf="feed.user?.role == 'ROLE_PROFESSEUR' ">{{feed.user.gendre == 'male' ? 'Mr.' : 'Mme.'}}{{feed.user.nom}} {{feed.user.prenom}} <span *ngIf="getcin() == feed.user.cin" class="badge badge-primary">c'est vous!</span></strong>
+									<strong *ngIf="feed.user?.role != 'ROLE_PROFESSEUR' ">Administration</strong>
+								</a>
+								<span class="datetime">{{ago(feed.date)}}</span>
+							</div>
+							<div class="pull-right" *ngIf="getcin() == feed.user.cin">
+								<a class="btn btn-primary m-r-10" [routerLink]="['/app/editfeed/' + feed.slug]"><i class="fa fa-pencil"></i></a>
+								<button class="btn btn-danger" (click)="openModal(deletemodal,'lg', feed)"><i class="fa fa-trash"></i></button>
+							</div>
+						</div>
+						<div class="img-post">
+							<img *ngIf="feed.image && feed.image != 'null' " class="d-block img-fluid" [src]="'https://gestion-scolarite.io/images/feeds/' + feed.image " alt="First slide">
+						</div>
+						<h3>
+							<a [routerLink]="['/app/singlefeed/' + feed.slug]">{{feed.titre}}</a>
+						</h3>
+						<!--<div class="text-blog-cop" [innerHTML]="feed.contenu" ></div>-->
+					</div>
+					<div class="footer">
+						<div class="actions">
+							<a [routerLink]="['/app/singlefeed/' + feed.slug]" class="btn btn-outline-secondary">Plus de details</a>
+						</div>
+						<ul class="stats">
+							<li><a href="javascript:void(0);">{{feed.type}}</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="card mt-5">
+				<div class="body">
+					<div *ngIf="calendarOptions">
+						<ng-fullcalendar id="myCalendar" #ucCalendar [options]="calendarOptions" (eventClick)="eventClick($event.detail, informations, 'md')" (eventDrop)="updateEvent($event.detail)"
+										 (eventDestroy)="displayEvent"  (eventResize)="updateEvent($event.detail)" (clickButton)="clickButton($event.detail)"></ng-fullcalendar>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4 col-md-12 right-box">
+			<div class="card">
+				<div class="header">
+					<h2>Anniversaires Prochains</h2>
+				</div>
+				<div class="body" *ngIf="loading">
+					Veuillez Patienter...
+				</div>
+				<div class="body" *ngIf="!loading && devoirs.length == 0">
+					<div class="header">
+						<div class="alert alert-primary">
+							Aucun Anniversaire Trouvé
+						</div>
+					</div>
+				</div>
+				<div class="body" *ngIf="!loading && devoirs.length > 0">
+					<div class="new_timeline" *ngFor="let group of devoirDate()">
+						<div class="header" style="background: none">
+							<div class="color-overlay">
+								<div class="day-number">{{getDate(group.date).getDate()}}</div>
+								<div class="date-right">
+									<div class="day-name">{{getDayName(getDate(group.date).getDay())}}</div>
+									<div class="month">{{getMonthName(getDate(group.date).getMonth())}} {{getDate(group.date).getFullYear()}}</div>
+								</div>
+							</div>
+						</div>
+						<ul>
+							<li *ngFor="let devoir of group.devoirs">
+								<div class="bullet pink"></div>
+								<div class="time">{{devoir.date.substring(11,16)}}</div>
+								<div class="desc" *ngIf="getRole() === 'ROLE_PROFESSEUR' ">
+									<h3>Classe : {{devoir.classe?.niveau.nom }} {{devoir.classe?.niveau.specialite.nom }}</h3>
+									<h4>Matiere : {{devoir.matiere?.nom}} ,Coef : {{devoir.coeficient}}</h4>
+								</div>
+								<div class="desc" *ngIf="getRole() != 'ROLE_PROFESSEUR' ">
+									<h3>{{devoir.type}} {{devoir.matiere?.nom}}</h3>
+									<h4>Coef : {{devoir.coeficient}}</h4>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<ul>
+						<li>
+							<a [routerLink]="['/app/calendrier/app-calendar']">Voir tous vos Examens</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="card">
+				<div class="header">
+					<h2>Quiz du Jour</h2>
+				</div>
+				<div class="body" *ngIf="loading">
+					Veuillez Patienter...
+				</div>
+				<div class="body" *ngIf="!loading">
+					<h4>Avez vous regarder la Serie squid Game ? </h4>
+					<hr>
+					<div class="form-check">
+						<input class="form-check-input" type="radio" value="oui" id="flexCheckDefault" checked>
+						<label class="form-check-label" for="flexCheckDefault">
+							Oui
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="radio" value="non" id="flexCheckChecked">
+						<label class="form-check-label" for="flexCheckChecked">
+							Non
+						</label>
+					</div>
+					<hr>
+					<button type="button" class="btn btn-success">Voir Resultat</button>
+				</div>
+			</div>
+			<div class="card">
+				<div class="header">
+					<h2>Employée du mois</h2>
+				</div>
+				<div class="body" *ngIf="loading">
+					Veuillez Patienter...
+				</div>
+				<div class="body" *ngIf="!loading">
+					<div class="user-account" style="margin: 0">
+						<img src="assets/images/user.png" class="rounded-circle user-photo" alt="User Profile Picture">
+						<div class="dropdown">
+							<span>Félicitations,</span>
+							<a href="javascript:void(0);" class="user-name" data-toggle="dropdown"><strong>Employée X</strong></a>
+						</div>
+						<hr>
+						<ul class="row list-unstyled">
+							<li class="col-4">
+								<small>Ventes</small>
+								<h6>456</h6>
+							</li>
+							<li class="col-4">
+								<small>Commandes</small>
+								<h6>1350</h6>
+							</li>
+							<li class="col-4">
+								<small>Revenus</small>
+								<h6>$2.13B</h6>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<ng-template #deletemodal let-modal>
+	<div class="modal-header">
+		<h4 class="title" >Suppression d'un Post</h4>
+	</div>
+	<div class="modal-body">
+		Etes vous sûr de vouloir supprimer le Post : <h2>{{selectedfeed.titre}}</h2>
+	</div>
+	<div class="modal-footer">
+		<button (click)="deleteFeed()" type="button" class="btn btn-danger">Oui</button>
+		<button type="button" class="btn btn-simple" data-dismiss="modal" (click)="modal.dismiss('Close click')">Fermer</button>
+	</div>
+</ng-template>
+
+
+<ng-template #content let-modal>
+	<form [formGroup]="devoirForm" (ngSubmit)="onDevoirSubmit(devoirForm.value)">
+		<div class="modal-header">
+			<h4 class="title" id="defaultModalLabel">Ajouter un Examen</h4>
+		</div>
+		<div class="modal-body">
+			<div class="form-group">
+				<div class="form-line">
+					<label for="datedev">Date Examen</label>
+					<input id="datedev" type="datetime-local" class="form-control" formControlName="date" [min]="dateaujourdhui">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-line">
+					<label>Classe</label>
+					<select required formControlName="classe_id" class="form-control" (change)="mesmatieres($event.target.value)">
+						<option value="" selected disabled>Selectionnez Classe</option>
+						<option *ngFor="let affectation of affectations" [value]="affectation.classe.id">{{affectation.classe.niveau.nom}} {{affectation.classe.niveau.specialite.nom}} {{ affectation.classe.abbreviation}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-line">
+					<label>Matiere</label>
+					<select required formControlName="matiere_id" class="form-control">
+						<option value="" selected disabled>Selectionnez Matiere</option>
+						<option *ngFor="let a of matieres" [value]="a.matiere.id">{{a.matiere.nom}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-line">
+					<label>Type</label>
+					<select required formControlName="type" class="form-control ">
+						<option value="" selected disabled>Selectionnez Type</option>
+						<option value="controle">Devoir de controle</option>
+						<option value="examen">Examen</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-line">
+					<label>Coeficient</label>
+					<input step="0.1" formControlName="coeficient" type="number" class="form-control" required placeholder="Coeficient">
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="submit" class="btn btn-primary" [disabled]="!devoirForm.valid">Ajouter</button>
+			<button type="button" class="btn btn-simple" data-dismiss="modal" (click)="modal.dismiss('Close click')">Fermer</button>
+		</div>
+	</form>
+</ng-template>
+
+<ng-template #informations let-modal>
+
+	<div class="modal-header">
+		<h4 class="title" >Informations Examen</h4>
+	</div>
+	<div class="modal-body">
+		<ul class="list-group">
+			<li class="list-group-item active">{{displayEvent.event.title}}</li>
+			<li class="list-group-item">{{displayEvent.event.start}}</li>
+		</ul>
+	</div>
+	<div class="modal-footer">
+		<button (click)="deleteExamen(displayEvent.event)" *ngIf="getRole() === 'ROLE_PROFESSEUR' " type="button" class="btn btn-danger">Supprimer</button>
+		<button type="button" class="btn btn-simple" data-dismiss="modal" (click)="modal.dismiss('Close click')">Fermer</button>
+	</div>
+</ng-template>

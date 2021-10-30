@@ -1,0 +1,311 @@
+<div class="container-fluid">
+    <div class="block-header">
+        <div class="row">
+            <div class="col-lg-5 col-md-8 col-sm-12">                        
+                <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth" (click)="toggleFullWidth()">
+                    <i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+                    <i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+                </a> Bootstrap UI</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="['/admin']"><i class="icon-home"></i></a></li>                            
+                    <li class="breadcrumb-item">UI Elements</li>
+                    <li class="breadcrumb-item active">Bootstrap UI</li>
+                </ul>
+            </div>            
+            <div class="col-lg-7 col-md-4 col-sm-12 text-right">
+                <div class="inlineblock text-center m-r-15 m-l-15 hidden-sm pt-2">
+                    <div echarts [options]="visitorsOptions" class="echart-line-chart" [autoResize]="true" style="height: 20px;">
+                    </div>
+                    <span>Visitors</span>
+                </div>
+                <div class="inlineblock text-center m-r-15 m-l-15 hidden-sm pt-2">
+                    <div echarts [options]="visitsOptions" class="echart-line-chart" [autoResize]="true" style="height: 20px;">
+                    </div>
+                    <span>Visits</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row clearfix">
+        <div class="col-lg-6 col-md-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Alert Messages</h2>
+                </div>
+                <div class="body">
+                    <ng-container *ngFor="let alertMessage of alertMessages">
+                        <app-alert-message [options]="alertMessage"></app-alert-message>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Alert Messages with Link</h2>
+                </div>
+                <div class="body">
+                    <ng-container *ngFor="let alertMessage of alertMessagesWithLink">
+                        <app-alert-message [options]="alertMessage"></app-alert-message>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Alert Messages With Icon</h2>
+                </div>
+                <div class="body">
+                    <ng-container *ngFor="let alertMessage of alertMessagesWithClose">
+                        <app-alert-message [options]="alertMessage"></app-alert-message>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row clearfix">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Labels</h2>                        
+                </div>
+                <div class="body">                        
+                    <p>We restyled the default options for labels and we added the filled class, that can be used in any combination.</p>
+                    <span class="badge badge-default">Default</span>
+                    <span class="badge badge-primary">Primary</span>
+                    <span class="badge badge-success">Success</span>
+                    <span class="badge badge-info">Info</span>
+                    <span class="badge badge-warning">Warning</span>
+                    <span class="badge badge-danger">Danger</span>
+                    <hr>
+                    <pre class="prettyprint prettyprinted"><span class="tag">&lt;span</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"badge badge-default"</span><span class="tag">&gt;</span><span class="pln">Default</span><span class="tag">&lt;/span&gt;</span><span class="pln">
+</span><span class="tag">&lt;span</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"badge badge-primary"</span><span class="tag">&gt;</span><span class="pln">Primary</span><span class="tag">&lt;/span&gt;</span><span class="pln">
+</span><span class="tag">&lt;span</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"badge badge-success"</span><span class="tag">&gt;</span><span class="pln">Success</span><span class="tag">&lt;/span&gt;</span><span class="pln">
+</span><span class="tag">&lt;span</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"badge badge-info"</span><span class="tag">&gt;</span><span class="pln">Info</span><span class="tag">&lt;/span&gt;</span><span class="pln">
+</span><span class="tag">&lt;span</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"badge badge-warning"</span><span class="tag">&gt;</span><span class="pln">Warning</span><span class="tag">&lt;/span&gt;</span><span class="pln">
+</span><span class="tag">&lt;span</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"badge badge-danger"</span><span class="tag">&gt;</span><span class="pln">Danger</span><span class="tag">&lt;/span&gt;</span></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row clearfix">
+
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Accordion</h2>
+                </div>
+                <div class="body">
+                    <div class="accordion" id="accordion">
+                        <app-collepsible [options]="collepsable" [visible]="1"></app-collepsible>
+                    </div>
+                </div>
+                <div class="body">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12">
+                            <h6>Accordion Link</h6>
+                            <app-accordion [options]="accordionLinkOption"></app-accordion>
+                        </div>
+        
+                        <div class="col-lg-6 col-md-12">
+                            <div>
+                                <h6>Multiple targets Accordion</h6>
+                                <app-accordion [options]="accordionMultipleTargets"></app-accordion>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row clearfix">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Pagination</h2>
+                </div>
+                <div class="body">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item"><a class="page-link" href="javascript:void(0);">Previous</a></li>
+                            <li class="page-item"><a class="page-link" href="javascript:void(0);">1</a></li>
+                            <li class="page-item"><a class="page-link" href="javascript:void(0);">2</a></li>
+                            <li class="page-item"><a class="page-link" href="javascript:void(0);">3</a></li>
+                            <li class="page-item"><a class="page-link" href="javascript:void(0);">Next</a></li>
+                        </ul>
+                    </nav>
+                    <hr>
+                    <h6>Working with icons</h6>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item">
+                            <a class="page-link" href="javascript:void(0);" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="javascript:void(0);">1</a></li>
+                            <li class="page-item"><a class="page-link" href="javascript:void(0);">2</a></li>
+                            <li class="page-item"><a class="page-link" href="javascript:void(0);">3</a></li>
+                            <li class="page-item">
+                            <a class="page-link" href="javascript:void(0);" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <hr>
+                    <h6>Disabled and active states</h6>
+                    <nav aria-label="...">
+                        <ul class="pagination">
+                            <li class="page-item disabled">
+                            <a class="page-link" href="javascript:void(0);" tabindex="-1">Previous</a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="javascript:void(0);">1</a></li>
+                            <li class="page-item active">
+                            <a class="page-link" href="javascript:void(0);">2 <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="javascript:void(0);">3</a></li>
+                            <li class="page-item">
+                            <a class="page-link" href="javascript:void(0);">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Tooltips</h2>
+                </div>
+                <div class="body">
+                    <div class="demo-button">
+                        <button type="button" class="btn btn-default mr-1" placement="right" ngbTooltip="Tooltip on the right">Tooltip on the right</button>                                
+                        <button type="button" class="btn btn-default mr-1" placement="left" ngbTooltip="Tooltip on the left">Tooltip on the left</button>
+                        <button type="button" class="btn btn-default mr-1" placement="top" ngbTooltip="Tooltip on the top">Tooltip on the top</button>
+                        <button type="button" class="btn btn-default mr-1" placement="bottom" ngbTooltip="Tooltip on the bottom">Tooltip on the bottom</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Popovers</h2>
+                </div>
+                <div class="body">
+                    <div class="demo-button">
+                        <button type="button" class="btn btn-sm btn-default mr-1" placement="right" popoverTitle="Popover title" ngbPopover="And here's some amazing content. It's very engaging. Right?">Popover on Click</button>
+                        <button type="button" class="btn btn-sm btn-default mr-1" placement="right" triggers="mouseenter:mouseleave" popoverTitle="Popover title" ngbPopover="And here's some amazing content. It's very engaging. Right?">Popover on Hover</button>
+                        <button type="button" class="btn btn-default btn-sm mr-1" placement="left" triggers="mouseenter:mouseleave" ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">Popover on left</button>
+                        <button type="button" class="btn btn-default btn-sm mr-1" placement="right" triggers="mouseenter:mouseleave" ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">Popover on right</button>
+                        <button type="button" class="btn btn-default btn-sm mr-1" placement="top" triggers="mouseenter:mouseleave" ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">Popover on top</button>
+                        <button type="button" class="btn btn-default btn-sm mr-1" placement="bottom" triggers="mouseenter:mouseleave" ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">Popover on bottom</button>                                
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row clearfix">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Position</h2>
+                </div>
+                <div class="body">
+                    <h6>Common values</h6>
+                    <figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"position-static"</span><span class="nt">&gt;</span>...<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"position-relative"</span><span class="nt">&gt;</span>...<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"position-absolute"</span><span class="nt">&gt;</span>...<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"position-fixed"</span><span class="nt">&gt;</span>...<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"position-sticky"</span><span class="nt">&gt;</span>...<span class="nt">&lt;/div&gt;</span></code></pre></figure>
+                    <hr>
+                    <h6>Sticky top</h6>
+                    <figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"sticky-top"</span><span class="nt">&gt;</span>...<span class="nt">&lt;/div&gt;</span></code></pre></figure>
+                    <div class="p-3 mb-2 bg-primary text-white sticky-top">.sticky-top</div>
+                    <hr>
+                    <h6>Fixed top</h6>
+                    <figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"fixed-bottom"</span><span class="nt">&gt;</span>...<span class="nt">&lt;/div&gt;</span></code></pre></figure>
+                    <hr>
+                    <h6>Fixed bottom</h6>
+                    <figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"fixed-bottom"</span><span class="nt">&gt;</span>...<span class="nt">&lt;/div&gt;</span></code></pre></figure>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row clearfix">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Borders</h2>
+                </div>
+                <div class="body bd-example-border-utils">
+                    <span class="border"></span>
+                    <span class="border-top"></span>
+                    <span class="border-right"></span>
+                    <span class="border-bottom"></span>
+                    <span class="border-left"></span>
+                    <hr>
+                    <h6>Subtractive</h6>
+                    <span class="border-0"></span>
+                    <span class="border-top-0"></span>
+                    <span class="border-right-0"></span>
+                    <span class="border-bottom-0"></span>
+                    <span class="border-left-0"></span>
+                    <hr>
+                    <h6>Border color</h6>
+                    <span class="border border-primary"></span>
+                    <span class="border border-secondary"></span>
+                    <span class="border border-success"></span>
+                    <span class="border border-danger"></span>
+                    <span class="border border-warning"></span>
+                    <span class="border border-info"></span>
+                    <span class="border border-light"></span>
+                    <span class="border border-dark"></span>
+                    <span class="border border-white"></span>
+                    <hr>
+                    <h6>Border-radius</h6>
+                    <img src="http://via.placeholder.com/100x100" alt="..." class="rounded" />
+                    <img src="http://via.placeholder.com/100x100" alt="..." class="rounded-top" />
+                    <img src="http://via.placeholder.com/100x100" alt="..." class="rounded-right" />
+                    <img src="http://via.placeholder.com/100x100" alt="..." class="rounded-bottom" />
+                    <img src="http://via.placeholder.com/100x100" alt="..." class="rounded-left" />
+                    <img src="http://via.placeholder.com/100x100" alt="..." class="rounded-circle" />
+                    <img src="http://via.placeholder.com/100x100" alt="..." class="rounded-0" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row clearfix">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Shadows</h2>
+                </div>
+                <div class="body">
+                    <div class="shadow-none p-3 mb-5 bg-light rounded">No shadow</div>
+                    <div class="shadow-sm p-3 mb-5 bg-white rounded">Small shadow</div>
+                    <div class="shadow p-3 mb-5 bg-white rounded">Regular shadow</div>
+                    <div class="shadow-lg p-3 mb-5 bg-white rounded">Larger shadow</div>
+                    <figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"shadow-none p-3 mb-5 bg-light rounded"</span><span class="nt">&gt;</span>No shadow<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"shadow-sm p-3 mb-5 bg-white rounded"</span><span class="nt">&gt;</span>Small shadow<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"shadow p-3 mb-5 bg-white rounded"</span><span class="nt">&gt;</span>Regular shadow<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"shadow-lg p-3 mb-5 bg-white rounded"</span><span class="nt">&gt;</span>Larger shadow<span class="nt">&lt;/div&gt;</span></code></pre></figure>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

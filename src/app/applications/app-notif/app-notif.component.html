@@ -1,0 +1,91 @@
+<div class="container-fluid blog-page">
+  <div class="block-header">
+    <div class="row">
+      <div class="col-lg-5 col-md-8 col-sm-12">
+        <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"
+               (click)="toggleFullWidth()">
+          <i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+          <i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+        </a> Notifications</h2>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a [routerLink]="['/app']"><i class="icon-home"></i></a>
+          </li>
+          <li class="breadcrumb-item">
+            <span>Notifications</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="row clearfix">
+    <div class="card">
+      <div *ngIf="(notifs$ | async)?.length == 0" class="body">
+        Vos Notifications
+        <hr>
+        <div class="alert alert-primary">
+          Vous n'avez aucune notification
+        </div>
+      </div>
+      <div *ngIf="(notifs$ | async)?.length > 0" class="body table-responsive">
+        Vos Notifications
+        <div class="pull-right">
+          <button class="btn btn-danger" (click)="openModalToutSupprimer(toutsupprimer, 'md')">Tout Supprimer</button>
+        </div>
+        <hr>
+        <table class="table table-hover m-b-0" style="border-top-style: hidden;">
+          <tr *ngFor="let notification of notifs$ | async">
+            <td>
+              <div class="media-left">
+                <i [ngClass]="notification.data.icone"></i>
+              </div>
+            </td>
+            <td>
+              <h6 class="margin-0">
+                <a [routerLink]="[notification.data.lien]">
+                  {{notification.data.texte}} {{notification.data.devoir ? notification.data.devoir : notification.data.date}} {{notification.data.seance ? 'Seance: ' + notification.data.seance : ''}}
+                </a>
+              </h6>
+            </td>
+            <td>
+              <h6 class="m-b-0">{{ago(notification.created_at)}}</h6>
+            </td>
+            <td>
+              <button (click)="openModalSuppression(suppression,'md', notification)" type="button" class="btn btn-danger"><i class="fa fa-trash-o"></i></button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #suppression let-modal>
+      <div class="modal-header">
+        <h4 class="title" id="defaultModalLabel">Confirmation de suppression</h4>
+      </div>
+      <div class="modal-body">
+        Etes-vous sur de vouloir supprimer la notification :
+        <br>
+        "{{selectionne.data.texte}} {{selectionne.data.devoir ? selectionne.data.devoir : selectionne.data.date}} {{selectionne.data.seance ? 'Seance: ' + selectionne.data.seance : ''}}"?
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="deletenotif()" class="btn btn-danger">Oui, Supprimer</button>
+        <button type="button" class="btn btn-simple" data-dismiss="modal" (click)="modal.dismiss('Close click')">Fermer</button>
+      </div>
+  </ng-template>
+
+  <ng-template #toutsupprimer let-modal>
+    <div class="modal-header">
+      <h4 class="title">Confirmation de suppression</h4>
+    </div>
+    <div class="modal-body">
+      Etes-vous sur de vouloir supprimer Toutes Vos Notifications ?
+    </div>
+    <div class="modal-footer">
+      <button type="button" (click)="deleteall()" class="btn btn-danger">Oui, Tout Supprimer</button>
+      <button type="button" class="btn btn-simple" data-dismiss="modal" (click)="modal.dismiss('Close click')">Fermer</button>
+    </div>
+  </ng-template>
+</div>
+
+

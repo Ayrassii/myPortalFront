@@ -1,0 +1,111 @@
+<div class="container-fluid">
+	<div class="block-header">
+		<div class="row">
+			<div class="col-lg-5 col-md-8 col-sm-12">
+				<h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth" (click)="toggleFullWidth()">
+					<i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+					<i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+				</a> Calendrier des Examens</h2>
+				<ul class="breadcrumb">
+					<li class="breadcrumb-item"><a [routerLink]="['/app']"><i class="icon-home"></i></a></li>
+					<li class="breadcrumb-item">Examens</li>
+					<li class="breadcrumb-item active">Calendrier</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="row clearfix">
+		<div class="col-lg-12">
+			<div *ngIf="getRole() == 'ROLE_PROFESSEUR' " class="card">
+				<div class="body">
+					<button type="button" class="btn btn-primary btn-simple"
+							data-toggle="modal"
+							data-target="#addevent"
+							(click)="openModal(content,'md')">
+						Ajouter un Examen
+					</button>
+				</div>
+			</div>
+			<div class="card">
+				<div class="body">
+					<div *ngIf="calendarOptions">
+						<ng-fullcalendar id="myCalendar" #ucCalendar [options]="calendarOptions" (eventClick)="eventClick($event.detail, informations, 'md')" (eventDrop)="updateEvent($event.detail)"
+										 (eventDestroy)="displayEvent"  (eventResize)="updateEvent($event.detail)" (clickButton)="clickButton($event.detail)"></ng-fullcalendar>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<ng-template #content let-modal>
+	<form [formGroup]="devoirForm" (ngSubmit)="onDevoirSubmit(devoirForm.value)">
+		<div class="modal-header">
+			<h4 class="title" id="defaultModalLabel">Ajouter un Examen</h4>
+		</div>
+		<div class="modal-body">
+			<div class="form-group">
+				<div class="form-line">
+					<label for="datedev">Date Examen</label>
+					<input id="datedev" type="datetime-local" class="form-control" formControlName="date" [min]="dateaujourdhui">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-line">
+					<label>Classe</label>
+					<select required formControlName="classe_id" class="form-control" (change)="mesmatieres($event.target.value)">
+						<option value="" selected disabled>Selectionnez Classe</option>
+						<option *ngFor="let affectation of affectations" [value]="affectation.classe.id">{{affectation.classe.niveau.nom}} {{affectation.classe.niveau.specialite.nom}} {{ affectation.classe.abbreviation}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-line">
+					<label>Matiere</label>
+					<select required formControlName="matiere_id" class="form-control">
+						<option value="" selected disabled>Selectionnez Matiere</option>
+						<option *ngFor="let a of matieres" [value]="a.matiere.id">{{a.matiere.nom}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-line">
+					<label>Type</label>
+					<select required formControlName="type" class="form-control ">
+						<option value="" selected disabled>Selectionnez Type</option>
+						<option value="controle">Devoir de controle</option>
+						<option value="examen">Examen</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-line">
+					<label>Coeficient</label>
+					<input step="0.1" formControlName="coeficient" type="number" class="form-control" required placeholder="Coeficient">
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="submit" class="btn btn-primary" [disabled]="!devoirForm.valid">Ajouter</button>
+			<button type="button" class="btn btn-simple" data-dismiss="modal" (click)="modal.dismiss('Close click')">Fermer</button>
+		</div>
+	</form>
+</ng-template>
+
+<ng-template #informations let-modal>
+
+	<div class="modal-header">
+		<h4 class="title" >Informations Examen</h4>
+	</div>
+	<div class="modal-body">
+		<ul class="list-group">
+			<li class="list-group-item active">{{displayEvent.event.title}}</li>
+			<li class="list-group-item">{{displayEvent.event.start}}</li>
+		</ul>
+	</div>
+	<div class="modal-footer">
+		<button (click)="deleteExamen(displayEvent.event)" *ngIf="getRole() === 'ROLE_PROFESSEUR' " type="button" class="btn btn-danger">Supprimer</button>
+		<button type="button" class="btn btn-simple" data-dismiss="modal" (click)="modal.dismiss('Close click')">Fermer</button>
+	</div>
+</ng-template>

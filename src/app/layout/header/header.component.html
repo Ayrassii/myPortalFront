@@ -1,0 +1,80 @@
+<nav class="navbar navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-btn">
+            <button type="button" class="btn-toggle-offcanvas" (click)="toggleSideMenu()"><i
+                    class="lnr lnr-menu fa fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="navbar-brand">
+            <a *ngIf="!darkClass" [routerLink]="['/app']"><img src="assets/images/logo.png"   alt="Welearn Logo"
+                    class="img-responsive logo"></a>
+            <a *ngIf="darkClass" [routerLink]="['/app']"><img  src="assets/images/logo.png"  alt="Welearn Logo"
+                    class="img-responsive logo"></a>
+        </div>
+
+        <div class="navbar-right">
+            <div id="navbar-menu">
+                <ul class="nav navbar-nav">
+<!--                    <li>-->
+<!--                        <a [routerLink]="['/app/formations']"-->
+<!--                            class="icon-menu d-none d-sm-block d-md-none d-lg-block"><i-->
+<!--                                class="fa fa-play"></i></a>-->
+<!--                    </li>-->
+<!--                    <li>-->
+<!--                        <a [routerLink]="['/app/calendrier/app-calendar']"-->
+<!--                            class="icon-menu d-none d-sm-block d-md-none d-lg-block"><i class="icon-calendar"></i></a>-->
+<!--                    </li>-->
+                    <li class="dropdown" ngbDropdown>
+                        <a style="cursor: pointer; color: #fff" class="dropdown-toggle icon-menu" ngbDropdownToggle>
+                            <i class="icon-bell"></i>
+                            <span class="notification-dot"></span>
+<!--                            <span *ngIf="(notifs$ | async)?.unread > 0" class="notification-dot"></span>-->
+                        </a>
+                        <ul class="dropdown-menu notifications" ngbDropdownMenu>
+                            <li class="header" *ngIf="(notifs$ | async)?.unread > 0 " ><strong>Vous avez {{(notifs$ | async)?.unread}} nouvelle(s) Notification(s)</strong></li>
+                            <li *ngIf="(notifs$ | async)?.notifs.length == 0">
+                                <span>
+                                    <span class="media">
+                                        <span class="media-body">
+                                            <p class="text">Vous n'avez aucune notification recente</p>
+                                        </span>
+                                    </span>
+                                </span>
+                            </li>
+                            <li *ngFor="let notif of (notifs$ | async)?.notifs ">
+                                <a [routerLink]="[notif.data.lien]">
+                                    <div class="media">
+                                        <div class="media-left">
+                                            <i [ngClass]="notif.data.icone" ></i>
+                                        </div>
+                                        <div class="media-body">
+                                            <p class="text" style="color: #fff;">{{notif.data.texte}}
+                                                <br>
+                                                {{ notif.data.date ? notif.data.date : notif.data.devoir }}
+                                                {{ notif.data.seance ? 'Seance: ' + notif.data.seance : '' }}
+                                            </p>
+                                            <span class="timestamp">{{ago(notif.created_at)}}</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="footer"><a [routerLink]="['/app/notifications']" class="more">Voir Toutes les Notifications</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown" ngbDropdown>
+                        <a style="cursor: pointer;color: #fff" class="dropdown-toggle icon-menu" ngbDropdownToggle>
+                            <i class="icon-user"></i>
+                        </a>
+                        <ul class="dropdown-menu" style="width: 230px" ngbDropdownMenu>
+                            <li style="margin-bottom: 10px;"><a [routerLink]="['/app/profile']"><i class="icon-user" style="margin-right: 9px;"></i>Mon Profil</a></li>
+                            <li style="margin-bottom: 10px;"><a [routerLink]="['/app/changepassword']"><i class="icon-lock" style="margin-right: 9px;"></i>Changer Mot de Passe</a></li>
+                            <li class="divider"></li>
+                            <li style="margin-bottom: 10px;"><a style="cursor: pointer" (click)="onLogout()"><i class="icon-power" style="margin-right: 9px;"></i>Deconnexion</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>

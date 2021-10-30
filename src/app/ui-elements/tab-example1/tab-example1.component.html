@@ -1,0 +1,13 @@
+<div class="body">
+    <ul class="nav nav-tabs">
+        <li class="nav-item" *ngFor="let tab of tabs;let i = index;">
+            <a class="nav-link" data-toggle="tab" href="javascript:void();" [ngClass]="{'active show': (tab.title == activeTab || (activeTab == '' && i == 0))}" (click)="tabChange(tab.title)">{{tab.title}}</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane" *ngFor="let tab of tabs;let i = index;" [ngClass]="{'active show': (tab.title == activeTab || (activeTab == '' && i == 0))}">
+            <h6 *ngIf="!tab.hideTitle">{{tab.title}}</h6>
+            <p>{{tab.content}}</p>
+        </div>
+    </div>
+</div>

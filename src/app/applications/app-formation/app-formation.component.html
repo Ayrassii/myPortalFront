@@ -1,0 +1,138 @@
+<div class="container-fluid" *ngIf="getRole() === 'ROLE_ETUDIANT' ">
+
+  <div class="block-header">
+    <div class="row">
+      <div class="col-lg-5 col-md-8 col-sm-12">
+        <h2>
+          <a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth" (click)="toggleFullWidth()">
+            <i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+            <i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+          </a>
+          Formations
+        </h2>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a [routerLink]="['/app']"><i class="icon-home"></i></a></li>
+          <li class="breadcrumb-item">Formations</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row clearfix" *ngIf="!loading && formations?.length == 0" >
+    <div class="card">
+      <div class="body">
+        <div class="alert alert-primary">
+          Vous n'avez aucune Formation
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row clearfix" *ngIf="!loading && formations.length > 0">
+    <div class="col-md-6 col-lg-4" *ngFor="let formation of formations">
+      <div class="card">
+        <div class="body">
+          <img  *ngIf="formation.image" [src]="'https://gestion-scolarite.io/images/formations/' + formation.image" alt="" class="img-fluid rounded m-b-20">
+          <h6 class="mb-4">{{formation.titre}}</h6>
+          <ul class="list-unstyled">
+            <li>
+              <label class="m-b-5 font-weight-500">{{formation.partieformations.length}} Partie(s) </label>
+            </li>
+            <li>
+              <label class="m-b-5 font-weight-500">Progression: {{calculProgress(formation)}} %</label>
+            </li>
+            <li>
+              <label class="m-b-5 font-weight-500">Professeur: </label>
+              <h6>{{formation.user?.gendre == 'male' ? 'Mr' : 'Mme' }} {{formation.user?.prenom}} {{formation.user?.nom}}</h6>
+            </li>
+          </ul>
+          <a [routerLink]="['/app/single-formation/' + formation.slug]" class="btn btn-block  btn-success btn-simple" role="button">Visualiser</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid" *ngIf="getRole() === 'ROLE_PROFESSEUR' ">
+
+  <div class="block-header">
+    <div class="row">
+      <div class="col-lg-5 col-md-8 col-sm-12">
+        <h2>
+          <a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth" (click)="toggleFullWidth()">
+            <i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+            <i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+          </a>
+          Formations
+        </h2>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a [routerLink]="['/app']"><i class="icon-home"></i></a></li>
+          <li class="breadcrumb-item">Formations</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="!loading && getRole() == 'ROLE_PROFESSEUR'" >
+    <div class="card">
+      <div class="body">
+        <a class="btn btn-primary btn-simple" [routerLink]="['/app/addformation']">
+          Ajouter une Formation
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="row clearfix" *ngIf="!loading && formations?.length == 0" >
+    <div class="card">
+      <div class="body">
+        <div class="alert alert-primary">
+          Vous n'avez aucune Formation
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row clearfix" *ngIf="!loading && formations.length > 0">
+    <div class="card mb-3" *ngFor="let formation of formations">
+      <div class="row no-gutters">
+        <div class="col-md-4">
+          <img style="height: 100%; object-fit: scale-down; padding: 30px;" *ngIf="formation.image" [src]="'https://gestion-scolarite.io/images/formations/' + formation.image" alt="" class="card-img">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <div class="pull-right">
+              <a [routerLink]="['/app/editformation/' + formation.slug]" class="btn btn-primary m-r-10"><i class="fa fa-pencil" style="padding-right: 5px;"></i>Modifier</a>
+              <button (click)="openModalSuppression(suppression, 'md', formation)" class="btn btn-danger"><i class="fa fa-trash" style="padding-right: 5px;"></i>Supprimer</button>
+            </div>
+            <small>titre: </small><br>
+            <h5 class="card-title">{{formation.titre}}</h5>
+            <small>description: </small><br>
+            <p class="card-text">{{formation.description}}</p>
+
+            <small>niveau: </small><br>
+            <h5 class="card-title">{{formation.niveau.specialite.nom}} {{formation.niveau.nom}}</h5>
+            <p class="card-text mb-0"><small class="text-muted " >ajouté {{ago(formation.created_at)}}</small></p>
+            <ul class="list-unstyled team-info  p-t-5 mb-3">
+              <li *ngFor="let etudiant of formation.niveau.classes[0].users">
+                <a [routerLink]="['/app/user/' + etudiant.cin]"><img [src]="getImage(etudiant)" alt="image etudiant"></a>
+              </li>
+            </ul>
+            <a [routerLink]="['/app/formations/' + formation.slug]" class="btn btn-info">Plus de Détails</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #suppression let-modal>
+    <div class="modal-header">
+      <h4 class="title" id="defaultModalLabel">Confirmation de suppression</h4>
+    </div>
+    <div class="modal-body">
+      Etes-vous sur de vouloir supprimer la Formation :
+      <br>
+      " {{selectionne.titre}} " ?
+    </div>
+    <div class="modal-footer">
+      <button type="button" (click)="deleteformation()" class="btn btn-danger">Oui, Supprimer</button>
+      <button type="button" class="btn btn-simple" data-dismiss="modal" (click)="modal.dismiss('Close click')">Fermer</button>
+    </div>
+  </ng-template>
+</div>
+

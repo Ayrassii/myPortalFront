@@ -1,0 +1,33 @@
+.partieselected {
+    color: green;
+}
+/* Custom button */
+vg-player my-stop-button {
+    display: table-cell;
+    width: 50px;
+    vertical-align: middle;
+    text-align: center;
+    cursor: pointer;
+}
+
+vg-player my-stop-button a,
+vg-player my-stop-button a:hover,
+vg-player my-stop-button a:visited {
+    color: white;
+    text-decoration: none;
+}
+
+vg-player div.my-button {
+    display: table-cell;
+    width: 50px;
+    vertical-align: middle;
+    text-align: center;
+    cursor: pointer;
+}
+
+vg-player div.my-button a,
+vg-player div.my-button a:hover,
+vg-player div.my-button a:visited {
+    color: white;
+    text-decoration: none;
+}

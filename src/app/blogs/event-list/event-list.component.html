@@ -1,0 +1,41 @@
+<div class="container-fluid blog-page">
+  <div class="block-header">
+    <div class="row">
+      <div class="col-lg-5 col-md-8 col-sm-12">
+        <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"
+               (click)="toggleFullWidth()">
+          <i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+          <i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+        </a> Evenements</h2>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a [routerLink]="['/app']"><i class="icon-home"></i> Accueil</a></li>
+          <li class="breadcrumb-item"><span><i class="icon-calendar"></i> Evenements</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="row clearfix" *ngIf="loading">
+    <div class="col-lg-8 col-md-12 left-box" >
+      Veuillez Patienter...
+    </div>
+  </div>
+  <div class="row clearfix" *ngIf="!loading && evenements.length > 0">
+    <div class="col-lg-4" *ngFor="let evenement of evenements">
+      <div class="card single_post">
+        <div class="body">
+          <div class="img-post">
+            <img class="d-block img-fluid" src="assets/images/blog/blog-page-1.jpg" alt="First slide">
+          </div>
+          <h3><a [routerLink]="['/app/singleevent/' + evenement.slug]" class="text-zied">All photographs are accurate</a></h3>
+          <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal</p>
+        </div>
+        <div class="footer">
+          <ul class="stats">
+            <li><a class="icon-heart" style="color: red">28</a></li>
+            <li><a class="icon-bubbles">3</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
