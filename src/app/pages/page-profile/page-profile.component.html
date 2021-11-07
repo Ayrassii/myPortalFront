@@ -28,7 +28,7 @@
 					</div>
 					<div>
 						<h4 class="m-b-0">
-							<strong>{{me.prenom}}</strong> {{me.nom}}
+							<strong>{{me?.name}}</strong> {{me?.last_name}}
 						</h4>
 						<span>{{getRole(me)}}</span>
 					</div>
@@ -68,20 +68,11 @@
 					<h2>Info</h2>
 				</div>
 				<div class="body">
-					<small class="text-muted">CIN: </small>
-					<p>{{me.cin}}</p>
-					<hr>
 					<small class="text-muted">Email: </small>
 					<p>{{me.email}}</p>
 					<hr>
-					<div *ngIf="getRole(me) === 'Etudiant' ">
-						<small class="text-muted">Niveau: </small>
-						<p>{{me.classe.niveau.nom}}</p>
-						<hr>
-						<small class="text-muted">Classe: </small>
-						<p class="m-b-0">{{me.classe.abbreviation}} {{me.classe.niveau.specialite.nom}}</p>
-						<hr>
-					</div>
+					<small class="text-muted">Poste: </small>
+					<p>{{getRole(me)}}</p>
 				</div>
 			</div>
 		</div>

@@ -16,6 +16,9 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CalendarComponent} from 'ng-fullcalendar';
 import {Affectation} from '../../models/affectation';
 import {DatePipe} from '@angular/common';
+import {Person} from '../../models/person';
+import {AuthService} from '../../services/auth.service';
+import {Globals} from '../../Globals';
 
 export function uploadProgress<T>( cb: ( progress: number ) => void ) {
 	return tap(( event: HttpEvent<T> ) => {
@@ -48,20 +51,16 @@ export class BlogListComponent implements OnInit, OnDestroy {
 	showAddPost = false;
 	selectedfeed: Feed;
 	feeds: Feed[] = [];
-	devoirs: Devoir[] = [];
+	birthdays: User[] = [];
 	slug: string;
 	feedForm: FormGroup;
 	feedSubscription: Subscription;
-	devoirSubscription: Subscription;
+	birthdaySubscription: Subscription;
 	public sidebarVisible = false;
 	@ViewChild('ucCalendar', { static: true }) ucCalendar: CalendarComponent;
 	public displayEvent: any;
 	public selectedMoment = new Date();
-	devoirForm: FormGroup;
-	matieres: Affectation[] = [];
 	data = [];
-	affectionSubscription: Subscription;
-	affectations: Affectation[];
 	dateaujourdhui: string;
 	calendarOptions = {
 		defaultDate: Date.now(),
@@ -86,26 +85,25 @@ export class BlogListComponent implements OnInit, OnDestroy {
 				private formBuilder: FormBuilder,
 				private feedService: FeedService,
 				private datePipe: DatePipe,
-				private devoirService: DevoirService) {}
+				private global: Globals,
+				private authService: AuthService) {}
 
 	ngOnInit() {
 		this.feedService.getFeedsFromServer();
-		this.devoirService.getDevoirsFromServer();
+		this.authService.getUpcomingBirthdays();
 		this.feedSubscription = this.feedService.feedsSubject.subscribe(
 			(feeds: Feed[] ) => {
 				this.feeds = feeds;
 			}
 		);
-		this.devoirSubscription = this.devoirService.devoirsSubject.subscribe(
-			(devoirs: Devoir[] ) => {
-				this.devoirs = devoirs.slice(0, 3);
+		this.birthdaySubscription = this.authService.birthdaysSubject.subscribe(
+			(birthdays: User[] ) => {
+				this.birthdays = birthdays;
 			}
 		);
 		this.feedService.emitFeeds();
-		this.devoirService.emitDevoirs();
-		if (this.getRole() === 'ROLE_PROFESSEUR') {
-			this.initFeedForm();
-		}
+		this.authService.emitBirthdays();
+		this.initFeedForm();
 		this.loading = false;
 	}
 
@@ -148,23 +146,6 @@ export class BlogListComponent implements OnInit, OnDestroy {
 		yearmonths[11] = 'Decembre';
 		return yearmonths[x];
 	}
-	devoirDate() {
-		const groups = this.devoirs.reduce(( groups2, devoir) => {
-			const date = devoir.date.substring(0, 10);
-			if (!groups2[date]) {
-				groups2[date] = [];
-			}
-			groups2[date].push(devoir);
-			return groups2;
-		}, {});
-		const groupArrays = Object.keys(groups).map((date) => {
-			return {
-				date,
-				devoirs: groups[date]
-			};
-		});
-		return groupArrays;
-	}
 
 	ago(value: string): string {
 		const d = new Date(value);
@@ -201,24 +182,11 @@ export class BlogListComponent implements OnInit, OnDestroy {
 			return 'il y a ' + years + ' ans';
 		}
 	}
-
-	getImage(user: User): string {
-		if (user) {
-			if (user.image) {
-				if (user.role === 'ROLE_PROFESSEUR') {
-					return 'https://gestion-scolarite.io/images/professeurs/' + user.image;
-				}
-			}
-			if (user.gendre === 'male') {
-				return 'https://gestion-scolarite.io/assets/dist/img/avatar5.png';
-			} else {
-				return 'https://gestion-scolarite.io/assets/dist/img/avatar2.png';
-			}
-		}
-		return '';
+	getImage(user?: User): string {
+		return this.global.Medias + 'users/' + user.avatar;
 	}
-	getcin(): string {
-		return localStorage.getItem('cin');
+	getId(): string {
+		return localStorage.getItem('id');
 	}
 
 	initFeedForm() {
@@ -289,13 +257,7 @@ export class BlogListComponent implements OnInit, OnDestroy {
 		this.openModal(content, size);
 	}
 	updateEvent(model: any) {
-		this.devoirService.update(model).subscribe(
-			() => {
-				this.displayEvent = model;
-			},
-			(err) => {
-			}
-		);
+
 	}
 	getRandomColor() {
 		const letters = '0123456789ABCDEF';

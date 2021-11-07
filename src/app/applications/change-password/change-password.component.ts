@@ -35,9 +35,9 @@ export class ChangePasswordComponent implements OnInit {
 
   initChangePassForm() {
     this.changePassForm = this.formBuilder.group({
-      old: ['', [Validators.required, Validators.minLength(6)]],
-      new: ['', [Validators.required, Validators.minLength(8)]],
-      confirm: ['', [Validators.required, Validators.minLength(8)]],
+      old: ['', [Validators.required, Validators.minLength(5)]],
+      new: ['', [Validators.required, Validators.minLength(5)]],
+      confirm: ['', [Validators.required, Validators.minLength(5)]],
     });
   }
 

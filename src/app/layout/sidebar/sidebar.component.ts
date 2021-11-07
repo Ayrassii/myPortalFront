@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 import {AuthService} from '../../services/auth.service';
 import {User} from '../../models/user';
 import {Router} from '@angular/router';
+import {Globals} from '../../Globals';
 
 @Component({
 	selector: 'app-sidebar',
@@ -27,10 +28,11 @@ export class SidebarComponent implements OnDestroy {
 
 	constructor(private themeService: ThemeService,
 				private authService: AuthService,
+				private global: Globals,
 				private router: Router) {
 		this.authService.Me().subscribe(
-			(response) => {
-				this.me = response['me'];
+			(response: User) => {
+				this.me = response;
 				this.loading = false;
 			},
 			(err) => {
@@ -64,33 +66,19 @@ export class SidebarComponent implements OnDestroy {
 		this.themeService.themeChange(theme);
     }
 
-	getRole(user: User): string {
-		if (user) {
-			if (user.role === 'ROLE_PROFESSEUR') {
-				return 'Professeur';
-			} else {
-				return 'Etudiant';
-			}
+	getRole(user?: User): string {
+		if (user.role === 'ROLE_COLLAB') {
+			return 'Collaborateur';
 		}
-		return '';
-
+		if (user.role === 'ROLE_RH') {
+			return 'Resources Humaines';
+		}
+		if (user.role === 'ROLE_MARK') {
+			return 'Marketing';
+		}
 	}
-	getImage(user: User): string {
-		if (user) {
-			if (user.image) {
-				if (this.getRole(user) === 'Professeur') {
-					return 'https://gestion-scolarite.io/images/professeurs/' + user.image;
-				} else {
-					return 'https://gestion-scolarite.io/images/etudiants/' + user.image;
-				}
-			}
-			if (user.gendre === 'male') {
-				return 'https://gestion-scolarite.io/assets/dist/img/avatar5.png';
-			} else {
-				return 'https://gestion-scolarite.io/assets/dist/img/avatar2.png';
-			}
-		}
-		return '';
+	getImage(user?: User): string {
+		return this.global.Medias + 'users/' + user.avatar;
 	}
 
 	onLogout() {

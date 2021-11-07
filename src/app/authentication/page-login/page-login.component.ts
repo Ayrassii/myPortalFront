@@ -47,6 +47,7 @@ export class PageLoginComponent implements OnInit {
 					localStorage.setItem('token', response['access_token']);
 					localStorage.setItem('role', response['role']);
 					localStorage.setItem('cin', response['cin']);
+					localStorage.setItem('id', response['id']);
 					localStorage.setItem('date-login', Date.now().toString());
 					this.router.navigate(['app', 'index']);
 				}

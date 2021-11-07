@@ -50,6 +50,7 @@
 			<div class="card mt-5">
 				<div class="body">
 					<div *ngIf="calendarOptions">
+						<h3>Evenements</h3>
 						<ng-fullcalendar id="myCalendar" #ucCalendar [options]="calendarOptions" (eventClick)="eventClick($event.detail, informations, 'md')" (eventDrop)="updateEvent($event.detail)"
 										 (eventDestroy)="displayEvent"  (eventResize)="updateEvent($event.detail)" (clickButton)="clickButton($event.detail)"></ng-fullcalendar>
 					</div>
@@ -87,38 +88,33 @@
 				<div class="card single_post" *ngFor="let feed of feeds">
 					<div class="body">
 						<div class="user-account">
-							<a [routerLink]="feed.user?.role === 'ROLE_PROFESSEUR' || feed.user?.role === 'ROLE_ETUDIANT' ? ['/app/user/' + feed.user?.cin]: '' " >
-								<img *ngIf="feed.user?.role == 'ROLE_PROFESSEUR' " [src]="getImage(feed.user)" class="rounded-circle user-photo" alt="User Profile Picture">
-							</a>
-							<a [routerLink]="feed.user?.role === 'ROLE_PROFESSEUR' || feed.user?.role === 'ROLE_ETUDIANT' ? ['/app/user/' + feed.user?.cin]: '' " >
-								<img *ngIf="feed.user?.role != 'ROLE_PROFESSEUR'" src="assets/images/method-draw-image.svg" style="width: 50px;height: 50px;" class="rounded-circle user-photo" alt="User Profile Picture" >
-							</a>
+							<img [src]="getImage(feed.owner)" class="rounded-circle user-photo" alt="User Profile Picture">
 							<div class="dropdown">
-								<a [routerLink]="feed.user?.role === 'ROLE_PROFESSEUR' || feed.user?.role === 'ROLE_ETUDIANT' ? ['/app/user/' + feed.user?.cin]: '' " class="user-name">
-									<strong *ngIf="feed.user?.role == 'ROLE_PROFESSEUR' ">{{feed.user.gendre == 'male' ? 'Mr.' : 'Mme.'}}{{feed.user.nom}} {{feed.user.prenom}} <span *ngIf="getcin() == feed.user.cin" class="badge badge-primary">c'est vous!</span></strong>
-									<strong *ngIf="feed.user?.role != 'ROLE_PROFESSEUR' ">Administration</strong>
+								<a class="user-name">
+									<strong>{{feed.owner?.name}} {{feed.owner?.last_name}} <span *ngIf="getId() == feed.owner.id" class="badge badge-primary">c'est vous!</span></strong>
 								</a>
-								<span class="datetime">{{ago(feed.date)}}</span>
+								<span class="datetime">{{ago(feed.created_at)}}</span>
 							</div>
-							<div class="pull-right" *ngIf="getcin() == feed.user.cin">
-								<a class="btn btn-primary m-r-10" [routerLink]="['/app/editfeed/' + feed.slug]"><i class="fa fa-pencil"></i></a>
-								<button class="btn btn-danger" (click)="openModal(deletemodal,'lg', feed)"><i class="fa fa-trash"></i></button>
-							</div>
+<!--							<div class="pull-right" *ngIf="getcin() == feed.user.cin">-->
+<!--								<a class="btn btn-primary m-r-10" [routerLink]="['/app/editfeed/' + feed.slug]"><i class="fa fa-pencil"></i></a>-->
+<!--								<button class="btn btn-danger" (click)="openModal(deletemodal,'lg', feed)"><i class="fa fa-trash"></i></button>-->
+<!--							</div>-->
 						</div>
-						<div class="img-post">
-							<img *ngIf="feed.image && feed.image != 'null' " class="d-block img-fluid" [src]="'https://gestion-scolarite.io/images/feeds/' + feed.image " alt="First slide">
-						</div>
+<!--						<div class="img-post">-->
+<!--							<img *ngIf="feed.image && feed.image != 'null' " class="d-block img-fluid" [src]="'https://gestion-scolarite.io/images/feeds/' + feed.image " alt="First slide">-->
+<!--						</div>-->
 						<h3>
-							<a [routerLink]="['/app/singlefeed/' + feed.slug]">{{feed.titre}}</a>
+							<a [routerLink]="['/app/singlefeed/' + feed.id]">{{feed.title}}</a>
 						</h3>
 						<!--<div class="text-blog-cop" [innerHTML]="feed.contenu" ></div>-->
 					</div>
 					<div class="footer">
 						<div class="actions">
-							<a [routerLink]="['/app/singlefeed/' + feed.slug]" class="btn btn-outline-secondary">Plus de details</a>
+							<a [routerLink]="['/app/singlefeed/' + feed.id]" class="btn btn-outline-secondary">Plus de details</a>
 						</div>
 						<ul class="stats">
-							<li><a href="javascript:void(0);">{{feed.type}}</a></li>
+							<li><a class="icon-heart" style="color: red">{{feed.likes_count}}</a></li>
+							<li><a class="icon-bubbles">{{feed.comments_count}}</a></li>
 						</ul>
 					</div>
 				</div>
@@ -126,6 +122,7 @@
 			<div class="card mt-5">
 				<div class="body">
 					<div *ngIf="calendarOptions">
+						<h3>Evenements</h3>
 						<ng-fullcalendar id="myCalendar" #ucCalendar [options]="calendarOptions" (eventClick)="eventClick($event.detail, informations, 'md')" (eventDrop)="updateEvent($event.detail)"
 										 (eventDestroy)="displayEvent"  (eventResize)="updateEvent($event.detail)" (clickButton)="clickButton($event.detail)"></ng-fullcalendar>
 					</div>
@@ -140,44 +137,15 @@
 				<div class="body" *ngIf="loading">
 					Veuillez Patienter...
 				</div>
-				<div class="body" *ngIf="!loading && devoirs.length == 0">
+				<div class="body" *ngIf="!loading && birthdays.length == 0">
 					<div class="header">
 						<div class="alert alert-primary">
 							Aucun Anniversaire Trouvé
 						</div>
 					</div>
 				</div>
-				<div class="body" *ngIf="!loading && devoirs.length > 0">
-					<div class="new_timeline" *ngFor="let group of devoirDate()">
-						<div class="header" style="background: none">
-							<div class="color-overlay">
-								<div class="day-number">{{getDate(group.date).getDate()}}</div>
-								<div class="date-right">
-									<div class="day-name">{{getDayName(getDate(group.date).getDay())}}</div>
-									<div class="month">{{getMonthName(getDate(group.date).getMonth())}} {{getDate(group.date).getFullYear()}}</div>
-								</div>
-							</div>
-						</div>
-						<ul>
-							<li *ngFor="let devoir of group.devoirs">
-								<div class="bullet pink"></div>
-								<div class="time">{{devoir.date.substring(11,16)}}</div>
-								<div class="desc" *ngIf="getRole() === 'ROLE_PROFESSEUR' ">
-									<h3>Classe : {{devoir.classe?.niveau.nom }} {{devoir.classe?.niveau.specialite.nom }}</h3>
-									<h4>Matiere : {{devoir.matiere?.nom}} ,Coef : {{devoir.coeficient}}</h4>
-								</div>
-								<div class="desc" *ngIf="getRole() != 'ROLE_PROFESSEUR' ">
-									<h3>{{devoir.type}} {{devoir.matiere?.nom}}</h3>
-									<h4>Coef : {{devoir.coeficient}}</h4>
-								</div>
-							</li>
-						</ul>
-					</div>
-					<ul>
-						<li>
-							<a [routerLink]="['/app/calendrier/app-calendar']">Voir tous vos Examens</a>
-						</li>
-					</ul>
+				<div class="body" *ngIf="!loading && birthdays.length > 0">
+					aaaa
 				</div>
 			</div>
 			<div class="card">
@@ -247,7 +215,7 @@
 		<h4 class="title" >Suppression d'un Post</h4>
 	</div>
 	<div class="modal-body">
-		Etes vous sûr de vouloir supprimer le Post : <h2>{{selectedfeed.titre}}</h2>
+		Etes vous sûr de vouloir supprimer le Post : <h2>{{selectedfeed.title}}</h2>
 	</div>
 	<div class="modal-footer">
 		<button (click)="deleteFeed()" type="button" class="btn btn-danger">Oui</button>
@@ -257,7 +225,7 @@
 
 
 <ng-template #content let-modal>
-	<form [formGroup]="devoirForm" (ngSubmit)="onDevoirSubmit(devoirForm.value)">
+	<form>
 		<div class="modal-header">
 			<h4 class="title" id="defaultModalLabel">Ajouter un Examen</h4>
 		</div>
@@ -271,9 +239,8 @@
 			<div class="form-group">
 				<div class="form-line">
 					<label>Classe</label>
-					<select required formControlName="classe_id" class="form-control" (change)="mesmatieres($event.target.value)">
+					<select required formControlName="classe_id" class="form-control">
 						<option value="" selected disabled>Selectionnez Classe</option>
-						<option *ngFor="let affectation of affectations" [value]="affectation.classe.id">{{affectation.classe.niveau.nom}} {{affectation.classe.niveau.specialite.nom}} {{ affectation.classe.abbreviation}}</option>
 					</select>
 				</div>
 			</div>
@@ -282,7 +249,6 @@
 					<label>Matiere</label>
 					<select required formControlName="matiere_id" class="form-control">
 						<option value="" selected disabled>Selectionnez Matiere</option>
-						<option *ngFor="let a of matieres" [value]="a.matiere.id">{{a.matiere.nom}}</option>
 					</select>
 				</div>
 			</div>
@@ -304,7 +270,7 @@
 			</div>
 		</div>
 		<div class="modal-footer">
-			<button type="submit" class="btn btn-primary" [disabled]="!devoirForm.valid">Ajouter</button>
+			<button type="submit" class="btn btn-primary">Ajouter</button>
 			<button type="button" class="btn btn-simple" data-dismiss="modal" (click)="modal.dismiss('Close click')">Fermer</button>
 		</div>
 	</form>
@@ -322,7 +288,7 @@
 		</ul>
 	</div>
 	<div class="modal-footer">
-		<button (click)="deleteExamen(displayEvent.event)" *ngIf="getRole() === 'ROLE_PROFESSEUR' " type="button" class="btn btn-danger">Supprimer</button>
+		<button *ngIf="getRole() === 'ROLE_PROFESSEUR' " type="button" class="btn btn-danger">Supprimer</button>
 		<button type="button" class="btn btn-simple" data-dismiss="modal" (click)="modal.dismiss('Close click')">Fermer</button>
 	</div>
 </ng-template>

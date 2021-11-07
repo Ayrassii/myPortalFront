@@ -6,7 +6,7 @@
             <div class="dropdown" ngbDropdown>
                 <span>Bienvenue,</span>
                 <a href="javascript:void(0);" class="dropdown-toggle user-name" ngbDropdownToggle>
-                    <strong>{{me?.prenom}} {{me?.nom}}</strong>
+                    <strong>{{me?.name}} {{me?.last_name}}</strong>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right account" ngbDropdownMenu>
                     <li><a [routerLink]="['/app/profile']"><i class="icon-user"></i>Mon Profil</a></li>
@@ -45,6 +45,11 @@
                         <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                             <a [routerLink]="['/app/annuaire']"><i class="icon-book-open"></i>
                                 <span>Annuaire</span>
+                            </a>
+                        </li>
+                        <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                            <a [routerLink]="['/app/discussions']"><i class="icon-bubbles"></i>
+                                <span>Discussions</span>
                             </a>
                         </li>
 <!--                        <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [ngClass]="{'active':currentActiveMenu == 'calendrier'}">-->

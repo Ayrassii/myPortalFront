@@ -25,6 +25,7 @@ import {EventListComponent} from '../blogs/event-list/event-list.component';
 import {SingleEventComponent} from '../blogs/single-event/single-event.component';
 import {ArticleListComponent} from '../blogs/article-list/article-list.component';
 import {AnnuaireComponent} from '../blogs/annuaire/annuaire.component';
+import {AppChatComponent} from '../applications/app-chat/app-chat.component';
 
 const routes: Routes = [
     {
@@ -69,6 +70,9 @@ const routes: Routes = [
             },
             {
                 path: 'editfeed/:slug', component: EditFeedComponent, data: { title: ':: HLI :: App :: Modifier Post ::' }
+            },
+            {
+                path: 'discussions', component: AppChatComponent, data: { title: ':: HLI :: App :: Discussions ::'}
             },
             {
                 path: 'notes', component: NoteComponent, data: { title: ':: HLI :: App :: Notes ::' }

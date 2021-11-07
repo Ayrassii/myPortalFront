@@ -6,8 +6,11 @@ export class User {
   cin: string;
   email: string;
   email_verified_at: string;
+  avatar: string;
   image: string;
-  prenom: string;
+  name: string;
+  birthday: string;
+  last_name: string;
   prenom_ar: string;
   prenom_en: string;
   nom: string;

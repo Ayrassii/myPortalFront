@@ -20,8 +20,8 @@ export class FeedService {
             .set('authorization', 'Bearer ' + localStorage.getItem('token'));
         this.httpClient.get(this.url, {headers})
             .subscribe(
-                (response) => {
-                    this.feeds = response['myfeeds'];
+                (response: Feed[]) => {
+                    this.feeds = response;
                     this.emitFeeds();
                 },
                 (err) => {
