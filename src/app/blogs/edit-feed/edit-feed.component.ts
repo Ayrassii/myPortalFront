@@ -65,7 +65,7 @@ export class EditFeedComponent implements OnInit {
     };
     public htmlContent = '';
     constructor(private feedService: FeedService,
-                private  router: Router,
+                private router: Router,
                 private route: ActivatedRoute,
                 private formBuilder: FormBuilder,
                 private classeService: ClasseService,
@@ -74,13 +74,13 @@ export class EditFeedComponent implements OnInit {
                 private sidebarService: SidebarService,
                 private cdr: ChangeDetectorRef) { }
     ngOnInit() {
-        this.feedService.getSingleFeed(this.route.snapshot.params.slug).subscribe(
-            (res) => {
-                this.feed = res['feed'];
-                if (this.feed.user.cin !== localStorage.getItem('cin')) {
+        this.feedService.getSingleFeed(this.route.snapshot.params.id).subscribe(
+            (res: Feed) => {
+                this.feed = res;
+                if (this.feed.owner.id !== parseInt(localStorage.getItem('id'), 10)) {
                     this.router.navigate(['authentication/page-403']);
                 }
-                this.htmlContent = this.feed.contenu;
+                this.htmlContent = this.feed.description;
             },
             (err) => {
                 if (err.status === 401) {
@@ -136,7 +136,6 @@ export class EditFeedComponent implements OnInit {
             }
         );
         this.initEditForm();
-        this.type = this.feed.type ? this.feed.type : 'public';
     }
     toggleFullWidth() {
         this.sidebarService.toggle();
@@ -162,41 +161,10 @@ export class EditFeedComponent implements OnInit {
         );
     }
 
-    setType() {
-        this.feed.type = this.editForm.get('type').value;
-        this.type = this.editForm.get('type').value;
-    }
-
     onEditSubmit(feed) {
-        this.feed.slug = this.slug;
-        this.feed.titre = feed.titre;
-        this.feed.contenu = this.htmlContent;
-        this.feed.image = this.editForm.get('image').value;
-        switch (feed.type) {
-            case 'classes': {
-                this.feed.classes = feed.classes.map(el => el.item_id);
-                this.feed.professeurs = null;
-                this.feed.etudiants = null;
-                break;
-            }
-            case 'etudiants': {
-                this.feed.etudiants = feed.etudiants.map(el => el.item_id);
-                this.feed.professeurs = null;
-                this.feed.classes = null;
-                break;
-            }
-            case 'professeurs': {
-                this.feed.professeurs = feed.professeurs.map(el => el.item_id);
-                this.feed.etudiants = null;
-                this.feed.classes = null;
-                break;
-            }
-            case 'public': {
-                this.feed.professeurs = null;
-                this.feed.etudiants = null;
-                this.feed.classes = null;
-            }
-        }
+        this.feed.title = feed.title;
+        this.feed.description = this.htmlContent;
+        // this.feed.image = this.editForm.get('image').value;
         this.success = false;
         console.log(this.feed);
         this.feedService.editFeed(this.feed).pipe(

@@ -36,23 +36,23 @@ const routes: Routes = [
             {
                 path: 'index', component: BlogListComponent, data: { title: ':: HLI :: App :: Accueil ::' }
             },
-            {
-                path: 'events', component: EventListComponent, data: { title: ':: HLI :: App :: Evenements ::' }
-            },
+            // {
+            //     path: 'events', component: EventListComponent, data: { title: ':: HLI :: App :: Evenements ::' }
+            // },
             {
                 path: 'newfeed', component: BlogPostComponent, data: { title: ':: HLI :: App :: Nouvelle Actualite ::' }
             },
             {
-                path: 'singlefeed/:slug', component: SingleFeedComponent, data: { title: ':: HLI :: App :: Actualite ::' }
+                path: 'singlefeed/:id', component: SingleFeedComponent, data: { title: ':: HLI :: App :: Actualite ::' }
             },
             {
-                path: 'singleevent/:slug', component: SingleEventComponent, data: { title: ':: HLI :: App :: Evenement ::' }
+                path: 'singleevent/:id', component: SingleEventComponent, data: { title: ':: HLI :: App :: Evenement ::' }
             },
             {
                 path: 'articles', component: ArticleListComponent, data: { title: ':: HLI :: App :: Blog ::' }
             },
             {
-                path: 'singlearticle/:slug', component: ArticleListComponent, data: { title: ':: HLI :: App :: Article ::' }
+                path: 'singlearticle/:id', component: ArticleListComponent, data: { title: ':: HLI :: App :: Article ::' }
             },
             {
                 path: 'annuaire', component: AnnuaireComponent, data: { title: ':: HLI :: App :: Annuaire ::' }
@@ -69,7 +69,7 @@ const routes: Routes = [
                 ]
             },
             {
-                path: 'editfeed/:slug', component: EditFeedComponent, data: { title: ':: HLI :: App :: Modifier Post ::' }
+                path: 'editfeed/:id', component: EditFeedComponent, data: { title: ':: HLI :: App :: Modifier Post ::' }
             },
             {
                 path: 'discussions', component: AppChatComponent, data: { title: ':: HLI :: App :: Discussions ::'}

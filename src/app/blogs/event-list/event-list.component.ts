@@ -30,32 +30,7 @@ export class EventListComponent implements OnInit, OnDestroy {
               private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
-    this.evenements = [
-      {
-        titre: 'Event 1',
-        slug: 'event-1',
-        image: '',
-        date_debut: '',
-        date_fin: '',
-        user: null,
-      },
-      {
-        titre: 'Event 2',
-        slug: 'event-2',
-        image: '',
-        date_debut: '',
-        date_fin: '',
-        user: null,
-      },
-      {
-        titre: 'Event 3',
-        slug: 'event-3',
-        image: '',
-        date_debut: '',
-        date_fin: '',
-        user: null,
-      }
-    ];
+    this.evenements = [];
     this.loading = false;
   }
 

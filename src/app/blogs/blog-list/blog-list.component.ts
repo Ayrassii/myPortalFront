@@ -1,24 +1,24 @@
-import {Component, OnInit, ChangeDetectorRef, OnDestroy, ViewChild} from '@angular/core';
-import { SidebarService } from '../../services/sidebar.service';
-import {Subscription} from 'rxjs';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {SidebarService} from '../../services/sidebar.service';
+import {pipe, Subscription} from 'rxjs';
 import {Feed} from '../../models/feed';
 import {FeedService} from '../../services/feed.service';
-import {DevoirService} from '../../services/devoir.service';
-import {Devoir} from '../../models/devoir';
 import {User} from '../../models/user';
-import {FormBuilder, FormGroup, NG_VALUE_ACCESSOR, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators} from '@angular/forms';
 import {FileUploadComponent} from '../file-upload/file-upload.component';
-import { HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
-import { pipe } from 'rxjs';
-import { filter, map, tap } from 'rxjs/operators';
+import {HttpEvent, HttpEventType, HttpResponse} from '@angular/common/http';
+import {filter, map, tap} from 'rxjs/operators';
 import {requiredFileType} from '../../../shared/requiredfiletype';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CalendarComponent} from 'ng-fullcalendar';
-import {Affectation} from '../../models/affectation';
 import {DatePipe} from '@angular/common';
-import {Person} from '../../models/person';
 import {AuthService} from '../../services/auth.service';
 import {Globals} from '../../Globals';
+import {Question} from '../../models/question';
+import {QuestionService} from '../../services/question.service';
+import {Evenement} from '../../models/evenement';
+import {EventService} from '../../services/event.service';
+import {DomSanitizer} from '@angular/platform-browser';
 
 export function uploadProgress<T>( cb: ( progress: number ) => void ) {
 	return tap(( event: HttpEvent<T> ) => {
@@ -51,20 +51,26 @@ export class BlogListComponent implements OnInit, OnDestroy {
 	showAddPost = false;
 	selectedfeed: Feed;
 	feeds: Feed[] = [];
+	events: Evenement[] = [];
 	birthdays: User[] = [];
+	empofmounth: User;
+	question: Question;
 	slug: string;
 	feedForm: FormGroup;
+	quizForm: FormGroup;
 	feedSubscription: Subscription;
 	birthdaySubscription: Subscription;
+	questionSubscription: Subscription;
 	public sidebarVisible = false;
-	@ViewChild('ucCalendar', { static: true }) ucCalendar: CalendarComponent;
+	@ViewChild('ucCalendar', { static: false })
+	ucCalendar: CalendarComponent;
 	public displayEvent: any;
 	public selectedMoment = new Date();
 	data = [];
 	dateaujourdhui: string;
 	calendarOptions = {
 		defaultDate: Date.now(),
-		eventTextColor: '#000',
+		eventTextColor: '#fff',
 		locale: 'fr',
 		defaultView: 'month',
 		editable: false ,
@@ -72,11 +78,11 @@ export class BlogListComponent implements OnInit, OnDestroy {
 		validRange: {
 			start: this.datePipe.transform(Date.now(), 'yyyy-MM-dd')
 		},
-		header: {
-			left: 'prev,next today',
-			center: 'title',
-			right: 'month,agendaWeek,agendaDay,listMonth'
-		},
+		// header: {
+		// 	left: 'prev,next today',
+		// 	center: 'title',
+		// 	right: 'month,agendaWeek,agendaDay,listMonth'
+		// },
 		events: []
 	};
 	constructor(private sidebarService: SidebarService,
@@ -84,13 +90,26 @@ export class BlogListComponent implements OnInit, OnDestroy {
 				private cdr: ChangeDetectorRef,
 				private formBuilder: FormBuilder,
 				private feedService: FeedService,
+				private questionService: QuestionService,
+				private eventService: EventService,
 				private datePipe: DatePipe,
 				private global: Globals,
+				private sanitizer: DomSanitizer,
 				private authService: AuthService) {}
+
 
 	ngOnInit() {
 		this.feedService.getFeedsFromServer();
 		this.authService.getUpcomingBirthdays();
+		this.questionService.getQuestionFromServer();
+		this.authService.getEmployeOfMonth().subscribe(
+			(res: User) => {
+				this.empofmounth = res;
+			},
+			(err) => {
+
+			}
+		);
 		this.feedSubscription = this.feedService.feedsSubject.subscribe(
 			(feeds: Feed[] ) => {
 				this.feeds = feeds;
@@ -101,9 +120,32 @@ export class BlogListComponent implements OnInit, OnDestroy {
 				this.birthdays = birthdays;
 			}
 		);
+		this.questionSubscription = this.questionService.questionSubject.subscribe(
+			(question: Question ) => {
+				this.question = question;
+			}
+		);
+		this.eventService.getEvents().subscribe(
+			(evenments: Evenement[] ) => {
+				evenments.forEach(
+					(evenement: Evenement) => {
+						this.data.push({
+							id: evenement.id,
+							title: evenement.title,
+							start: this.getDate(evenement.start_date),
+							end: this.getDate(evenement.end_date),
+							color: '#084c00',
+							textColor: '#fff'
+						});
+					}
+				);
+				this.ucCalendar.renderEvents(this.data);
+			});
 		this.feedService.emitFeeds();
 		this.authService.emitBirthdays();
+		this.questionService.emitQuestion();
 		this.initFeedForm();
+		this.initQuizForm();
 		this.loading = false;
 	}
 
@@ -182,11 +224,31 @@ export class BlogListComponent implements OnInit, OnDestroy {
 			return 'il y a ' + years + ' ans';
 		}
 	}
-	getImage(user?: User): string {
+	getUserImage(user?: User): string {
 		return this.global.Medias + 'users/' + user.avatar;
 	}
 	getId(): string {
 		return localStorage.getItem('id');
+	}
+	getFeedMedia(path) {
+		return this.global.Medias + 'feeds/' + path;
+	}
+
+	birthdayDate() {
+		const groups = this.birthdays.reduce(( groups2, birthday: User) => {
+			const date = birthday.birthday.substring(0, 10);
+			if (!groups2[date]) {
+				groups2[date] = [];
+			}
+			groups2[date].push(birthday);
+			return groups2;
+		}, {});
+		return Object.keys(groups).map((date) => {
+			return {
+				date,
+				birthdays: groups[date]
+			};
+		});
 	}
 
 	initFeedForm() {
@@ -197,6 +259,12 @@ export class BlogListComponent implements OnInit, OnDestroy {
 				image: [null, [requiredFileType(['png', 'jpg'])]]
 			}
 		);
+	}
+
+	initQuizForm() {
+		this.quizForm = new FormGroup({
+			answer_id: new FormControl()
+		});
 	}
 
 	onFeedSubmit(feed) {
@@ -215,6 +283,29 @@ export class BlogListComponent implements OnInit, OnDestroy {
 			this.success = true;
 			this.initFeedForm();
 		});
+	}
+	onQuizSubmit(form) {
+		const fullanswer = {
+			question_id: this.question.id,
+			answer_id: form.answer_id
+		};
+		this.questionService.answerQuestion(fullanswer).subscribe(
+			(res) => {
+				this.question = {...res['question'], answered: res['answered'], responses_count: res['responses_count']};
+			},
+			(err) => {
+
+			}
+		);
+		// this.feedService.addFeed(feed).pipe(
+		// 	uploadProgress(progress => (this.progress = progress)),
+		// 	toResponseBody()
+		// ).subscribe(res => {
+		// 	this.progress = 0;
+		// 	this.feeds.unshift(res['feed']);
+		// 	this.success = true;
+		// 	this.initFeedForm();
+		// });
 	}
 
 	genslug() {

@@ -6,7 +6,7 @@
                (click)="toggleFullWidth()">
           <i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
           <i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
-        </a> Modifier Post : {{feed?.titre}}</h2>
+        </a> Modifier Post : {{feed?.title}}</h2>
         <ul class="breadcrumb">
           <li class="breadcrumb-item"><a [routerLink]="['/app/index']"><i class="icon-home"></i></a></li>
           <li class="breadcrumb-item active">Modifier Post</li>
@@ -22,28 +22,9 @@
           <div class="body">
             <div class="form-group">
               <label>Titre</label>
-              <input [value]="feed?.titre" formControlName="titre" (keyup)="genslug()" type="text" class="form-control" placeholder="Titre" />
+              <input [value]="feed?.title" formControlName="titre" (keyup)="genslug()" type="text" class="form-control" placeholder="Titre" />
             </div>
-            <label>Type</label>
-            <select class="form-control show-tick" formControlName="type" required (change)="setType()">
-              <option value="" disabled >Selectionner Type</option>
-              <option value="public" [selected]="feed?.type == 'public'" >Publique</option>
-              <option value="classes" [selected]="feed?.type == 'classes'">Classes</option>
-              <option value="professeurs" [selected]="feed?.type == 'professeurs'">Professeurs</option>
-              <option value="etudiants" [selected]="feed?.type == 'etudiants'">Etudiants</option>
-            </select>
             <br>
-            <div *ngIf="feed?.type !== 'public' " class="form-group">
-              <ng-multiselect-dropdown *ngIf="feed?.type == 'professeurs' "  formControlName="professeurs" [placeholder]="'Selectionner Professeur(s)'" [data]="dpprofesseurs"
-                                       [settings]="dropdownSettings">
-              </ng-multiselect-dropdown>
-              <ng-multiselect-dropdown *ngIf="feed?.type == 'etudiants' "  formControlName="etudiants" [placeholder]="'Selectionner Etudiant(s)'" [data]="dpetudiants"
-                                       [settings]="dropdownSettings">
-              </ng-multiselect-dropdown>
-              <ng-multiselect-dropdown *ngIf="feed?.type == 'classes' "  formControlName="classes" [placeholder]="'Selectionner Classe(s)'" [data]="dpclasses"
-                                       [settings]="dropdownSettings">
-              </ng-multiselect-dropdown>
-            </div>
             <div class="form-group m-t-20 m-b-20">
               <label for="image">Image
                 <img alt="feedimage" [src]="'https://gestion-scolarite.io/images/feeds/' + feed?.image"  width="200" class="img-thumbnail">

@@ -49,7 +49,7 @@
 			</div>
 			<div class="card mt-5">
 				<div class="body">
-					<div *ngIf="calendarOptions">
+					<div>
 						<h3>Evenements</h3>
 						<ng-fullcalendar id="myCalendar" #ucCalendar [options]="calendarOptions" (eventClick)="eventClick($event.detail, informations, 'md')" (eventDrop)="updateEvent($event.detail)"
 										 (eventDestroy)="displayEvent"  (eventResize)="updateEvent($event.detail)" (clickButton)="clickButton($event.detail)"></ng-fullcalendar>
@@ -88,7 +88,7 @@
 				<div class="card single_post" *ngFor="let feed of feeds">
 					<div class="body">
 						<div class="user-account">
-							<img [src]="getImage(feed.owner)" class="rounded-circle user-photo" alt="User Profile Picture">
+							<img [src]="getUserImage(feed.owner)" class="rounded-circle user-photo" alt="User Profile Picture">
 							<div class="dropdown">
 								<a class="user-name">
 									<strong>{{feed.owner?.name}} {{feed.owner?.last_name}} <span *ngIf="getId() == feed.owner.id" class="badge badge-primary">c'est vous!</span></strong>
@@ -100,17 +100,20 @@
 <!--								<button class="btn btn-danger" (click)="openModal(deletemodal,'lg', feed)"><i class="fa fa-trash"></i></button>-->
 <!--							</div>-->
 						</div>
-<!--						<div class="img-post">-->
-<!--							<img *ngIf="feed.image && feed.image != 'null' " class="d-block img-fluid" [src]="'https://gestion-scolarite.io/images/feeds/' + feed.image " alt="First slide">-->
-<!--						</div>-->
-						<h3>
-							<a [routerLink]="['/app/singlefeed/' + feed.id]">{{feed.title}}</a>
-						</h3>
-						<!--<div class="text-blog-cop" [innerHTML]="feed.contenu" ></div>-->
+<!--						<h3>-->
+<!--							<a [routerLink]="['/app/singlefeed/' + feed.id]">{{feed.title}}</a>-->
+<!--						</h3>-->
+						<div class="img-post" *ngIf="feed.medias.length > 0">
+							<img *ngIf="feed.medias[0].type === 'image' " [src]="getFeedMedia(feed.medias[0].path)" class="d-block img-fluid" alt="First slide">
+							<video style="width: 100%; height: 300px;" *ngIf="feed.medias[0].type === 'video' " [src]="getFeedMedia(feed.medias[0].path)" class="d-block img-fluid"></video>
+							<iframe style="width: 100%; height: 300px;" *ngIf="feed.medias[0].type === 'youtube' " class="d-block img-fluid" [src]="sanitizer.bypassSecurityTrustResourceUrl(feed.medias[0].path)"></iframe>
+						</div>
+						<div class="text-blog-cop" [innerHTML]="feed.description" ></div>
 					</div>
 					<div class="footer">
 						<div class="actions">
-							<a [routerLink]="['/app/singlefeed/' + feed.id]" class="btn btn-outline-secondary">Plus de details</a>
+							<a [routerLink]="['/app/singlefeed/' + feed.id]" style="margin-right: 5px;" class="btn btn-primary"> <i class="fa fa-thumbs-up"></i> J'aime</a>
+							<a [routerLink]="['/app/singlefeed/' + feed.id]" class="btn btn-info"> <i class="fa fa-comment"></i> Commentaire</a>
 						</div>
 						<ul class="stats">
 							<li><a class="icon-heart" style="color: red">{{feed.likes_count}}</a></li>
@@ -121,7 +124,7 @@
 			</div>
 			<div class="card mt-5">
 				<div class="body">
-					<div *ngIf="calendarOptions">
+					<div>
 						<h3>Evenements</h3>
 						<ng-fullcalendar id="myCalendar" #ucCalendar [options]="calendarOptions" (eventClick)="eventClick($event.detail, informations, 'md')" (eventDrop)="updateEvent($event.detail)"
 										 (eventDestroy)="displayEvent"  (eventResize)="updateEvent($event.detail)" (clickButton)="clickButton($event.detail)"></ng-fullcalendar>
@@ -145,7 +148,31 @@
 					</div>
 				</div>
 				<div class="body" *ngIf="!loading && birthdays.length > 0">
-					aaaa
+					<div class="new_timeline" *ngFor="let group of birthdayDate()">
+						<div class="header" style="background: none">
+							<div class="color-overlay">
+								<div class="day-number">{{getDate(group.date).getDate()}}</div>
+								<div class="date-right">
+									<div class="day-name">{{getDayName(getDate(group.date).getDay())}}</div>
+									<div class="month">{{getMonthName(getDate(group.date).getMonth())}} {{getDate(group.date).getFullYear()}}</div>
+								</div>
+							</div>
+						</div>
+						<ul>
+							<li *ngFor="let birthday of group.birthdays">
+								<div class="bullet pink"></div>
+								<div class="time">{{birthday.birthday.substring(11,16)}}</div>
+								<div class="desc" *ngIf="getRole() != 'ROLE_PROFESSEUR' ">
+									<div class="user-account" style="margin: 0;display: inline-flex">
+										<img [src]="getUserImage(birthday)" class="rounded-circle user-photo" style="width: 50px;height: 50px;" alt="User Profile Picture">
+										<div class="dropdown">
+											<strong>{{birthday.name}} {{birthday.last_name}} </strong>
+										</div>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 			<div class="card">
@@ -155,23 +182,31 @@
 				<div class="body" *ngIf="loading">
 					Veuillez Patienter...
 				</div>
-				<div class="body" *ngIf="!loading">
-					<h4>Avez vous regarder la Serie squid Game ? </h4>
+				<div class="body" *ngIf="!loading && !question.answered">
+					<form [formGroup]="quizForm" (ngSubmit)="onQuizSubmit(quizForm.value)">
+						<h4>{{question.content}}</h4>
+						<hr>
+						<div class="form-check" *ngFor="let answer of question?.answers;let isFirst = first;" >
+							<input class="form-check-input" formControlName="answer_id" type="radio" [value]="answer.id" [id]="'answer'+ answer.id" [checked]="isFirst">
+							<label class="form-check-label" [htmlFor]="'answer'+ answer.id">
+								{{answer.text}}
+							</label>
+						</div>
+						<hr>
+						<button type="submit" class="btn btn-success">Repondre & Voir Resultat</button>
+					</form>
+				</div>
+				<div class="body" *ngIf="!loading && question.answered">
+					<h4>{{question.content}}</h4>
 					<hr>
-					<div class="form-check">
-						<input class="form-check-input" type="radio" value="oui" id="flexCheckDefault" checked>
-						<label class="form-check-label" for="flexCheckDefault">
-							Oui
-						</label>
-					</div>
-					<div class="form-check">
-						<input class="form-check-input" type="radio" value="non" id="flexCheckChecked">
-						<label class="form-check-label" for="flexCheckChecked">
-							Non
-						</label>
-					</div>
-					<hr>
-					<button type="button" class="btn btn-success">Voir Resultat</button>
+					<ul class="list-unstyled list-referrals">
+						<li *ngFor="let answer of question.answers">
+							<p><span class="value">{{answer.text}}</span><span class="text-muted float-right">{{answer.answer_responses.length}}</span></p>
+							<div class="progress progress-xs progress-transparent custom-color-blue">
+								<div class="progress-bar" data-transitiongoal="87" aria-valuenow="87" [ngStyle]="{ 'width' : (( answer.answer_responses.length * question.responses_count ) * 100) + '%' }"></div>
+							</div>
+						</li>
+					</ul>
 				</div>
 			</div>
 			<div class="card">
@@ -183,10 +218,10 @@
 				</div>
 				<div class="body" *ngIf="!loading">
 					<div class="user-account" style="margin: 0">
-						<img src="assets/images/user.png" class="rounded-circle user-photo" alt="User Profile Picture">
+						<img [src]="getUserImage(empofmounth)" class="rounded-circle user-photo" alt="User Profile Picture">
 						<div class="dropdown">
 							<span>Félicitations,</span>
-							<a href="javascript:void(0);" class="user-name" data-toggle="dropdown"><strong>Employée X</strong></a>
+							<a href="javascript:void(0);" class="user-name" data-toggle="dropdown"><strong>{{empofmounth.name}} {{empofmounth.last_name}} </strong></a>
 						</div>
 						<hr>
 						<ul class="row list-unstyled">

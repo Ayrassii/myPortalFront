@@ -66,6 +66,12 @@ export class AuthService {
         localStorage.removeItem('cin');
         this.router.navigate(['authentication', 'page-login']);
     }
+
+    getEmployeOfMonth() {
+        const headers = new HttpHeaders()
+            .set('authorization', 'bearer ' + this.getToken());
+        return this.httpClient.get(this.url + 'employe-of-month', {headers});
+    }
     public getToken(): string {
         return localStorage.getItem('token');
     }
