@@ -11,14 +11,14 @@ export class FeedService {
     feeds: Feed[] = [];
     feedsSubject = new Subject<Feed[]>();
     constructor(private httpClient: HttpClient, private router: Router, private global: Globals) { }
-    url = this.global.Server + 'feeds';
+    url = this.global.Server;
     emitFeeds() {
         this.feedsSubject.next(this.feeds.slice());
     }
     getFeedsFromServer() {
         const headers = new HttpHeaders()
             .set('authorization', 'Bearer ' + localStorage.getItem('token'));
-        this.httpClient.get(this.url, {headers})
+        this.httpClient.get(this.url + 'feeds', {headers})
             .subscribe(
                 (response: Feed[]) => {
                     this.feeds = response;
@@ -34,7 +34,18 @@ export class FeedService {
     getSingleFeed(slug) {
         const headers = new HttpHeaders()
             .set('authorization', 'Bearer ' + localStorage.getItem('token'));
-        return this.httpClient.get(this.url + '/' + slug, {headers});
+        return this.httpClient.get(this.url + 'feeds/' + slug, {headers});
+    }
+
+    commentFeed(body, entry_id) {
+        const headers = new HttpHeaders()
+            .set('authorization', 'Bearer ' + localStorage.getItem('token'));
+        return this.httpClient.put(this.url + 'comments', {body, entry_id}, {headers});
+    }
+    likeFeed(entry_id) {
+        const headers = new HttpHeaders()
+            .set('authorization', 'Bearer ' + localStorage.getItem('token'));
+        return this.httpClient.put(this.url + 'likes', {entry_id}, {headers});
     }
 
     addFeed(feed) {

@@ -1,9 +1,11 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FeedService} from '../../services/feed.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Feed} from '../../models/feed';
 import {SidebarService} from '../../services/sidebar.service';
 import {User} from '../../models/user';
+import {DomSanitizer} from '@angular/platform-browser';
+import {Globals} from '../../Globals';
 
 @Component({
     selector: 'app-single-feed',
@@ -12,17 +14,32 @@ import {User} from '../../models/user';
 })
 export class SingleFeedComponent implements OnInit {
     feed: Feed = new Feed();
+    commentclicked = false;
+    loading = true;
+    mycomment: string;
+    is_liked: boolean;
+    @ViewChild('commentinput', {static: false}) commentInput: ElementRef;
     public sidebarVisible = true;
     constructor(private feedService: FeedService,
-                private  router: Router,
+                private router: Router,
                 private route: ActivatedRoute,
+                private sanitizer: DomSanitizer,
+                private global: Globals,
                 private sidebarService: SidebarService,
                 private cdr: ChangeDetectorRef) { }
 
     ngOnInit() {
-        this.feedService.getSingleFeed(this.route.snapshot.params.slug).subscribe(
-            (res) => {
-                this.feed = res['feed'];
+        this.feedService.getSingleFeed(this.route.snapshot.params.id).subscribe(
+            (res: Feed) => {
+                this.feed = res;
+                if (this.feed.medias.length > 0) {
+                    if (this.feed.medias[0].type === 'youtube') {
+                        this.feed.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>this.feed.medias[0].path);
+                    }
+                }
+                const like = this.feed.likes.find(l => l.user_id === parseInt(localStorage.getItem('id'), 10));
+                if (like) { this.is_liked = true; } else { this.is_liked = false; }
+                this.loading = false;
             },
             (err) => {
                 if (err.status === 401) {
@@ -72,20 +89,49 @@ export class SingleFeedComponent implements OnInit {
         }
     }
 
-    getImage(user: User): string {
-        if (user) {
-            if (user.image) {
-                if (user.role === 'ROLE_PROFESSEUR') {
-                    return 'https://gestion-scolarite.io/images/professeurs/' + user.image;
-                }
-            }
-            if (user.gendre === 'male') {
-                return 'https://gestion-scolarite.io/assets/dist/img/avatar5.png';
-            } else {
-                return 'https://gestion-scolarite.io/assets/dist/img/avatar2.png';
-            }
+    getFeedMedia(path) {
+        return this.global.Medias + 'feeds/' + path;
+    }
+    getUserMedia(path) {
+        return this.global.Medias + 'users/' + path;
+    }
+    onCommentClick() {
+        this.commentclicked = !this.commentclicked;
+        window.scrollTo({left: 0, top: document.body.scrollHeight, behavior: 'smooth'});
+    }
+    doTextareaValueChange(event) {
+        try {
+            this.mycomment = event.target.value;
+        } catch (e) {
+            console.log('could not set textarea-value');
         }
-        return '';
+    }
+
+    onCommentSubmit() {
+        console.log(this.mycomment);
+        this.feedService.commentFeed(this.mycomment, this.feed.id).subscribe(
+            (res: Feed) => {
+                this.feed = res;
+                if (this.feed.medias.length > 0) {
+                    if (this.feed.medias[0].type === 'youtube') {
+                        this.feed.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>this.feed.medias[0].path);
+                    }
+                }
+                this.mycomment = '';
+                this.commentInput.nativeElement.value = '';
+            }
+        );
+    }
+
+    onLikeSubmit() {
+        this.feedService.likeFeed(this.feed.id).subscribe(
+            (res: Feed) => {
+                this.feed.likes = res.likes;
+                this.feed.likes_count = res.likes_count;
+                const like = this.feed.likes.find(l => l.user_id === parseInt(localStorage.getItem('id'), 10));
+                if (like) { this.is_liked = true; } else { this.is_liked = false; }
+            }
+        );
     }
 
 }

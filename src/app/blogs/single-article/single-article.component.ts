@@ -1,40 +1,43 @@
 import {ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {SidebarService} from '../../services/sidebar.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {EventService} from '../../services/event.service';
-import {Evenement} from '../../models/evenement';
-import {Globals} from '../../Globals';
-import {NotifService} from '../../services/notif.service';
-import {Feed} from '../../models/feed';
+import {SidebarService} from '../../services/sidebar.service';
+import {Article} from '../../models/article';
+import {ArticleService} from '../../services/article.service';
 import {DomSanitizer} from '@angular/platform-browser';
+import {Globals} from '../../Globals';
+import {Feed} from '../../models/feed';
 
 @Component({
-  selector: 'app-single-event',
-  templateUrl: './single-event.component.html',
-  styleUrls: ['./single-event.component.css']
+  selector: 'app-single-article',
+  templateUrl: './single-article.component.html',
+  styleUrls: ['./single-article.component.css']
 })
-export class SingleEventComponent implements OnInit {
-  public sidebarVisible = false;
-  evenement: Evenement;
+export class SingleArticleComponent implements OnInit {
+
+  article: Article = new Article();
   commentclicked = false;
   mycomment: string;
   is_liked: boolean;
   @ViewChild('commentinput', {static: false}) commentInput: ElementRef;
-  @ViewChild('scrollMe', {static: false}) private scrollMe: ElementRef;
-  constructor(private sidebarService: SidebarService,
-              private eventService: EventService,
-              private cdr: ChangeDetectorRef,
+  public sidebarVisible = true;
+  constructor(private articleService: ArticleService,
               private router: Router,
-              private sanitizer: DomSanitizer,
-              private notifService: NotifService,
               private route: ActivatedRoute,
+              private sanitizer: DomSanitizer,
               private global: Globals,
-  ) { }
+              private sidebarService: SidebarService,
+              private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
-    this.eventService.getSingleEvent(this.route.snapshot.params.id).subscribe(
-        (res: Evenement) => {
-          this.evenement = res;
+    this.articleService.getSingleArticle(this.route.snapshot.params.id).subscribe(
+        (res: Article) => {
+          this.article = res;
+          console.log(this.article);
+          if (this.article.medias.length > 0) {
+            if (this.article.medias[0].type === 'youtube') {
+              this.article.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>this.article.medias[0].path);
+            }
+          }
         },
         (err) => {
           if (err.status === 401) {
@@ -42,22 +45,11 @@ export class SingleEventComponent implements OnInit {
           }
         }
     );
-    this.route.queryParams.subscribe(params => {
-      if (params['notif_id']) {
-        this.notifService.readNotif(params['notif_id']).subscribe();
-      }
-    });
   }
   toggleFullWidth() {
     this.sidebarService.toggle();
     this.sidebarVisible = this.sidebarService.getStatus();
     this.cdr.detectChanges();
-  }
-  getEventMedia(path) {
-    return this.global.Medias + 'events/' + path;
-  }
-  getUserMedia(path) {
-    return this.global.Medias + 'users/' + path;
   }
   ago(value: string): string {
     const d = new Date(value);
@@ -95,6 +87,12 @@ export class SingleEventComponent implements OnInit {
     }
   }
 
+  getArticleMedia(path) {
+    return this.global.Medias + 'articles/' + path;
+  }
+  getUserMedia(path) {
+    return this.global.Medias + 'users/' + path;
+  }
   onCommentClick() {
     this.commentclicked = !this.commentclicked;
     window.scrollTo({left: 0, top: document.body.scrollHeight, behavior: 'smooth'});
@@ -106,15 +104,14 @@ export class SingleEventComponent implements OnInit {
       console.log('could not set textarea-value');
     }
   }
-
   onCommentSubmit() {
     console.log(this.mycomment);
-    this.eventService.commentEvent(this.mycomment, this.evenement.id).subscribe(
-        (res: Evenement) => {
-          this.evenement = res;
-          if (this.evenement.medias.length > 0) {
-            if (this.evenement.medias[0].type === 'youtube') {
-              this.evenement.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>this.evenement.medias[0].path);
+    this.articleService.commentArticle(this.mycomment, this.article.id).subscribe(
+        (res: Article) => {
+          this.article = res;
+          if (this.article.medias.length > 0) {
+            if (this.article.medias[0].type === 'youtube') {
+              this.article.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>this.article.medias[0].path);
             }
           }
           this.mycomment = '';
@@ -124,11 +121,11 @@ export class SingleEventComponent implements OnInit {
   }
 
   onLikeSubmit() {
-    this.eventService.likeEvent(this.evenement.id).subscribe(
+    this.articleService.likeArticle(this.article.id).subscribe(
         (res: Feed) => {
-          this.evenement.likes = res.likes;
-          this.evenement.likes_count = res.likes_count;
-          const like = this.evenement.likes.find(l => l.user_id === parseInt(localStorage.getItem('id'), 10));
+          this.article.likes = res.likes;
+          this.article.likes_count = res.likes_count;
+          const like = this.article.likes.find(l => l.user_id === parseInt(localStorage.getItem('id'), 10));
           if (like) { this.is_liked = true; } else { this.is_liked = false; }
         }
     );

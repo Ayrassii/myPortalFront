@@ -17,4 +17,21 @@ export class ArticleService {
         .set('authorization', 'Bearer ' + localStorage.getItem('token'));
     return this.httpClient.get(this.url, {headers});
   }
+
+  getSingleArticle(id) {
+    const headers = new HttpHeaders()
+        .set('authorization', 'Bearer ' + localStorage.getItem('token'));
+    return this.httpClient.get(this.url + '/' + id, {headers});
+  }
+
+  commentArticle(body, entry_id) {
+    const headers = new HttpHeaders()
+        .set('authorization', 'Bearer ' + localStorage.getItem('token'));
+    return this.httpClient.put(this.url + 'comments', {body, entry_id}, {headers});
+  }
+  likeArticle(entry_id) {
+    const headers = new HttpHeaders()
+        .set('authorization', 'Bearer ' + localStorage.getItem('token'));
+    return this.httpClient.put(this.url + 'likes', {entry_id}, {headers});
+  }
 }

@@ -26,7 +26,7 @@
             </video>
             <iframe *ngIf="farticle.medias[0].type === 'youtube' " style="width: 100%; height: 300px;" [src]="farticle.medias[0].path" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
-          <h3 class="titre-custom">{{farticle.title}}</h3>
+          <h3 class="titre-custom"><a [routerLink]="['/app/singlearticle/' + farticle.id]">{{farticle.title}}</a></h3>
         </div>
       </div>
     </div>
@@ -40,7 +40,7 @@
             </video>
             <iframe *ngIf="article.medias[0].type === 'youtube' " style="width: 100%; height: 300px;" [src]="article.medias[0].path" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
-          <h3 class="titre-custom">{{article.title}}</h3>
+          <h3 class="titre-custom"><a [routerLink]="['/app/singlearticle/' + article.id]">{{article.title}}</a></h3>
         </div>
       </div>
     </div>
@@ -56,7 +56,7 @@
             </video>
             <iframe *ngIf="oarticle.medias[0].type === 'youtube' " class="d-block img-fluid" [src]="oarticle.medias[0].path" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
-          <h3 class="titre-custom">{{oarticle.title}}</h3>
+          <h3 class="titre-custom"><a [routerLink]="['/app/singlearticle/' + oarticle.id]">{{oarticle.title}}</a></h3>
         </div>
       </div>
     </div>

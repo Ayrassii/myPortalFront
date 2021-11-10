@@ -27,9 +27,9 @@
           <p>{{evenement.description}}</p>
         </div>
         <div class="footer">
-          <button class="btn btn-primary" style="margin-right: 5px;">
-            <i class="fa fa-thumbs-up" style="color: white;margin-right: 2px;"></i>
-            Like({{evenement.likes_count}})
+          <button (click)="onLikeSubmit()" class="btn btn-primary" style="margin-right: 5px;">
+            <i [ngClass]="{'fa' : true, 'fa-thumbs-up': !is_liked, 'fa-thumbs-down': is_liked }" style="color: white;margin-right: 2px;"></i>
+            {{is_liked ? 'J\'aime plus' : 'J\'aime' }} ({{evenement.likes_count}})
           </button>
           <button (click)="onCommentClick()" class="btn btn-info">
             <i class="fa fa-comment" style="color: white;margin-right: 2px;"></i>
@@ -67,10 +67,11 @@
             <form class="row clearfix">
               <div class="col-sm-12">
                 <div class="form-group">
-                  <textarea rows="4" class="form-control no-resize"
+                  <textarea  #commentinput
+                             (change)="doTextareaValueChange($event)" rows="4" class="form-control no-resize"
                             placeholder="Votre Commentaire..."></textarea>
                 </div>
-                <button type="submit" class="btn btn-block btn-primary">Commenter!</button>
+                <button (click)="onCommentSubmit()" type="submit" class="btn btn-block btn-primary">Commenter!</button>
               </div>
             </form>
           </div>

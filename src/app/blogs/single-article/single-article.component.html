@@ -6,56 +6,57 @@
                (click)="toggleFullWidth()">
           <i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
           <i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
-        </a> {{feed.title}}</h2>
+        </a> {{article.title}}</h2>
         <ul class="breadcrumb">
           <li class="breadcrumb-item"><a [routerLink]="['/app/index']"><i class="icon-home"></i>Accueil</a></li>
-          <li class="breadcrumb-item active">{{feed.title}}</li>
+          <li class="breadcrumb-item"><a [routerLink]="['/app/articles']"><i class="icon-calendar"></i> Blog</a></li>
+          <li class="breadcrumb-item active">{{article.title}}</li>
         </ul>
       </div>
     </div>
   </div>
 
-  <div class="row clearfix" *ngIf="!loading && feed">
+  <div class="row clearfix">
     <div class="col-lg-12 col-md-12">
       <div class="card single_post">
         <div class="body">
           <div class="user-account">
-            <img [src]="getUserMedia(feed.owner.avatar)" style="width: 50px;height: 50px;" class="rounded-circle user-photo" alt="User Profile Picture" >
+            <img [src]="getUserMedia(article.owner.avatar)" style="width: 50px;height: 50px;" class="rounded-circle user-photo" alt="User Profile Picture" >
             <div class="dropdown">
               <a href="javascript:void(0);" class="user-name">
-                <strong>{{feed.owner.name}} {{feed.owner.last_name}}</strong>
+                <strong>{{article.owner.name}} {{article.owner.last_name}}</strong>
               </a>
-              <span class="datetime">{{ago(feed.created_at)}}</span>
+              <span class="datetime">{{ago(article.created_at)}}</span>
             </div>
           </div>
-          <div class="img-post" *ngIf="feed.medias.length > 0">
-            <img *ngIf="feed.medias[0].type === 'image' " [src]="getFeedMedia(feed.medias[0].path)" class="d-block img-fluid" alt="First slide">
-            <video style="width: 100%; height: 300px;" *ngIf="feed.medias[0].type === 'video' " class="d-block img-fluid" controls>
-              <source [src]="getFeedMedia(feed.medias[0].path)" type="video/mp4">
+          <div class="img-post" *ngIf="article.medias.length > 0">
+            <img *ngIf="article.medias[0].type === 'image' " [src]="getArticleMedia(article.medias[0].path)" class="d-block img-fluid" alt="First slide">
+            <video style="width: 100%; height: 300px;" *ngIf="article.medias[0].type === 'video' " class="d-block img-fluid" controls>
+              <source [src]="getArticleMedia(article.medias[0].path)" type="video/mp4">
             </video>
-            <iframe *ngIf="feed.medias[0].type === 'youtube' " style="width: 100%; height: 300px;" [src]="feed.medias[0].path" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe *ngIf="article.medias[0].type === 'youtube' " style="width: 100%; height: 300px;" [src]="article.medias[0].path" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
-          <h3>{{feed.title}}</h3>
-          <p>{{feed.description}}</p>
+          <h3>{{article.title}}</h3>
+          <p [innerHTML]="article.content"></p>
         </div>
         <div class="footer">
           <button (click)="onLikeSubmit()" class="btn btn-primary" style="margin-right: 5px;">
             <i [ngClass]="{'fa' : true, 'fa-thumbs-up': !is_liked, 'fa-thumbs-down': is_liked }" style="color: white;margin-right: 2px;"></i>
-            {{is_liked ? 'J\'aime plus' : 'J\'aime' }} ({{feed.likes_count}})
+            {{is_liked ? 'J\'aime plus' : 'J\'aime' }} ({{article.likes_count}})
           </button>
           <button (click)="onCommentClick()" class="btn btn-info">
             <i class="fa fa-comment" style="color: white;margin-right: 2px;"></i>
-            Commentaire({{feed.comments_count}})
+            Commentaire({{article.comments_count}})
           </button>
         </div>
       </div>
-      <div class="card" *ngIf="feed.comments_count > 0">
+      <div class="card" *ngIf="article.comments_count > 0">
         <div class="header">
-          <h2>Comments {{feed.comments_count}}</h2>
+          <h2>Comments {{article.comments_count}}</h2>
         </div>
         <div class="body">
           <ul class="comment-reply list-unstyled">
-            <li class="row clearfix" *ngFor="let comment of feed.comments">
+            <li class="row clearfix" *ngFor="let comment of article.comments">
               <div class="icon-box col-md-2 col-4">
                 <img style="width: 150px; height: 150px;object-fit: cover;" class="img-fluid img-thumbnail" [src]="getUserMedia(comment.owner.avatar)" alt="Awesome Image">
               </div>
@@ -79,7 +80,8 @@
             <form class="row clearfix">
               <div class="col-sm-12">
                 <div class="form-group">
-                  <textarea #commentinput rows="4" class="form-control no-resize" (change)="doTextareaValueChange($event)"
+                  <textarea #commentinput
+                            (change)="doTextareaValueChange($event)" rows="4" class="form-control no-resize"
                             placeholder="Votre Commentaire..."></textarea>
                 </div>
                 <button (click)="onCommentSubmit()" type="button" class="btn btn-block btn-primary">Commenter!</button>

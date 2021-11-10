@@ -31,8 +31,7 @@ export class ArticleListComponent implements OnInit, OnDestroy {
               private articleService: ArticleService,
               private datePipe: DatePipe,
               private global: Globals,
-              private sanitizer: DomSanitizer,
-              private authService: AuthService) { }
+              private sanitizer: DomSanitizer) { }
 
   ngOnInit() {
     this.articleSubscription = this.articleService.getArticlesFromServer().subscribe(

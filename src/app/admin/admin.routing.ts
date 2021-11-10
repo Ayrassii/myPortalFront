@@ -26,6 +26,7 @@ import {SingleEventComponent} from '../blogs/single-event/single-event.component
 import {ArticleListComponent} from '../blogs/article-list/article-list.component';
 import {AnnuaireComponent} from '../blogs/annuaire/annuaire.component';
 import {AppChatComponent} from '../applications/app-chat/app-chat.component';
+import {SingleArticleComponent} from '../blogs/single-article/single-article.component';
 
 const routes: Routes = [
     {
@@ -52,7 +53,7 @@ const routes: Routes = [
                 path: 'articles', component: ArticleListComponent, data: { title: ':: HLI :: App :: Blog ::' }
             },
             {
-                path: 'singlearticle/:id', component: ArticleListComponent, data: { title: ':: HLI :: App :: Article ::' }
+                path: 'singlearticle/:id', component: SingleArticleComponent, data: { title: ':: HLI :: App :: Article ::' }
             },
             {
                 path: 'annuaire', component: AnnuaireComponent, data: { title: ':: HLI :: App :: Annuaire ::' }

@@ -22,6 +22,16 @@ export class EventService {
 			.set('authorization', 'bearer ' + this.getToken());
 		return this.httpClient.get(this.url + 'events/' + event_id, {headers});
 	}
+	commentEvent(body, entry_id) {
+		const headers = new HttpHeaders()
+			.set('authorization', 'Bearer ' + localStorage.getItem('token'));
+		return this.httpClient.put(this.url + 'comments', {body, entry_id}, {headers});
+	}
+	likeEvent(entry_id) {
+		const headers = new HttpHeaders()
+			.set('authorization', 'Bearer ' + localStorage.getItem('token'));
+		return this.httpClient.put(this.url + 'likes', {entry_id}, {headers});
+	}
 
 	public getToken(): string {
 		return localStorage.getItem('token');
