@@ -12,21 +12,16 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./app-notif.component.css']
 })
 export class AppNotifComponent implements OnInit {
-  @Input() notifs$: Observable<Notif[]>;
   public sidebarVisible = false;
-  selectionne: Notif;
+  selectionne: any;
+  notifs: any[] = [];
   constructor(private sidebarService: SidebarService,
               private modalService: NgbModal,
               private cdr: ChangeDetectorRef,
               private notif: NotifService) { }
 
   ngOnInit() {
-    this.notifs$ = interval(1000)
-        .pipe(
-            startWith(0),
-            switchMap(() => this.notif.getNotifs()),
-        );
-    this.notif.allRead().subscribe();
+    this.notif.allRead().subscribe((res: any[]) => this.notifs = res);
   }
   toggleFullWidth() {
     this.sidebarService.toggle();
@@ -82,6 +77,7 @@ export class AppNotifComponent implements OnInit {
     this.notif.deleteNotif(this.selectionne.id).subscribe(
         () => {
           this.selectionne = null;
+          this.notifs.filter(n => n.id === this.selectionne.id);
           this.modalService.dismissAll();
         }
     );
@@ -89,9 +85,21 @@ export class AppNotifComponent implements OnInit {
   deleteall() {
     this.notif.deleteAll().subscribe(
         () => {
+          this.notifs = [];
           this.modalService.dismissAll();
         }
     );
+  }
+  getlink(type_entry, entry_id) {
+    switch (type_entry) {
+      case 'TYPE_FEED':
+        return ['/app/singlefeed/' + entry_id];
+      case 'TYPE_EVENT':
+        return ['/app/singleevent/' + entry_id];
+      case 'TYPE_ARTICLE':
+        return ['/app/singlearticle/' + entry_id];
+
+    }
   }
 
 }

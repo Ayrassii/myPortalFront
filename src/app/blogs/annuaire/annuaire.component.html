@@ -27,129 +27,18 @@
       </div>
       <div class="body">
         <div class="row">
-          <div class="col-lg-4 col-md-6 col-sm-12">
+          <div *ngFor="let person of persons" class="col-lg-4 col-md-6 col-sm-12">
             <div class="card">
               <div class="body text-center">
                 <div class="chart easy-pie-chart-1" data-percent="75">
                   <span style="cursor: pointer; color: #0c8ec3">
-                    <img src="assets/images/user.png" alt="user" class="rounded-circle">
+                    <img [src]="getPersonMedia(person.picture)" alt="user" class="rounded-circle">
                   </span>
                   <canvas height="100" width="100"></canvas>
                 </div>
-                <h6><a>Employé 1</a></h6>
-                <small>employe@hli.com</small>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 col-sm-12">
-            <div class="card">
-              <div class="body text-center">
-                <div class="chart easy-pie-chart-1" data-percent="75">
-                  <span style="cursor: pointer; color: #0c8ec3">
-                    <img src="assets/images/user.png" alt="user" class="rounded-circle">
-                  </span>
-                  <canvas height="100" width="100"></canvas>
-                </div>
-                <h6><a>Employé 1</a></h6>
-                <small>employe@hli.com</small>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 col-sm-12">
-            <div class="card">
-              <div class="body text-center">
-                <div class="chart easy-pie-chart-1" data-percent="75">
-                  <span style="cursor: pointer; color: #0c8ec3">
-                    <img src="assets/images/user.png" alt="user" class="rounded-circle">
-                  </span>
-                  <canvas height="100" width="100"></canvas>
-                </div>
-                <h6><a>Employé 1</a></h6>
-                <small>employe@hli.com</small>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 col-sm-12">
-            <div class="card">
-              <div class="body text-center">
-                <div class="chart easy-pie-chart-1" data-percent="75">
-                  <span style="cursor: pointer; color: #0c8ec3">
-                    <img src="assets/images/user.png" alt="user" class="rounded-circle">
-                  </span>
-                  <canvas height="100" width="100"></canvas>
-                </div>
-                <h6><a>Employé 1</a></h6>
-                <small>employe@hli.com</small>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 col-sm-12">
-            <div class="card">
-              <div class="body text-center">
-                <div class="chart easy-pie-chart-1" data-percent="75">
-                  <span style="cursor: pointer; color: #0c8ec3">
-                    <img src="assets/images/user.png" alt="user" class="rounded-circle">
-                  </span>
-                  <canvas height="100" width="100"></canvas>
-                </div>
-                <h6><a>Employé 1</a></h6>
-                <small>employe@hli.com</small>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 col-sm-12">
-            <div class="card">
-              <div class="body text-center">
-                <div class="chart easy-pie-chart-1" data-percent="75">
-                  <span style="cursor: pointer; color: #0c8ec3">
-                    <img src="assets/images/user.png" alt="user" class="rounded-circle">
-                  </span>
-                  <canvas height="100" width="100"></canvas>
-                </div>
-                <h6><a>Employé 1</a></h6>
-                <small>employe@hli.com</small>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 col-sm-12">
-            <div class="card">
-              <div class="body text-center">
-                <div class="chart easy-pie-chart-1" data-percent="75">
-                  <span style="cursor: pointer; color: #0c8ec3">
-                    <img src="assets/images/user.png" alt="user" class="rounded-circle">
-                  </span>
-                  <canvas height="100" width="100"></canvas>
-                </div>
-                <h6><a>Employé 1</a></h6>
-                <small>employe@hli.com</small>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 col-sm-12">
-            <div class="card">
-              <div class="body text-center">
-                <div class="chart easy-pie-chart-1" data-percent="75">
-                  <span style="cursor: pointer; color: #0c8ec3">
-                    <img src="assets/images/user.png" alt="user" class="rounded-circle">
-                  </span>
-                  <canvas height="100" width="100"></canvas>
-                </div>
-                <h6><a>Employé 1</a></h6>
-                <small>employe@hli.com</small>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 col-sm-12">
-            <div class="card">
-              <div class="body text-center">
-                <div class="chart easy-pie-chart-1" data-percent="75">
-                  <span style="cursor: pointer; color: #0c8ec3">
-                    <img src="assets/images/user.png" alt="user" class="rounded-circle">
-                  </span>
-                  <canvas height="100" width="100"></canvas>
-                </div>
-                <h6><a>Employé 1</a></h6>
-                <small>employe@hli.com</small>
+                <h5>{{person.full_name}}</h5>
+                <h6>{{person.email}}</h6>
+                <small>{{person.phone}}</small>
               </div>
             </div>
           </div>

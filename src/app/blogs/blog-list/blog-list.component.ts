@@ -99,6 +99,7 @@ export class BlogListComponent implements OnInit, OnDestroy {
 
 
 	ngOnInit() {
+		console.log(this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/cw1YLgg-w18'));
 		this.feedService.getFeedsFromServer();
 		this.authService.getUpcomingBirthdays();
 		this.questionService.getQuestionFromServer();
@@ -113,6 +114,13 @@ export class BlogListComponent implements OnInit, OnDestroy {
 		this.feedSubscription = this.feedService.feedsSubject.subscribe(
 			(feeds: Feed[] ) => {
 				this.feeds = feeds;
+				this.feeds.forEach((f, i) => {
+					if (f.medias.length > 0) {
+						if (f.medias[0].type === 'youtube') {
+							f.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>f.medias[0].path);
+						}
+					}
+				});
 			}
 		);
 		this.birthdaySubscription = this.authService.birthdaysSubject.subscribe(
@@ -157,6 +165,8 @@ export class BlogListComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy(): void {
 		this.feedSubscription.unsubscribe();
+		this.birthdaySubscription.unsubscribe();
+		this.questionSubscription.unsubscribe();
 	}
 	getDate(x: string): Date {
 		return new Date(x);

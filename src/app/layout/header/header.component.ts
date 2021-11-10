@@ -2,9 +2,10 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
 import { ThemeService } from '../../services/theme.service';
 import {AuthService} from '../../services/auth.service';
-import {interval, Observable, Subject} from 'rxjs';
+import {interval, Observable, Subject, Subscription} from 'rxjs';
 import {startWith, map, switchMap, takeUntil} from 'rxjs/operators';
 import {Notif} from '../../models/notif';
+import {NotifService} from '../../services/notif.service';
 
 
 @Component({
@@ -14,28 +15,37 @@ import {Notif} from '../../models/notif';
 	providers: [NgbDropdownConfig]
 })
 export class HeaderComponent implements OnInit {
-	private unsubscribe$ = new Subject<void>();
 	// Properties
 	@Input() showNotifMenu = false;
 	@Input() showToggleMenu = false;
 	@Input() darkClass = '';
-	@Input() notifs$: Observable<Notif[]>;
 	@Output() toggleSettingDropMenuEvent = new EventEmitter();
 	@Output() toggleNotificationDropMenuEvent = new EventEmitter();
-
+	obSubscription = new Subscription();
+	notifsSubscription = new Subscription();
+	notifs = [];
+	unread = 0;
 	constructor(private config: NgbDropdownConfig,
 				private themeService: ThemeService,
+				private notifService: NotifService,
 				private authService: AuthService ) {
 		config.placement = 'bottom-right';
 	}
 
 	ngOnInit() {
-		this.notifs$ = interval(216000)
-			.pipe(
-				takeUntil(this.unsubscribe$),
-				startWith(0),
-				switchMap(() => this.authService.getNotifs()),
-			);
+		this.reloadNotifs();
+		this.obSubscription = Observable.interval(10000).subscribe(x => {
+			this.reloadNotifs();
+		});
+	}
+
+	reloadNotifs() {
+		this.notifsSubscription = this.notifService.getNotifs().subscribe(
+			(res) => {
+				this.notifs = res['notifs'];
+				this.unread = res['unread'];
+			}
+		);
 	}
 
 	toggleSideMenu() {
@@ -43,8 +53,8 @@ export class HeaderComponent implements OnInit {
 	}
 	onLogout() {
 		this.authService.logoutUser();
-		this.unsubscribe$.next();
-		this.unsubscribe$.complete();
+		this.obSubscription.unsubscribe();
+		this.notifsSubscription.unsubscribe();
 	}
 
 	ago(value: string): string {
@@ -80,6 +90,17 @@ export class HeaderComponent implements OnInit {
 			return 'il y a un an';
 		} else { // (days > 545)
 			return 'il y a ' + years + ' ans';
+		}
+	}
+	getlink(type_entry, entry_id) {
+		switch (type_entry) {
+			case 'TYPE_FEED':
+				return ['/app/singlefeed/' + entry_id];
+			case 'TYPE_EVENT':
+				return ['/app/singleevent/' + entry_id];
+			case 'TYPE_ARTICLE':
+				return ['/app/singlearticle/' + entry_id];
+
 		}
 	}
 

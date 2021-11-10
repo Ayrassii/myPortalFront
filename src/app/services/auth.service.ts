@@ -28,11 +28,18 @@ export class AuthService {
         return this.httpClient.post(this.url + 'login', {email, password});
     }
 
+    getUsers() {
+        const headers = new HttpHeaders()
+            .set('authorization', 'bearer ' + this.getToken());
+        return this.httpClient.get(this.url + 'users', {headers});
+    }
+
     Me() {
         const headers = new HttpHeaders()
             .set('authorization', 'bearer ' + this.getToken());
         return this.httpClient.get(this.url + 'me', {headers});
     }
+    
     profile(cin) {
         const headers = new HttpHeaders()
             .set('authorization', 'bearer ' + this.getToken());
@@ -82,7 +89,7 @@ export class AuthService {
     getNotifs() {
         const headers = new HttpHeaders()
             .set('authorization', 'bearer ' + this.getToken());
-        return this.httpClient.get<Notif[]>(this.url + 'lastnotifs', {headers});
+        return this.httpClient.get(this.url + 'lastnotifs', {headers});
     }
 
     changePassword(password, new_password, new_password_confirmation) {

@@ -18,85 +18,37 @@
 		<div class="col-lg-12">
 			<div class="card chat-app">
 				<div id="plist" class="people-list">
-					<div class="input-group">
-						<div class="input-group-prepend">
-							<span class="input-group-text"><i class="icon-magnifier"></i></span>
-						</div>
-						<input type="text" class="form-control" placeholder="Rechercher...">
-					</div>
 					<ul class="list-unstyled chat-list mt-2 mb-0">
-						<li class="clearfix">
-							<img src="assets/images/xs/avatar1.jpg" alt="avatar" />
+						<li [ngClass]="{'active': him && him.id === user.id}" *ngFor="let user of users" class="clearfix" (click)="onClickContact(user.id)">
+							<img style="width: 50px;height: 50px;object-fit: cover;"  [src]="getUserMedia(user.avatar)" alt="avatar" />
 							<div class="about">
-								<div class="name">Vincent Porter</div>
-							</div>
-						</li>
-						<li class="clearfix active">
-							<img src="assets/images/xs/avatar2.jpg" alt="avatar" />
-							<div class="about">
-								<div class="name">Aiden Chavez</div>
-							</div>
-						</li>
-						<li class="clearfix">
-							<img src="assets/images/xs/avatar3.jpg" alt="avatar" />
-							<div class="about">
-								<div class="name">Mike Thomas</div>
-							</div>
-						</li>
-						<li class="clearfix">
-							<img src="assets/images/xs/avatar7.jpg" alt="avatar" />
-							<div class="about">
-								<div class="name">Christian Kelly</div>
-							</div>
-						</li>
-						<li class="clearfix">
-							<img src="assets/images/xs/avatar8.jpg" alt="avatar" />
-							<div class="about">
-								<div class="name">Monica Ward</div>
-							</div>
-						</li>
-						<li class="clearfix">
-							<img src="assets/images/xs/avatar9.jpg" alt="avatar" />
-							<div class="about">
-								<div class="name">Dean Henry</div>
+								<div class="name">{{user.name}} {{user.last_name}}</div>
 							</div>
 						</li>
 					</ul>
 				</div>
-				<div class="chat">
+				<div *ngIf="him" class="chat">
 					<div class="chat-header clearfix">
 						<div class="row">
 							<div class="col-lg-6">
 								<a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
-									<img src="assets/images/xs/avatar2.jpg" alt="avatar" />
+									<img [src]="getUserMedia(him.avatar)" alt="avatar" style="width: 40px;height: 40px; object-fit: cover;"/>
 								</a>
 								<div class="chat-about">
-									<h6 class="m-b-0">Aiden Chavez</h6>
+									<h6 class="m-b-0">{{him.name}} {{him.last_name}}</h6>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div class="chat-history">
+					<div #scrollMe [scrollTop]="scrollMe.scrollHeight" class="chat-history" style="height: 270px;overflow-y: scroll;">
 						<ul class="m-b-0">
-							<li class="clearfix">
-								<div class="message-data text-right">
-									<span class="message-data-time">10:10 AM, Today</span>
-									<img src="assets/images/xs/avatar7.jpg" alt="avatar">
+							<li *ngFor="let message of messages" class="clearfix">
+								<div [ngClass]="{'message-data': true, 'text-right': message.createdby_id === him.id}">
+									<span class="message-data-time">{{ago(message.created_at)}}</span>
+									<img *ngIf="message.createdby_id === him.id" [src]="getUserMedia(him.avatar)" style="width: 40px; height: 40px; object-fit: cover;" alt="avatar">
 								</div>
-								<div class="message other-message float-right"> Hi Aiden, how are you? How is the project coming along?
+								<div [ngClass]="{'message': true,'my-message': message.createdby_id === me.id, 'other-message': message.createdby_id === him.id, 'float-right': message.createdby_id === him.id}"> {{message.body}}
 								</div>
-							</li>
-							<li class="clearfix">
-								<div class="message-data">
-									<span class="message-data-time">10:12 AM, Today</span>
-								</div>
-								<div class="message my-message">Are we meeting today?</div>
-							</li>
-							<li class="clearfix">
-								<div class="message-data">
-									<span class="message-data-time">10:15 AM, Today</span>
-								</div>
-								<div class="message my-message">Project has been already finished and I have results to show you.</div>
 							</li>
 						</ul>
 					</div>
@@ -105,8 +57,22 @@
 							<div class="input-group-prepend">
 								<span class="input-group-text"><i class="icon-paper-plane"></i></span>
 							</div>
-							<input type="text" class="form-control" placeholder="Enter text here...">
+							<input type="text" (keyup.enter)="onSubmitMessage()" [(ngModel)]="message" class="form-control" placeholder="Votre Message...">
 						</div>
+					</div>
+				</div>
+				<div *ngIf="!him" class="chat">
+					<div class="chat-header clearfix">
+						<div class="row">
+
+						</div>
+					</div>
+					<div class="chat-history">
+						<ul class="m-b-0">
+							<p style="position: absolute;right: 0;left: 50%; top: 50%; bottom: 0; font-size: 20px; font-weight: bold">Selectionnez Destinataire</p>
+						</ul>
+					</div>
+					<div class="chat-message clearfix">
 					</div>
 				</div>
 			</div>

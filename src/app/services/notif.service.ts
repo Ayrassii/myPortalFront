@@ -7,29 +7,42 @@ import { Globals } from '../Globals';
   providedIn: 'root'
 })
 export class NotifService {
-  url = this.global.Server + 'notifs';
+  url = this.global.Server;
   constructor(private httpClient: HttpClient, private global: Globals) { }
-  getNotifs(): Observable<Notif[]> {
+
+  getNotifs() {
     const headers = new HttpHeaders()
         .set('authorization', 'Bearer ' + localStorage.getItem('token'));
-    return this.httpClient.get<Notif[]>(this.url, {headers});
+    return this.httpClient.get(this.url + 'lastnotifs', {headers});
+  }
+
+  getNotifications() {
+    const headers = new HttpHeaders()
+        .set('authorization', 'Bearer ' + localStorage.getItem('token'));
+    return this.httpClient.get(this.url + 'notifications', {headers});
+  }
+
+  readNotif(notif_id) {
+    const headers = new HttpHeaders()
+        .set('authorization', 'Bearer ' + localStorage.getItem('token'));
+    return this.httpClient.put(this.url + 'notifications/' + notif_id, [], {headers});
   }
 
   allRead() {
     const headers = new HttpHeaders()
         .set('authorization', 'Bearer ' + localStorage.getItem('token'));
-    return this.httpClient.patch(this.url, [], {headers});
+    return this.httpClient.patch(this.url + 'notifications', [], {headers});
   }
 
   deleteNotif(id: string) {
     const headers = new HttpHeaders()
         .set('authorization', 'Bearer ' + localStorage.getItem('token'));
-    return this.httpClient.delete(this.url + '/' + id, {headers});
+    return this.httpClient.delete(this.url + 'notifications/' + id, {headers});
   }
 
   deleteAll() {
     const headers = new HttpHeaders()
         .set('authorization', 'Bearer ' + localStorage.getItem('token'));
-    return this.httpClient.delete(this.url, {headers});
+    return this.httpClient.delete(this.url + 'notifications', {headers});
   }
 }

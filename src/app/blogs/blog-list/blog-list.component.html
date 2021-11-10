@@ -88,7 +88,7 @@
 				<div class="card single_post" *ngFor="let feed of feeds">
 					<div class="body">
 						<div class="user-account">
-							<img [src]="getUserImage(feed.owner)" class="rounded-circle user-photo" alt="User Profile Picture">
+							<img [src]="getUserImage(feed.owner)" class="rounded-circle user-photo" style="width: 60px;height: 60px;object-fit: cover;" alt="User Profile Picture">
 							<div class="dropdown">
 								<a class="user-name">
 									<strong>{{feed.owner?.name}} {{feed.owner?.last_name}} <span *ngIf="getId() == feed.owner.id" class="badge badge-primary">c'est vous!</span></strong>
@@ -105,8 +105,10 @@
 <!--						</h3>-->
 						<div class="img-post" *ngIf="feed.medias.length > 0">
 							<img *ngIf="feed.medias[0].type === 'image' " [src]="getFeedMedia(feed.medias[0].path)" class="d-block img-fluid" alt="First slide">
-							<video style="width: 100%; height: 300px;" *ngIf="feed.medias[0].type === 'video' " [src]="getFeedMedia(feed.medias[0].path)" class="d-block img-fluid"></video>
-							<iframe style="width: 100%; height: 300px;" *ngIf="feed.medias[0].type === 'youtube' " class="d-block img-fluid" [src]="sanitizer.bypassSecurityTrustResourceUrl(feed.medias[0].path)"></iframe>
+							<video style="width: 100%; height: 300px;" *ngIf="feed.medias[0].type === 'video' " class="d-block img-fluid" controls>
+								<source [src]="getFeedMedia(feed.medias[0].path)" type="video/mp4">
+							</video>
+							<iframe *ngIf="feed.medias[0].type === 'youtube' " style="width: 100%; height: 300px;" [src]="feed.medias[0].path" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 						</div>
 						<div class="text-blog-cop" [innerHTML]="feed.description" ></div>
 					</div>
@@ -154,7 +156,7 @@
 								<div class="day-number">{{getDate(group.date).getDate()}}</div>
 								<div class="date-right">
 									<div class="day-name">{{getDayName(getDate(group.date).getDay())}}</div>
-									<div class="month">{{getMonthName(getDate(group.date).getMonth())}} {{getDate(group.date).getFullYear()}}</div>
+									<div class="month">{{getMonthName(getDate(group.date).getMonth())}}</div>
 								</div>
 							</div>
 						</div>
@@ -216,9 +218,9 @@
 				<div class="body" *ngIf="loading">
 					Veuillez Patienter...
 				</div>
-				<div class="body" *ngIf="!loading">
+				<div class="body" *ngIf="!loading && empofmounth">
 					<div class="user-account" style="margin: 0">
-						<img [src]="getUserImage(empofmounth)" class="rounded-circle user-photo" alt="User Profile Picture">
+						<img style="width: 50px;height: 50px; object-fit: cover;" [src]="getUserImage(empofmounth)" class="rounded-circle user-photo" alt="User Profile Picture">
 						<div class="dropdown">
 							<span>Félicitations,</span>
 							<a href="javascript:void(0);" class="user-name" data-toggle="dropdown"><strong>{{empofmounth.name}} {{empofmounth.last_name}} </strong></a>

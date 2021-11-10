@@ -9,6 +9,8 @@ import {FeedService} from '../../services/feed.service';
 import {DevoirService} from '../../services/devoir.service';
 import {User} from '../../models/user';
 import {Evenement} from '../../models/evenement';
+import {EventService} from '../../services/event.service';
+import {Globals} from '../../Globals';
 
 @Component({
   selector: 'app-event-list',
@@ -27,11 +29,16 @@ export class EventListComponent implements OnInit, OnDestroy {
 
   constructor(private sidebarService: SidebarService,
               private modalService: NgbModal,
+              private eventService: EventService,
+              private global: Globals,
               private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
-    this.evenements = [];
     this.loading = false;
+    this.eventService.getEvents().subscribe(
+        (evenements: Evenement[] ) => {
+            this.evenements = evenements;
+        });
   }
 
   toggleFullWidth() {
@@ -110,23 +117,17 @@ export class EventListComponent implements OnInit, OnDestroy {
     }
   }
 
-  getImage(user: User): string {
-    if (user) {
-      if (user.image) {
-        if (user.role === 'ROLE_PROFESSEUR') {
-          return 'https://gestion-scolarite.io/images/professeurs/' + user.image;
-        }
-      }
-      if (user.gendre === 'male') {
-        return 'https://gestion-scolarite.io/assets/dist/img/avatar5.png';
-      } else {
-        return 'https://gestion-scolarite.io/assets/dist/img/avatar2.png';
-      }
-    }
-    return '';
+  getUserMedia(path: string): string {
+    return this.global.Medias + 'users/' + path;
   }
   getRole(): string {
     return localStorage.getItem('role');
+  }
+  getId(): string {
+    return localStorage.getItem('id');
+  }
+  getEventMedia(path) {
+    return this.global.Medias + 'events/' + path;
   }
 
 }

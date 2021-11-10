@@ -28,12 +28,11 @@
                     <li class="dropdown" ngbDropdown>
                         <a style="cursor: pointer; color: #fff" class="dropdown-toggle icon-menu" ngbDropdownToggle>
                             <i class="icon-bell"></i>
-                            <span class="notification-dot"></span>
-<!--                            <span *ngIf="(notifs$ | async)?.unread > 0" class="notification-dot"></span>-->
+                            <span *ngIf="unread > 0" class="notification-dot"></span>
                         </a>
                         <ul class="dropdown-menu notifications" ngbDropdownMenu>
-                            <li class="header" *ngIf="(notifs$ | async)?.unread > 0 " ><strong>Vous avez {{(notifs$ | async)?.unread}} nouvelle(s) Notification(s)</strong></li>
-                            <li *ngIf="(notifs$ | async)?.notifs.length == 0">
+                            <li class="header" *ngIf="unread > 0 " ><strong>Vous avez {{unread}} nouvelle(s) Notification(s)</strong></li>
+                            <li *ngIf="notifs.length == 0">
                                 <span>
                                     <span class="media">
                                         <span class="media-body">
@@ -42,24 +41,20 @@
                                     </span>
                                 </span>
                             </li>
-                            <li *ngFor="let notif of (notifs$ | async)?.notifs ">
-                                <a [routerLink]="[notif.data.lien]">
+                            <li *ngFor="let notif of notifs " [ngClass]="{'my-notif': true, 'active': !notif.read_at}">
+                                <a [routerLink]="getlink(notif.data.entry,notif.data.entry_id)" [queryParams]="{notif_id: !notif.read_at ? notif.id : null}">
                                     <div class="media">
-                                        <div class="media-left">
-                                            <i [ngClass]="notif.data.icone" ></i>
+                                        <div class="media-left" style="margin-left: 15px;">
+                                            <i [ngClass]="notif.data.icone" [ngStyle]="{'color': notif.data.iconeColor }" ></i>
                                         </div>
                                         <div class="media-body">
-                                            <p class="text" style="color: #fff;">{{notif.data.texte}}
-                                                <br>
-                                                {{ notif.data.date ? notif.data.date : notif.data.devoir }}
-                                                {{ notif.data.seance ? 'Seance: ' + notif.data.seance : '' }}
-                                            </p>
+                                            <p class="text" style="color: #000;">{{notif.data.message}}</p>
                                             <span class="timestamp">{{ago(notif.created_at)}}</span>
                                         </div>
                                     </div>
                                 </a>
                             </li>
-                            <li class="footer"><a [routerLink]="['/app/notifications']" class="more">Voir Toutes les Notifications</a></li>
+                            <li class="footer" style="border-bottom: none;"><a [routerLink]="['/app/notifications']" class="more">Voir Toutes les Notifications</a></li>
                         </ul>
                     </li>
                     <li class="dropdown" ngbDropdown>

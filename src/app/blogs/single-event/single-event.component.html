@@ -1,4 +1,4 @@
-<div class="container-fluid blog-page">
+<div class="container-fluid blog-page" #scrollMe>
   <div class="block-header">
     <div class="row">
       <div class="col-lg-5 col-md-8 col-sm-12">
@@ -6,11 +6,11 @@
                (click)="toggleFullWidth()">
           <i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
           <i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
-        </a> Evenement 1</h2>
+        </a> {{evenement.title}}</h2>
         <ul class="breadcrumb">
           <li class="breadcrumb-item"><a [routerLink]="['/app/index']"><i class="icon-home"></i>Accueil</a></li>
           <li class="breadcrumb-item"><a [routerLink]="['/app/events']"><i class="icon-calendar"></i> Evenements</a></li>
-          <li class="breadcrumb-item active">Evenement 1</li>
+          <li class="breadcrumb-item active">{{evenement.title}}</li>
         </ul>
       </div>
     </div>
@@ -20,96 +20,57 @@
     <div class="col-lg-12 col-md-12">
       <div class="card single_post">
         <div class="body">
-          <div class="img-post">
-            <img class="d-block img-fluid" src="assets/images/blog/blog-page-1.jpg" alt="First slide">
+          <div class="img-post" *ngIf="evenement.medias && evenement.medias.length > 0">
+            <img *ngIf="evenement.medias[0].type === 'image' " [src]="getEventMedia(evenement.medias[0].path)" class="d-block img-fluid" alt="First slide">
           </div>
-          <h3><a [routerLink]="['/admin/blogs/blog-details']">All photographs are accurate</a></h3>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-            industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not only five centuries, but also the
-            leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s
-            with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop
-            publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+          <h3>{{evenement.title}}</h3>
+          <p>{{evenement.description}}</p>
         </div>
         <div class="footer">
-          <button class="btn btn-primary">
+          <button class="btn btn-primary" style="margin-right: 5px;">
             <i class="fa fa-thumbs-up" style="color: white;margin-right: 2px;"></i>
-            Like(28)
+            Like({{evenement.likes_count}})
+          </button>
+          <button (click)="onCommentClick()" class="btn btn-info">
+            <i class="fa fa-comment" style="color: white;margin-right: 2px;"></i>
+            Commentaire({{evenement.comments_count}})
           </button>
         </div>
       </div>
-      <div class="card">
+      <div class="card" *ngIf="evenement.comments_count > 0">
         <div class="header">
-          <h2>Comments 3</h2>
+          <h2>Comments {{evenement.comments_count}}</h2>
         </div>
         <div class="body">
           <ul class="comment-reply list-unstyled">
-            <li class="row clearfix">
-              <div class="icon-box col-md-2 col-4"><img class="img-fluid img-thumbnail"
-                                                        src="assets/images/sm/avatar2.jpg" alt="Awesome Image"></div>
-              <div class="text-box col-md-10 col-8 p-l-0 p-r0">
-                <h5 class="m-b-0">Gigi Hadid </h5>
-                <p>Why are there so many tutorials on how to decouple WordPress? how fast and easy it is to
-                  get it running (and keep it running!) and its massive ecosystem. </p>
-                <ul class="list-inline">
-                  <li><a href="javascript:void(0);">Mar 09 2018</a></li>
-                  <li><a href="javascript:void(0);">Reply</a></li>
-                </ul>
+            <li class="row clearfix" *ngFor="let comment of evenement.comments">
+              <div class="icon-box col-md-2 col-4">
+                <img style="width: 150px; height: 150px;object-fit: cover;" class="img-fluid img-thumbnail" [src]="getUserMedia(comment.owner.avatar)" alt="Awesome Image">
               </div>
-            </li>
-            <li class="row clearfix">
-              <div class="icon-box col-md-2 col-4"><img class="img-fluid img-thumbnail"
-                                                        src="assets/images/sm/avatar3.jpg" alt="Awesome Image"></div>
               <div class="text-box col-md-10 col-8 p-l-0 p-r0">
-                <h5 class="m-b-0">Christian Louboutin</h5>
-                <p>Great tutorial but few issues with it? If i try open post i get following errors. Please
-                  can you help me?</p>
+                <h5 class="m-b-0">{{comment.owner.name}} {{comment.owner.last_name}} </h5>
+                <p>{{comment.content}}</p>
                 <ul class="list-inline">
-                  <li><a href="javascript:void(0);">Mar 12 2018</a></li>
-                  <li><a href="javascript:void(0);">Reply</a></li>
-                </ul>
-              </div>
-            </li>
-            <li class="row clearfix">
-              <div class="icon-box col-md-2 col-4"><img class="img-fluid img-thumbnail"
-                                                        src="assets/images/sm/avatar4.jpg" alt="Awesome Image"></div>
-              <div class="text-box col-md-10 col-8 p-l-0 p-r0">
-                <h5 class="m-b-0">Kendall Jenner</h5>
-                <p>Very nice and informative article. In all the years I've done small and side-projects as
-                  a freelancer, I've ran into a few problems here and there.</p>
-                <ul class="list-inline">
-                  <li><a href="javascript:void(0);">Mar 20 2018</a></li>
-                  <li><a href="javascript:void(0);">Reply</a></li>
+                  <li><a href="javascript:void(0);">{{ago(comment.created_at)}}</a></li>
                 </ul>
               </div>
             </li>
           </ul>
         </div>
       </div>
-      <div class="card">
+      <div class="card" *ngIf="commentclicked">
         <div class="header">
-          <h2>Leave a reply <small>Your email address will not be published. Required fields are marked*</small>
-          </h2>
+          <h2>Laisser un commentaire</h2>
         </div>
         <div class="body">
           <div class="comment-form">
             <form class="row clearfix">
-              <div class="col-sm-6">
-                <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Your Name">
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Email Address">
-                </div>
-              </div>
               <div class="col-sm-12">
                 <div class="form-group">
-									<textarea rows="4" class="form-control no-resize"
-                                              placeholder="Please type what you want..."></textarea>
+                  <textarea rows="4" class="form-control no-resize"
+                            placeholder="Votre Commentaire..."></textarea>
                 </div>
-                <button type="submit" class="btn btn-block btn-primary">SUBMIT</button>
+                <button type="submit" class="btn btn-block btn-primary">Commenter!</button>
               </div>
             </form>
           </div>

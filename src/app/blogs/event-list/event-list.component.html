@@ -20,21 +20,28 @@
     </div>
   </div>
   <div class="row clearfix" *ngIf="!loading && evenements.length > 0">
-    <div class="col-lg-4" *ngFor="let evenement of evenements">
-      <div class="card single_post">
+    <div class="col-lg-4 d-flex" *ngFor="let evenement of evenements">
+      <div class="card single_post flex-fill">
         <div class="body">
-          <div class="img-post">
-            <img class="d-block img-fluid" src="assets/images/blog/blog-page-1.jpg" alt="First slide">
+          <div class="img-post" *ngIf="evenement.medias.length > 0">
+            <img *ngIf="evenement.medias[0].type === 'image' " [src]="getEventMedia(evenement.medias[0].path)" class="d-block img-fluid" alt="First slide">
           </div>
-          <h3><a [routerLink]="['/app/singleevent/' + evenement.slug]" class="text-zied">All photographs are accurate</a></h3>
-          <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal</p>
+          <h3><a [routerLink]="['/app/singleevent/' + evenement.id]" class="text-zied">{{evenement.title}}</a></h3>
+          <p style="min-height: 150px;">{{evenement.description}}</p>
         </div>
-        <div class="footer">
+        <div class="footer" style="padding: inherit;position: absolute; right: 5px; bottom: 5px;">
           <ul class="stats">
-            <li><a class="icon-heart" style="color: red">28</a></li>
-            <li><a class="icon-bubbles">3</a></li>
+            <li><a class="icon-heart" style="color: red">{{evenement.likes_count}}</a></li>
+            <li><a class="icon-bubbles">{{evenement.comments_count}}</a></li>
           </ul>
         </div>
+      </div>
+    </div>
+  </div>
+  <div class="row clearfix" *ngIf="!loading && evenements.length === 0">
+    <div class="col-md-12">
+      <div class="alert alert-info">
+        Aucun évenement trouvé
       </div>
     </div>
   </div>

@@ -5,6 +5,6 @@ export class Comment {
     content: string;
     createdby_id: number;
     entry_id: number;
-    created_at: number;
+    created_at: string;
     owner: User;
 }

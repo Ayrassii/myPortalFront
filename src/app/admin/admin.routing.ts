@@ -36,9 +36,9 @@ const routes: Routes = [
             {
                 path: 'index', component: BlogListComponent, data: { title: ':: HLI :: App :: Accueil ::' }
             },
-            // {
-            //     path: 'events', component: EventListComponent, data: { title: ':: HLI :: App :: Evenements ::' }
-            // },
+            {
+                path: 'events', component: EventListComponent, data: { title: ':: HLI :: App :: Evenements ::' }
+            },
             {
                 path: 'newfeed', component: BlogPostComponent, data: { title: ':: HLI :: App :: Nouvelle Actualite ::' }
             },

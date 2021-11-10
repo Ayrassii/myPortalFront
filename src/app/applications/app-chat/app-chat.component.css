@@ -1,1 +1,32 @@
-@import "../../../assets/css/chatapp.css"
+@import "../../../assets/css/chatapp.css";
+
+/* width */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 8px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #7695b3;
+    border-radius: 8px;
+}
+
+.people-list {
+    overflow-y: scroll;
+    height: 100%;
+}
+.about {
+    padding-top: 15px;
+}
+.chat-about {
+    padding-top: 10px;
+}
+.chat {
+    height: 400px;
+}

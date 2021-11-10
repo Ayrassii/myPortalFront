@@ -17,6 +17,11 @@ export class EventService {
 			.set('authorization', 'bearer ' + this.getToken());
 		return this.httpClient.get(this.url + 'events', {headers});
 	}
+	getSingleEvent(event_id) {
+		const headers = new HttpHeaders()
+			.set('authorization', 'bearer ' + this.getToken());
+		return this.httpClient.get(this.url + 'events/' + event_id, {headers});
+	}
 
 	public getToken(): string {
 		return localStorage.getItem('token');
