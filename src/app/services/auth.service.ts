@@ -39,7 +39,7 @@ export class AuthService {
             .set('authorization', 'bearer ' + this.getToken());
         return this.httpClient.get(this.url + 'me', {headers});
     }
-    
+
     profile(cin) {
         const headers = new HttpHeaders()
             .set('authorization', 'bearer ' + this.getToken());
@@ -113,5 +113,11 @@ export class AuthService {
                     }
                 }
             );
+    }
+
+    decideEntry(entry_id, is_valid) {
+        const headers = new HttpHeaders()
+            .set('authorization', 'bearer ' + this.getToken());
+        return this.httpClient.post(this.url + 'valids', {entry_id, is_valid}, {headers});
     }
 }

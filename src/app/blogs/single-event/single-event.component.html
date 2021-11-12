@@ -9,7 +9,7 @@
         </a> {{evenement.title}}</h2>
         <ul class="breadcrumb">
           <li class="breadcrumb-item"><a [routerLink]="['/app/index']"><i class="icon-home"></i>Accueil</a></li>
-          <li class="breadcrumb-item"><a [routerLink]="['/app/events']"><i class="icon-calendar"></i> Evenements</a></li>
+          <li class="breadcrumb-item"><a [routerLink]="['/app/evenements']"><i class="icon-calendar"></i> Evenements</a></li>
           <li class="breadcrumb-item active">{{evenement.title}}</li>
         </ul>
       </div>
@@ -20,8 +20,21 @@
     <div class="col-lg-12 col-md-12">
       <div class="card single_post">
         <div class="body">
-          <div class="img-post" *ngIf="evenement.medias && evenement.medias.length > 0">
+          <div class="user-account">
+            <img [src]="getUserMedia(evenement.owner.avatar)" style="width: 50px;height: 50px;" class="rounded-circle user-photo" alt="User Profile Picture" >
+            <div class="dropdown">
+              <a href="javascript:void(0);" class="user-name">
+                <strong>{{evenement.owner.name}} {{evenement.owner.last_name}}</strong>
+              </a>
+              <span class="datetime">{{ago(evenement.created_at)}}</span>
+            </div>
+          </div>
+          <div class="img-post" *ngIf="evenement.medias.length > 0">
             <img *ngIf="evenement.medias[0].type === 'image' " [src]="getEventMedia(evenement.medias[0].path)" class="d-block img-fluid" alt="First slide">
+            <video style="width: 100%; height: 300px;" *ngIf="evenement.medias[0].type === 'video' " class="d-block img-fluid" controls>
+              <source [src]="getEventMedia(evenement.medias[0].path)" type="video/mp4">
+            </video>
+            <iframe *ngIf="evenement.medias[0].type === 'youtube' " style="width: 100%; height: 300px;" [src]="evenement.medias[0].path" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
           <h3>{{evenement.title}}</h3>
           <p>{{evenement.description}}</p>
@@ -67,11 +80,11 @@
             <form class="row clearfix">
               <div class="col-sm-12">
                 <div class="form-group">
-                  <textarea  #commentinput
-                             (change)="doTextareaValueChange($event)" rows="4" class="form-control no-resize"
+                  <textarea #commentinput
+                            (change)="doTextareaValueChange($event)" rows="4" class="form-control no-resize"
                             placeholder="Votre Commentaire..."></textarea>
                 </div>
-                <button (click)="onCommentSubmit()" type="submit" class="btn btn-block btn-primary">Commenter!</button>
+                <button (click)="onCommentSubmit()" type="button" class="btn btn-block btn-primary">Commenter!</button>
               </div>
             </form>
           </div>

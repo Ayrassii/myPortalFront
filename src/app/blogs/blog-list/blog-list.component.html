@@ -29,14 +29,32 @@
 					<div class="body">
 						<div class="new_post">
 							<div class="form-group">
-								<input type="text" formControlName="titre" (keyup)="genslug()" class="form-control no-resize" placeholder="Titre">
+								<input type="text" formControlName="titre" class="form-control no-resize" placeholder="Titre">
 							</div>
 							<div class="form-group">
 							<textarea formControlName="contenu" rows="4" class="form-control no-resize"
 									  placeholder="Quoi de neuf User ?"></textarea>
 							</div>
-							<label for="image">Image</label>
-							<app-file-upload id="image" [type]="'image'" formControlName="image" [progress]="progress"></app-file-upload>
+							<div class="form-group">
+								<label for="media-type">Type du Media</label>
+								<select class="form-control" formControlName="type" id="media-type">
+									<option value="image">Image</option>
+									<option value="video">Video</option>
+									<option value="youtube">Video Youtube</option>
+								</select>
+							</div>
+							<div *ngIf="feedForm.value.type === 'image'" class="form-group">
+								<label for="image">Image</label>
+								<app-file-upload id="image" [type]="'image'" formControlName="image" [progress]="progress"></app-file-upload>
+							</div>
+							<div *ngIf="feedForm.value.type === 'video'" class="form-group">
+								<label for="image">Video</label>
+								<app-file-upload id="video" [type]="'image'" formControlName="video" [progress]="progress"></app-file-upload>
+							</div>
+							<div *ngIf="feedForm.value.type === 'youtube'" class="form-group">
+								<label for="youtube-link">Youtube Link</label>
+								<input id="youtube-link" class="form-control" formControlName="youtube" type="url">
+							</div>
 							<div class="post-toolbar-b">
 								<button type="submit" class="btn primary-zied" [disabled]="!feedForm.valid">Publier</button>
 							</div>
@@ -69,14 +87,32 @@
 					<div class="body">
 						<div class="new_post">
 							<div class="form-group">
-								<input type="text" formControlName="titre" (keyup)="genslug()" class="form-control no-resize" placeholder="Titre">
+								<input type="text" formControlName="titre" class="form-control no-resize" placeholder="Titre">
 							</div>
 							<div class="form-group">
 							<textarea formControlName="contenu" rows="4" class="form-control no-resize"
 									  placeholder="Quoi de neuf User ?"></textarea>
 							</div>
-							<label for="image">Image</label>
-							<app-file-upload id="image" [type]="'image'" formControlName="image" [progress]="progress"></app-file-upload>
+							<div class="form-group">
+								<label for="media-type">Type du Media</label>
+								<select class="form-control" formControlName="type" id="media-type">
+									<option value="image">Image</option>
+									<option value="video">Video</option>
+									<option value="youtube">Video Youtube</option>
+								</select>
+							</div>
+							<div *ngIf="feedForm.value.type === 'image'" class="form-group">
+								<label for="image">Image</label>
+								<app-file-upload id="image" [type]="'image'" formControlName="image" [progress]="progress"></app-file-upload>
+							</div>
+							<div *ngIf="feedForm.value.type === 'video'" class="form-group">
+								<label for="image">Video</label>
+								<app-file-upload id="video" [type]="'video'" formControlName="video" [progress]="progress"></app-file-upload>
+							</div>
+							<div *ngIf="feedForm.value.type === 'youtube'" class="form-group">
+								<label for="youtube-link">Youtube Link</label>
+								<input id="youtube-link" class="form-control" formControlName="youtube" type="url">
+							</div>
 							<div class="post-toolbar-b">
 								<button type="submit" class="btn primary-zied" [disabled]="!feedForm.valid">Publier</button>
 							</div>
@@ -95,10 +131,11 @@
 								</a>
 								<span class="datetime">{{ago(feed.created_at)}}</span>
 							</div>
-<!--							<div class="pull-right" *ngIf="getcin() == feed.user.cin">-->
-<!--								<a class="btn btn-primary m-r-10" [routerLink]="['/app/editfeed/' + feed.slug]"><i class="fa fa-pencil"></i></a>-->
-<!--								<button class="btn btn-danger" (click)="openModal(deletemodal,'lg', feed)"><i class="fa fa-trash"></i></button>-->
-<!--							</div>-->
+							<div class="pull-right">
+								<button type="button" (click)="onValidateEntry(feed.id)" class="btn btn-success m-r-10"><i class="fa fa-check"></i></button>
+								<button type="button" (click)="onDismissEntry(feed.id)" class="btn btn-danger m-r-10"><i class="fa fa-times"></i></button>
+								<button class="btn btn-danger" (click)="openModal(deletemodal,'lg', feed)"><i class="fa fa-trash"></i></button>
+							</div>
 						</div>
 <!--						<h3>-->
 <!--							<a [routerLink]="['/app/singlefeed/' + feed.id]">{{feed.title}}</a>-->
@@ -114,7 +151,10 @@
 					</div>
 					<div class="footer">
 						<div class="actions">
-							<a [routerLink]="['/app/singlefeed/' + feed.id]" style="margin-right: 5px;" class="btn btn-primary"> <i class="fa fa-thumbs-up"></i> J'aime</a>
+							<button (click)="onLikeSubmit(feed.id)" class="btn btn-primary" style="margin-right: 5px;">
+								<i [ngClass]="{'fa' : true, 'fa-thumbs-up': !isLiked(feed.id), 'fa-thumbs-down': isLiked(feed.id) }" style="color: white;margin-right: 2px;"></i>
+								{{isLiked(feed.id) ? 'J\'aime plus' : 'J\'aime' }}
+							</button>
 							<a [routerLink]="['/app/singlefeed/' + feed.id]" class="btn btn-info"> <i class="fa fa-comment"></i> Commentaire</a>
 						</div>
 						<ul class="stats">
@@ -205,7 +245,7 @@
 						<li *ngFor="let answer of question.answers">
 							<p><span class="value">{{answer.text}}</span><span class="text-muted float-right">{{answer.answer_responses.length}}</span></p>
 							<div class="progress progress-xs progress-transparent custom-color-blue">
-								<div class="progress-bar" data-transitiongoal="87" aria-valuenow="87" [ngStyle]="{ 'width' : (( answer.answer_responses.length * question.responses_count ) * 100) + '%' }"></div>
+								<div class="progress-bar" data-transitiongoal="87" aria-valuenow="87" [ngStyle]="{ 'width' : (( answer.answer_responses.length / question.responses_count ) * 100) + '%' }"></div>
 							</div>
 						</li>
 					</ul>
@@ -226,20 +266,6 @@
 							<a href="javascript:void(0);" class="user-name" data-toggle="dropdown"><strong>{{empofmounth.name}} {{empofmounth.last_name}} </strong></a>
 						</div>
 						<hr>
-						<ul class="row list-unstyled">
-							<li class="col-4">
-								<small>Ventes</small>
-								<h6>456</h6>
-							</li>
-							<li class="col-4">
-								<small>Commandes</small>
-								<h6>1350</h6>
-							</li>
-							<li class="col-4">
-								<small>Revenus</small>
-								<h6>$2.13B</h6>
-							</li>
-						</ul>
 					</div>
 				</div>
 			</div>

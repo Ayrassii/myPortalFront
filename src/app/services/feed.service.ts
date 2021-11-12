@@ -48,32 +48,29 @@ export class FeedService {
         return this.httpClient.put(this.url + 'likes', {entry_id}, {headers});
     }
 
-    addFeed(feed) {
+    addFeed(titre, contenu, type, youtube = null, image = null, video = null) {
         const headers = new HttpHeaders()
             .set('authorization', 'Bearer ' + localStorage.getItem('token'));
         const formData = new FormData();
-        formData.append('titre', feed.titre);
-        if (feed.image && feed.image !== 'null') {
-            formData.append('image', feed.image);
-        }
-        formData.append('contenu', feed.contenu);
-        formData.append('type', feed.type);
-        formData.append('slug', feed.slug);
-        switch (feed.type) {
-            case 'classes': {
-                feed.classes.forEach(el => formData.append('classes[]', el));
+        formData.append('title', titre);
+        formData.append('description', contenu);
+        formData.append('is_featured', '0');
+        formData.append('medias[0][type]', type);
+        switch (type) {
+            case 'youtube': {
+                formData.append('medias[0][path]', 'https://www.youtube.com/embed/' + youtube);
                 break;
             }
-            case 'etudiants': {
-                feed.etudiants.forEach(el => formData.append('users[]', el));
+            case 'video': {
+                formData.append('medias[0][file]', video);
                 break;
             }
-            case 'professeurs': {
-                feed.professeurs.forEach(el => formData.append('users[]', el));
+            case 'image': {
+                formData.append('medias[0][file]', image);
                 break;
             }
         }
-        return this.httpClient.post(this.url, formData, {
+        return this.httpClient.post(this.url + 'feeds', formData, {
             headers,
             reportProgress: true,
             observe: 'events'
@@ -83,7 +80,7 @@ export class FeedService {
     deleteFeed(feed) {
         const headers = new HttpHeaders()
             .set('authorization', 'Bearer ' + localStorage.getItem('token'));
-        return this.httpClient.delete(this.url + '/' + feed.slug, {headers});
+        return this.httpClient.delete(this.url + 'feeds/' + feed.id, {headers});
     }
 
     editFeed(feed) {

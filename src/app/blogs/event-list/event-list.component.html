@@ -19,12 +19,21 @@
       Veuillez Patienter...
     </div>
   </div>
+  <div class="row clearfix mb-3">
+    <div class="col-md-12">
+      <a [routerLink]="['/app/add-event']" style="background: #7695B3; color: #fff;" class="btn btn-block">Ajouter Evenement</a>
+    </div>
+  </div>
   <div class="row clearfix" *ngIf="!loading && evenements.length > 0">
     <div class="col-lg-4 d-flex" *ngFor="let evenement of evenements">
       <div class="card single_post flex-fill">
         <div class="body">
-          <div class="img-post" *ngIf="evenement.medias.length > 0">
-            <img *ngIf="evenement.medias[0].type === 'image' " [src]="getEventMedia(evenement.medias[0].path)" class="d-block img-fluid" alt="First slide">
+          <div class="img-post" *ngIf="evenement && evenement.medias.length > 0">
+            <img *ngIf="evenement && evenement.medias[0].type === 'image' " [src]="getEventMedia(evenement.medias[0].path)" class="d-block img-fluid" alt="First slide">
+            <video style="width: 100%; height: 300px;" *ngIf="evenement && evenement.medias[0].type === 'video' " class="d-block img-fluid" controls>
+              <source [src]="getEventMedia(evenement.medias[0].path)" type="video/mp4">
+            </video>
+            <iframe *ngIf="evenement && evenement.medias[0].type === 'youtube' " style="width: 100%; height: 300px;" [src]="evenement.medias[0].path" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
           <h3><a [routerLink]="['/app/singleevent/' + evenement.id]" class="text-zied">{{evenement.title}}</a></h3>
           <p style="min-height: 150px;">{{evenement.description}}</p>

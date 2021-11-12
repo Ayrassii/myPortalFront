@@ -32,6 +32,26 @@ export class EventService {
 			.set('authorization', 'Bearer ' + localStorage.getItem('token'));
 		return this.httpClient.put(this.url + 'likes', {entry_id}, {headers});
 	}
+	addEvent(evenement) {
+		const headers = new HttpHeaders()
+			.set('authorization', 'Bearer ' + localStorage.getItem('token'));
+		const formData = new FormData();
+		formData.append('title', evenement.title);
+		formData.append('description', evenement.description);
+		formData.append('start_date', evenement.start_date);
+		formData.append('end_date', evenement.end_date);
+		formData.append('is_featured', '0');
+		evenement.medias.forEach(
+			(m, i) => {
+				formData.append('medias[' + i + '][type]', m.type);
+				if (m.type === 'youtube') {
+					formData.append('medias[' + i + '][path]', 'https://www.youtube.com/embed/' + m.path);
+				} else {
+					formData.append('medias[' + i + '][file]', m.file);
+				}
+			});
+		return this.httpClient.post(this.url + 'events', formData, {headers});
+	}
 
 	public getToken(): string {
 		return localStorage.getItem('token');

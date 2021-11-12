@@ -27,6 +27,7 @@ import {ArticleListComponent} from '../blogs/article-list/article-list.component
 import {AnnuaireComponent} from '../blogs/annuaire/annuaire.component';
 import {AppChatComponent} from '../applications/app-chat/app-chat.component';
 import {SingleArticleComponent} from '../blogs/single-article/single-article.component';
+import {AddEventComponent} from '../blogs/add-event/add-event.component';
 
 const routes: Routes = [
     {
@@ -41,7 +42,10 @@ const routes: Routes = [
                 path: 'events', component: EventListComponent, data: { title: ':: HLI :: App :: Evenements ::' }
             },
             {
-                path: 'newfeed', component: BlogPostComponent, data: { title: ':: HLI :: App :: Nouvelle Actualite ::' }
+                path: 'add-article', component: BlogPostComponent, data: { title: ':: HLI :: App :: Nouvel Article ::' }
+            },
+            {
+                path: 'add-event', component: AddEventComponent, data: { title: ':: HLI :: App :: Nouvel Evenement ::' }
             },
             {
                 path: 'singlefeed/:id', component: SingleFeedComponent, data: { title: ':: HLI :: App :: Actualite ::' }

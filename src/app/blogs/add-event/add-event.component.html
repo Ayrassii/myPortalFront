@@ -1,0 +1,87 @@
+<div class="container-fluid">
+  <div class="block-header">
+    <div class="row">
+      <div class="col-lg-5 col-md-8 col-sm-12">
+        <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"
+               (click)="toggleFullWidth()">
+          <i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
+          <i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
+        </a>Nouvel Evenement</h2>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a [routerLink]="['/app/index']"><i class="icon-home"></i></a></li>
+          <li class="breadcrumb-item"><a [routerLink]="['/app/events']"><i class="icon-calendar"></i> Evenements</a></li>
+          <li class="breadcrumb-item active">Nouvel Evenement</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-lg-12">
+      <form [formGroup]="articleForm" (ngSubmit)="onArticleSubmit(articleForm.value)" enctype="multipart/form-data">
+        <div class="card">
+          <div class="body">
+            <div class="form-group">
+              <label for="titre">Titre</label>
+              <input formControlName="title" id="titre" type="text" class="form-control" placeholder="Titre" />
+            </div>
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea formControlName="description" id="description" cols="30" rows="5" class="form-control" placeholder="Decrire l'evenement"></textarea>
+            </div>
+            <div class="row mb-3">
+              <div class="col">
+                <div class="form-group">
+                  <label for="start_date">Date Début</label>
+                  <input type="date" class="form-control" formControlName="start_date" id="start_date">
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group">
+                  <label for="end_date">Date Fin</label>
+                  <input type="date" class="form-control" formControlName="end_date" id="end_date">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <button type="button" (click)="GenererMediasform()" class="btn btn-primary">Ajouter Media</button>
+              </div>
+              <div class="col-lg-12">
+                <div formArrayName="medias" *ngFor="let media of getformArray().controls; let i = index">
+                  <hr>
+                  <div [formGroupName]="i">
+                    <div class="form-group">
+                      <label [for]="'typemedia' + (i + 1)">Type Media {{ (i + 1) }}</label>
+                      <button (click)="onRemoveMedia(i)" class="btn btn-danger" style="float: right;margin-bottom: 10px;"><i class="fa fa-trash"></i></button>
+                      <select class="form-control" formControlName="type" [id]="'typemedia' + (i + 1)">
+                        <option value="" selected disabled>Sélectionnez Type Media</option>
+                        <option value="image">Image</option>
+                        <option value="video">Video</option>
+                        <option value="youtube">Video Youtube</option>
+                      </select>
+                    </div>
+                    <div *ngIf="media.get('type').value === 'image'" class="form-group">
+                      <label [for]="'image' + (i + 1)">Image Media {{(i + 1)}}</label>
+                      <app-file-upload [id]="'image' + (i + 1)" [type]="'image'" formControlName="file" [progress]="progress"></app-file-upload>
+                    </div>
+                    <div *ngIf="media.get('type').value === 'video'" class="form-group">
+                      <label [for]="'video' + (i + 1)">Video Media {{(i + 1)}}</label>
+                      <app-file-upload [id]="'video' + (i + 1)" [type]="'video'" formControlName="file" [progress]="progress"></app-file-upload>
+                    </div>
+                    <div *ngIf="media.get('type').value === 'youtube'" class="form-group">
+                      <label [for]="'youtube-link' + (i + 1)">Youtube Link Media {{(i + 1)}}</label>
+                      <input [id]="'youtube-link' + (i + 1)" class="form-control" formControlName="path" type="url">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button [disabled]="!articleForm.valid" type="submit" class="btn btn-block btn-primary m-t-20">Ajouter</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

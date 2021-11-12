@@ -14,33 +14,37 @@
       </div>
     </div>
   </div>
-
+  <div class="row clearfix mb-3" >
+    <div class="col-md-12">
+      <a [routerLink]="['/app/add-article']" type="button" style="background: #7695B3; color: #fff;" class="btn btn-block">Ajouter Article</a>
+    </div>
+  </div>
   <div class="row clearfix">
     <div class="col-lg-6 d-flex">
       <div class="card single_post flex-fill">
         <div class="body">
           <div class="img-post" *ngIf="farticle && farticle.medias.length > 0">
-            <img *ngIf="farticle.medias[0].type === 'image' " [src]="getArticleMedia(farticle.medias[0].path)" class="d-block img-fluid" alt="First slide">
-            <video style="width: 100%; height: 300px;" *ngIf="farticle.medias[0].type === 'video' " class="d-block img-fluid" controls>
+            <img *ngIf="farticle && farticle.medias[0].type === 'image' " [src]="getArticleMedia(farticle?.medias[0].path)" class="d-block img-fluid" alt="First slide">
+            <video style="width: 100%; height: 300px;" *ngIf="farticle && farticle.medias[0].type === 'video' " class="d-block img-fluid" controls>
               <source [src]="getArticleMedia(farticle.medias[0].path)" type="video/mp4">
             </video>
-            <iframe *ngIf="farticle.medias[0].type === 'youtube' " style="width: 100%; height: 300px;" [src]="farticle.medias[0].path" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe *ngIf="farticle && farticle.medias[0].type === 'youtube' " style="width: 100%; height: 300px;" [src]="farticle.medias[0].path" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
-          <h3 class="titre-custom"><a [routerLink]="['/app/singlearticle/' + farticle.id]">{{farticle.title}}</a></h3>
+          <h3 class="titre-custom"><a *ngIf="farticle" [routerLink]="['/app/singlearticle/' + farticle.id]">{{farticle.title}}</a></h3>
         </div>
       </div>
     </div>
-    <div class="col-lg-3" *ngFor="let article of articles.slice(1,3)">
+    <div class="col-lg-3" *ngFor="let article of articles?.slice(1,3)">
       <div class="card single_post">
         <div class="body">
           <div class="img-post" *ngIf="article && article.medias.length > 0">
-            <img *ngIf="article.medias[0].type === 'image' " [src]="getArticleMedia(article.medias[0].path)" class="d-block img-fluid" alt="First slide">
-            <video style="width: 100%; height: 300px;" *ngIf="article.medias[0].type === 'video' " class="d-block img-fluid" controls>
+            <img *ngIf="article && article.medias[0].type === 'image' " [src]="getArticleMedia(article.medias[0].path)" class="d-block img-fluid" alt="First slide">
+            <video style="width: 100%; height: 300px;" *ngIf="article && article.medias[0].type === 'video' " class="d-block img-fluid" controls>
               <source [src]="getArticleMedia(article.medias[0].path)" type="video/mp4">
             </video>
-            <iframe *ngIf="article.medias[0].type === 'youtube' " style="width: 100%; height: 300px;" [src]="article.medias[0].path" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe *ngIf="article && article.medias[0].type === 'youtube' " style="width: 100%; height: 300px;" [src]="article.medias[0].path" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
-          <h3 class="titre-custom"><a [routerLink]="['/app/singlearticle/' + article.id]">{{article.title}}</a></h3>
+          <h3 class="titre-custom"><a *ngIf="article" [routerLink]="['/app/singlearticle/' + article.id]">{{article.title}}</a></h3>
         </div>
       </div>
     </div>
@@ -50,13 +54,13 @@
       <div class="card single_post flex-fill">
         <div class="body">
           <div class="img-post" *ngIf="oarticle && oarticle.medias.length > 0">
-            <img *ngIf="oarticle.medias[0].type === 'image' " [src]="getArticleMedia(article.medias[0].path)" class="d-block img-fluid" alt="First slide">
-            <video *ngIf="oarticle.medias[0].type === 'video' " class="d-block img-fluid" controls>
+            <img *ngIf="oarticle && oarticle.medias[0].type === 'image' " [src]="getArticleMedia(oarticle?.medias[0].path)" class="d-block img-fluid" alt="First slide">
+            <video *ngIf="oarticle && oarticle.medias[0].type === 'video' " class="d-block img-fluid" controls>
               <source [src]="getArticleMedia(oarticle.medias[0].path)" type="video/mp4">
             </video>
-            <iframe *ngIf="oarticle.medias[0].type === 'youtube' " class="d-block img-fluid" [src]="oarticle.medias[0].path" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe *ngIf="oarticle && oarticle.medias[0].type === 'youtube' " class="d-block img-fluid" [src]="oarticle.medias[0].path" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
-          <h3 class="titre-custom"><a [routerLink]="['/app/singlearticle/' + oarticle.id]">{{oarticle.title}}</a></h3>
+          <h3 class="titre-custom"><a *ngIf="oarticle" [routerLink]="['/app/singlearticle/' + oarticle.id]">{{oarticle.title}}</a></h3>
         </div>
       </div>
     </div>

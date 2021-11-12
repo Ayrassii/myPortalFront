@@ -19,6 +19,7 @@ import {QuestionService} from '../../services/question.service';
 import {Evenement} from '../../models/evenement';
 import {EventService} from '../../services/event.service';
 import {DomSanitizer} from '@angular/platform-browser';
+import {Router} from '@angular/router';
 
 export function uploadProgress<T>( cb: ( progress: number ) => void ) {
 	return tap(( event: HttpEvent<T> ) => {
@@ -49,6 +50,7 @@ export class BlogListComponent implements OnInit, OnDestroy {
 	success = false;
 	loading = true;
 	showAddPost = false;
+	mediaselected: string;
 	selectedfeed: Feed;
 	feeds: Feed[] = [];
 	events: Evenement[] = [];
@@ -87,6 +89,7 @@ export class BlogListComponent implements OnInit, OnDestroy {
 	};
 	constructor(private sidebarService: SidebarService,
 				private modalService: NgbModal,
+				private router: Router,
 				private cdr: ChangeDetectorRef,
 				private formBuilder: FormBuilder,
 				private feedService: FeedService,
@@ -99,7 +102,6 @@ export class BlogListComponent implements OnInit, OnDestroy {
 
 
 	ngOnInit() {
-		console.log(this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/cw1YLgg-w18'));
 		this.feedService.getFeedsFromServer();
 		this.authService.getUpcomingBirthdays();
 		this.questionService.getQuestionFromServer();
@@ -120,6 +122,7 @@ export class BlogListComponent implements OnInit, OnDestroy {
 							f.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>f.medias[0].path);
 						}
 					}
+					this.loading = false;
 				});
 			}
 		);
@@ -154,7 +157,6 @@ export class BlogListComponent implements OnInit, OnDestroy {
 		this.questionService.emitQuestion();
 		this.initFeedForm();
 		this.initQuizForm();
-		this.loading = false;
 	}
 
 	toggleFullWidth() {
@@ -264,9 +266,12 @@ export class BlogListComponent implements OnInit, OnDestroy {
 	initFeedForm() {
 		this.feedForm = this.formBuilder.group(
 			{
-				contenu: ['', [Validators.required, Validators.minLength(10)]],
-				titre: ['', [Validators.required, Validators.minLength(5)]],
-				image: [null, [requiredFileType(['png', 'jpg'])]]
+				contenu: ['', [Validators.required, Validators.minLength(2)]],
+				titre: ['', [Validators.required, Validators.minLength(2)]],
+				image: [null, [requiredFileType(['png', 'jpg'])]],
+				video: [null, [requiredFileType(['mp4'])]],
+				youtube: ['', []],
+				type: ['image', []]
 			}
 		);
 	}
@@ -278,21 +283,67 @@ export class BlogListComponent implements OnInit, OnDestroy {
 	}
 
 	onFeedSubmit(feed) {
-		feed.slug = this.slug;
-		feed.type = 'public';
-		feed.image = this.feedForm.get('image').value;
-		feed.users = [];
-		feed.classes = [];
+		const youtube_id = this.genEmbedYoutube(feed.youtube);
 		this.success = false;
-		this.feedService.addFeed(feed).pipe(
+		this.feedService.addFeed(feed.titre, feed.contenu, feed.type, youtube_id, feed.image, feed.video).pipe(
 			uploadProgress(progress => (this.progress = progress)),
 			toResponseBody()
-		).subscribe(res => {
+		).subscribe((res: Feed) => {
+			const postedFeed = res;
+			if (postedFeed.medias[0].type === 'youtube') {
+				postedFeed.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>postedFeed.medias[0].path);
+			}
 			this.progress = 0;
-			this.feeds.unshift(res['feed']);
+			this.feeds.unshift(postedFeed);
 			this.success = true;
 			this.initFeedForm();
+			this.showAddPost = false;
 		});
+	}
+
+	onLikeSubmit(id) {
+		this.feedService.likeFeed(id).subscribe(
+			(res: Feed) => {
+				const feed = this.feeds.find(f => f.id === id);
+				feed.likes = res.likes;
+				feed.likes_count = res.likes_count;
+			}
+		);
+	}
+
+	isLiked(id) {
+		const feed = this.feeds.find(f => f.id === id);
+		const like = feed.likes.find(l => l.user_id === parseInt(localStorage.getItem('id'), 10));
+		if (like) { return true; } else { return false; }
+	}
+
+	onValidateEntry(entry_id) {
+		this.authService.decideEntry(entry_id, 'yes').subscribe(
+			(feeds: Feed[] ) => {
+				this.feeds = feeds;
+				this.feeds.forEach((f, i) => {
+					if (f.medias.length > 0) {
+						if (f.medias[0].type === 'youtube') {
+							f.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>f.medias[0].path);
+						}
+					}
+				});
+			}
+		);
+	}
+	onDismissEntry(entry_id) {
+		this.authService.decideEntry(entry_id, 'no').subscribe(
+			(feeds: Feed[] ) => {
+				this.feeds = feeds;
+				this.feeds.forEach((f, i) => {
+					if (f.medias.length > 0) {
+						if (f.medias[0].type === 'youtube') {
+							f.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>f.medias[0].path);
+						}
+					}
+				});
+			}
+		);
 	}
 	onQuizSubmit(form) {
 		const fullanswer = {
@@ -342,20 +393,7 @@ export class BlogListComponent implements OnInit, OnDestroy {
 	}
 
 	eventClick(model: any, content, size) {
-		model = {
-			event: {
-				id: model.event.id,
-				start: model.event.start,
-				end: model.event.end,
-				title: model.event.title,
-				allDay: model.event.allDay,
-				color: model.event.color
-				// other params
-			},
-			duration: {}
-		};
-		this.displayEvent = model;
-		this.openModal(content, size);
+		this.router.navigate(['app', 'singleevent', model.event.id]);
 	}
 	updateEvent(model: any) {
 
@@ -368,10 +406,20 @@ export class BlogListComponent implements OnInit, OnDestroy {
 		}
 		return color;
 	}
-	openModal(content, size) {
+	openModal(content, size, feed) {
+		this.selectedfeed = feed;
 		this.modalService.open(content, { size: size });
 	}
 	getRole() {
 		return localStorage.getItem('role');
+	}
+
+	genEmbedYoutube(url: string) {
+		console.log(url);
+		return url.split('?v=')[1];
+	}
+
+	changeMediaSelected(event) {
+		this.mediaselected = event.target.value;
 	}
 }

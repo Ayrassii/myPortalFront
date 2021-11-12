@@ -19,32 +19,59 @@
   </div>
 </div>
 
+<div class="row clearfix mb-3" >
+  <div class="col-md-12">
+    <button (click)="showAddAnnuaire = !showAddAnnuaire" type="button" style="background: #7695B3; color: #fff;" class="btn btn-block">Ajouter Annuaire</button>
+  </div>
+</div>
+
+<div class="row clearfix mb-3" *ngIf="showAddAnnuaire">
+  <div class="col-md-12">
+    <form [formGroup]="annuaireForm" (ngSubmit)="onAnnuaireSubmit(annuaireForm.value)">
+      <div class="card">
+        <div class="body">
+          <div class="form-group">
+            <label for="imageannuaire">Photo</label>
+            <app-file-upload id="imageannuaire" [type]="'image'" formControlName="image" [progress]="progress"></app-file-upload>
+          </div>
+          <div class="form-group">
+            <label for="full_name">Nom Complet</label>
+            <input formControlName="full_name" id="full_name" type="text" class="form-control" placeholder="ex: Zied Jlassi" />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input formControlName="email" id="email" type="email" class="form-control" placeholder="ex: zied.jlassi@mail.com" />
+          </div>
+          <div class="form-group">
+            <label for="phone">Numero de Téléphone</label>
+            <input formControlName="phone" id="phone" type="email" class="form-control" placeholder="ex: 55111111" />
+          </div>
+          <button [disabled]="!annuaireForm.valid" type="submit" class="btn btn-block btn-primary m-t-20">Ajouter</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div class="row clearfix">
   <div class="col-lg-12 col-md-12">
-    <div class="card">
-      <div class="header">
-        <h3>Annuaire</h3>
-      </div>
-      <div class="body">
-        <div class="row">
-          <div *ngFor="let person of persons" class="col-lg-4 col-md-6 col-sm-12">
-            <div class="card">
-              <div class="body text-center">
-                <div class="chart easy-pie-chart-1" data-percent="75">
+    <h3>Annuaire</h3>
+    <div class="row">
+      <div *ngFor="let person of persons" class="col-lg-4 col-md-6 col-sm-12 d-flex">
+        <div class="card flex-fill">
+          <div class="body text-center">
+            <div class="chart easy-pie-chart-1" data-percent="75">
                   <span style="cursor: pointer; color: #0c8ec3">
                     <img [src]="getPersonMedia(person.picture)" alt="user" class="rounded-circle">
                   </span>
-                  <canvas height="100" width="100"></canvas>
-                </div>
-                <h5>{{person.full_name}}</h5>
-                <h6>{{person.email}}</h6>
-                <small>{{person.phone}}</small>
-              </div>
+              <canvas height="100" width="100"></canvas>
             </div>
+            <h5>{{person.full_name}}</h5>
+            <h6>{{person.email}}</h6>
+            <small>{{person.phone}}</small>
           </div>
         </div>
       </div>
     </div>
-
   </div>
 </div>

@@ -11,6 +11,7 @@ import {User} from '../../models/user';
 import {Evenement} from '../../models/evenement';
 import {EventService} from '../../services/event.service';
 import {Globals} from '../../Globals';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-event-list',
@@ -31,13 +32,22 @@ export class EventListComponent implements OnInit, OnDestroy {
               private modalService: NgbModal,
               private eventService: EventService,
               private global: Globals,
+              private sanitizer: DomSanitizer,
               private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.loading = false;
     this.eventService.getEvents().subscribe(
         (evenements: Evenement[] ) => {
-            this.evenements = evenements;
+          this.evenements = evenements;
+          this.evenements.forEach((f, i) => {
+            if (f.medias.length > 0) {
+              if (f.medias[0].type === 'youtube') {
+                f.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>f.medias[0].path);
+              }
+            }
+            this.loading = false;
+          });
         });
   }
 

@@ -14,4 +14,15 @@ export class AnnuaireService {
         .set('authorization', 'Bearer ' + localStorage.getItem('token'));
     return this.httpClient.get(this.url, {headers});
   }
+
+  addAnnuaire(annuaire) {
+    const headers = new HttpHeaders()
+        .set('authorization', 'Bearer ' + localStorage.getItem('token'));
+    const formData = new FormData();
+    formData.append('full_name', annuaire.full_name);
+    formData.append('phone', annuaire.phone);
+    formData.append('email', annuaire.email);
+    formData.append('image', annuaire.image);
+    return this.httpClient.post(this.url, formData, {headers});
+  }
 }

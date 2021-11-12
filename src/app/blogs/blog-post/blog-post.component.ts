@@ -4,13 +4,15 @@ import {Router} from '@angular/router';
 import {filter, map, tap} from 'rxjs/operators';
 import {HttpEvent, HttpEventType, HttpResponse} from '@angular/common/http';
 import {pipe} from 'rxjs';
-import {FormBuilder, FormGroup, NG_VALUE_ACCESSOR, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormGroup, NG_VALUE_ACCESSOR, Validators} from '@angular/forms';
 import {FileUploadComponent} from '../file-upload/file-upload.component';
 import {FeedService} from '../../services/feed.service';
 import {requiredFileType} from '../../../shared/requiredfiletype';
 import {ClasseService} from '../../services/classe.service';
 import {EtudiantService} from '../../services/etudiant.service';
 import {ProfesseurService} from '../../services/professeur.service';
+import {Article} from '../../models/article';
+import {ArticleService} from '../../services/article.service';
 
 export function uploadProgress<T>( cb: ( progress: number ) => void ) {
 	return tap(( event: HttpEvent<T> ) => {
@@ -38,17 +40,11 @@ export function toResponseBody<T>() {
 })
 export class BlogPostComponent implements OnInit {
 	type = 'public';
-	classes = [];
-	dpclasses = [];
-	etudiants = [];
-	dpetudiants = [];
-	professeurs = [];
-	dpprofesseurs = [];
-	dropdownSettings: any;
 	progress = 0;
 	success = false;
-	slug: string;
-	feedForm: FormGroup;
+	medias = [];
+	nbr_medias = 0;
+	articleForm: FormGroup;
 	public sidebarVisible = true;
 	public config: object = {
 		items: [
@@ -65,65 +61,11 @@ export class BlogPostComponent implements OnInit {
 				private cdr: ChangeDetectorRef,
 				private router: Router,
 				private formBuilder: FormBuilder,
-				private classeService: ClasseService,
-				private etudiantService: EtudiantService,
-				private professeurService: ProfesseurService,
-				private feedService: FeedService) {
+				private articleService: ArticleService) {
 	}
 
 	ngOnInit() {
-		if (this.getRole() === 'ROLE_PROFESSEUR') {
-			this.dropdownSettings = {
-				singleSelection: false,
-				idField: 'item_id',
-				textField: 'item_text',
-				value: 'item_id',
-				selectAllText: 'Select All',
-				unSelectAllText: 'UnSelect All',
-				itemsShowLimit: 3,
-				allowSearchFilter: true
-			};
-			this.classeService.getClassesFromServer().subscribe(
-				(res) => {
-					this.classes = res['classes'];
-					this.classes.forEach(
-						(el) => {
-							this.dpclasses.push(
-								{ item_id: el.id , item_text: el.abbreviation + ' ' + el.niveau.specialite.nom + ' ' +  el.niveau.nom}
-							);
-						}
-					);
-				}
-			);
-			this.etudiantService.getEtudiantsFromServer().subscribe(
-				(res) => {
-					this.etudiants = res['etudiants'];
-					this.etudiants.forEach(
-						(el) => {
-							this.dpetudiants.push(
-								{ item_id: el.id , item_text: el.nom + ' ' + el.prenom}
-							);
-						}
-					);
-				}
-			);
-			this.professeurService.getProfesseursFromServer().subscribe(
-				(res) => {
-					this.professeurs = res['professeurs'];
-					this.professeurs.forEach(
-						(el) => {
-							this.dpprofesseurs.push(
-								{ item_id: el.id , item_text: el.gendre === 'female' ?
-										'Mme'  + '. ' + el.nom + ' ' + el.prenom : 'Mr' + '. ' + el.nom + ' ' + el.prenom}
-							);
-						}
-					);
-				}
-			);
-			this.initFeedForm();
-		} else {
-			this.router.navigate(['authentication', 'page-403']);
-		}
+		this.initArticleForm();
 	}
 
 	toggleFullWidth() {
@@ -135,65 +77,45 @@ export class BlogPostComponent implements OnInit {
 		return localStorage.getItem('role');
 	}
 
-	onFeedSubmit(feed) {
-		feed.slug = this.slug;
-		feed.contenu = this.htmlContent;
-		feed.image = this.feedForm.get('image').value;
-		switch (feed.type) {
-			case 'classes': {
-				feed.classes = feed.classes.map(el => el.item_id);
-				feed.professeurs = null;
-				feed.etudiants = null;
-				break;
+	onArticleSubmit(article) {
+		article.content = this.htmlContent;
+		article.medias.forEach((m, i) => {
+			if (m.type === 'youtube') {
+				m.path = this.genEmbedYoutube(m.path);
 			}
-			case 'etudiants': {
-				feed.etudiants = feed.etudiants.map(el => el.item_id);
-				feed.professeurs = null;
-				feed.classes = null;
-				break;
-			}
-			case 'professeurs': {
-				feed.professeurs = feed.professeurs.map(el => el.item_id);
-				feed.etudiants = null;
-				feed.classes = null;
-				break;
-			}
-			case 'public': {
-				feed.professeurs = null;
-				feed.etudiants = null;
-				feed.classes = null;
-			}
-		}
-		this.success = false;
-		this.feedService.addFeed(feed).pipe(
-			uploadProgress(progress => (this.progress = progress)),
-			toResponseBody()
-		).subscribe(res => {
-			this.success = true;
-			this.router.navigate(['/app/index']);
 		});
+		this.articleService.addArticle(article).subscribe(r => this.router.navigate(['app', 'articles']));
 	}
 
-	genslug() {
-		const feedTitle = this.feedForm.get('titre').value.toLowerCase();
-		this.slug = feedTitle.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-').toLowerCase();
+	onRemoveMedia(index) {
+		const medias = this.articleForm.controls.medias as FormArray;
+		medias.removeAt(index);
+		this.nbr_medias--;
 	}
 
-	initFeedForm() {
-		this.feedForm = this.formBuilder.group(
+	getformArray() { return <FormArray>this.articleForm.get('medias'); }
+
+	initArticleForm() {
+		this.articleForm = this.formBuilder.group(
 			{
-				titre: ['', [Validators.required, Validators.minLength(5)]],
-				image: [null, [requiredFileType(['png', 'jpg'])]],
-				type: ['', [Validators.required]],
-				classes: [null],
-				professeurs: [null],
-				etudiants: [null],
+				title: ['', [Validators.required, Validators.minLength(5)]],
+				medias: new FormArray([]),
+				nbr_medias: [0]
 			}
 		);
 	}
+	genEmbedYoutube(url: string) {
+		return url.split('?v=')[1];
+	}
 
-	setType() {
-		this.type = this.feedForm.get('type').value;
+	GenererMediasform() {
+		this.nbr_medias = this.nbr_medias ++;
+		const medias = this.articleForm.controls.medias as FormArray;
+		medias.push(this.formBuilder.group({
+			type: ['', [Validators.required, Validators.minLength(5)]],
+			path: [null],
+			file: [null, [requiredFileType(['mp4', 'avi', 'jpg', 'png'])]]
+		}));
 	}
 
 }

@@ -6,10 +6,11 @@
 					   (click)="toggleFullWidth()">
 					<i class="fa fa-arrow-left" *ngIf="sidebarVisible"></i>
 					<i class="fa fa-arrow-right" *ngIf="!sidebarVisible"></i>
-				</a> Nouveau Post</h2>
+				</a>Nouvel Article</h2>
 				<ul class="breadcrumb">
 					<li class="breadcrumb-item"><a [routerLink]="['/app/index']"><i class="icon-home"></i></a></li>
-					<li class="breadcrumb-item active">Nouveau Post</li>
+					<li class="breadcrumb-item"><a [routerLink]="['/app/articles']"><i class="icon-feed"></i> Blog</a></li>
+					<li class="breadcrumb-item active">Nouvel Article</li>
 				</ul>
 			</div>
 		</div>
@@ -17,38 +18,52 @@
 
 	<div class="row clearfix">
 		<div class="col-lg-12">
-			<form [formGroup]="feedForm" (ngSubmit)="onFeedSubmit(feedForm.value)">
+			<form [formGroup]="articleForm" (ngSubmit)="onArticleSubmit(articleForm.value)" enctype="multipart/form-data">
 				<div class="card">
 					<div class="body">
 						<div class="form-group">
-							<input formControlName="titre" (keyup)="genslug()" type="text" class="form-control" placeholder="Titre" />
+							<label for="titre">Titre</label>
+							<input formControlName="title" id="titre" type="text" class="form-control" placeholder="Titre" />
 						</div>
-						<select class="form-control show-tick" formControlName="type" required (change)="setType()">
-							<option value="" disabled >Selectionner Type</option>
-							<option value="public" selected>Publique</option>
-							<option value="classes">Classes</option>
-							<option value="professeurs">Professeurs</option>
-							<option value="etudiants">Etudiants</option>
-						</select>
-						<br>
-						<div *ngIf="type !== 'public' " class="form-group">
-							<ng-multiselect-dropdown *ngIf="type == 'professeurs' "  formControlName="professeurs" [placeholder]="'Selectionner Professeur(s)'" [data]="dpprofesseurs"
-													 [settings]="dropdownSettings">
-							</ng-multiselect-dropdown>
-							<ng-multiselect-dropdown *ngIf="type == 'etudiants' "  formControlName="etudiants" [placeholder]="'Selectionner Etudiant(s)'" [data]="dpetudiants"
-													 [settings]="dropdownSettings">
-							</ng-multiselect-dropdown>
-							<ng-multiselect-dropdown *ngIf="type == 'classes' "  formControlName="classes" [placeholder]="'Selectionner Classe(s)'" [data]="dpclasses"
-													 [settings]="dropdownSettings">
-							</ng-multiselect-dropdown>
+						<div class="form-group">
+							<label for="alltoolRTE">Contenu</label>
+							<ejs-richtexteditor #toolsRTE id='alltoolRTE' style="z-index: 1;" [toolbarSettings]='config' [(value)]='htmlContent' [height]="'350'"></ejs-richtexteditor>
 						</div>
-						<div class="form-group m-t-20 m-b-20">
-							<label for="image">Image</label>
-							<app-file-upload id="image" [type]="'image'" formControlName="image" [progress]="progress"></app-file-upload>
-							<small id="fileHelp" class="form-text text-muted">Image : (png|jpg)</small>
+						<div class="row">
+							<div class="col-lg-12">
+								<button type="button" (click)="GenererMediasform()" class="btn btn-primary">Ajouter Media</button>
+							</div>
+							<div class="col-lg-12">
+								<div formArrayName="medias" *ngFor="let media of getformArray().controls; let i = index">
+									<hr>
+									<div [formGroupName]="i">
+										<div class="form-group">
+											<label [for]="'typemedia' + (i + 1)">Type Media {{ (i + 1) }}</label>
+											<button (click)="onRemoveMedia(i)" class="btn btn-danger" style="float: right;margin-bottom: 10px;"><i class="fa fa-trash"></i></button>
+											<select class="form-control" formControlName="type" [id]="'typemedia' + (i + 1)">
+												<option value="" selected disabled>Sélectionnez Type Media</option>
+												<option value="image">Image</option>
+												<option value="video">Video</option>
+												<option value="youtube">Video Youtube</option>
+											</select>
+										</div>
+										<div *ngIf="media.get('type').value === 'image'" class="form-group">
+											<label [for]="'image' + (i + 1)">Image Media {{(i + 1)}}</label>
+											<app-file-upload [id]="'image' + (i + 1)" [type]="'image'" formControlName="file" [progress]="progress"></app-file-upload>
+										</div>
+										<div *ngIf="media.get('type').value === 'video'" class="form-group">
+											<label [for]="'video' + (i + 1)">Video Media {{(i + 1)}}</label>
+											<app-file-upload [id]="'video' + (i + 1)" [type]="'video'" formControlName="file" [progress]="progress"></app-file-upload>
+										</div>
+										<div *ngIf="media.get('type').value === 'youtube'" class="form-group">
+											<label [for]="'youtube-link' + (i + 1)">Youtube Link Media {{(i + 1)}}</label>
+											<input [id]="'youtube-link' + (i + 1)" class="form-control" formControlName="path" type="url">
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
-						<ejs-richtexteditor #toolsRTE id='alltoolRTE' [toolbarSettings]='config' [(value)]='htmlContent'></ejs-richtexteditor>
-						<button [disabled]="!feedForm.valid" type="submit" class="btn btn-block btn-primary m-t-20">Publier</button>
+						<button [disabled]="!articleForm.valid" type="submit" class="btn btn-block btn-primary m-t-20">Ajouter</button>
 					</div>
 				</div>
 			</form>

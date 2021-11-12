@@ -23,11 +23,13 @@ import { ArticleListComponent } from './article-list/article-list.component';
 import { AnnuaireComponent } from './annuaire/annuaire.component';
 import {FullCalendarModule} from 'ng-fullcalendar';
 import { SingleArticleComponent } from './single-article/single-article.component';
+import { AddAnnuaireComponent } from './annuaire/add-annuaire/add-annuaire.component';
+import { AddEventComponent } from './add-event/add-event.component';
 
 
 @NgModule({
 	declarations: [BlogPostComponent, BlogListComponent, BlogDetailsComponent,
-		FileUploadComponent, ProgressComponent, AjoutFormationComponent, PartieFormationAjoutComponent, UiProgressbarsComponent, EditFeedComponent, EditFormationComponent, EditPartieComponent, EventListComponent, SingleEventComponent, ArticleListComponent, AnnuaireComponent, SingleArticleComponent],
+		FileUploadComponent, ProgressComponent, AjoutFormationComponent, PartieFormationAjoutComponent, UiProgressbarsComponent, EditFeedComponent, EditFormationComponent, EditPartieComponent, EventListComponent, SingleEventComponent, ArticleListComponent, AnnuaireComponent, SingleArticleComponent, AddAnnuaireComponent, AddEventComponent],
     imports: [
         CommonModule,
         RouterModule,
