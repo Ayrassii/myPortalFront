@@ -60,9 +60,22 @@
                 <img style="width: 150px; height: 150px;object-fit: cover;" class="img-fluid img-thumbnail" [src]="getUserMedia(comment.owner.avatar)" alt="Awesome Image">
               </div>
               <div class="text-box col-md-10 col-8 p-l-0 p-r0">
-                <h5 class="m-b-0">{{comment.owner.name}} {{comment.owner.last_name}} </h5>
-                <p>{{comment.content}}</p>
-                <ul class="list-inline">
+                <h5 class="m-b-0">{{comment.owner.name}} {{comment.owner.last_name}}
+                  <div *ngIf="getId() == comment.createdby_id" style="display: inline;margin-left: 5px;">
+                    <button type="button" (click)="onEditComment(comment);" class="btn btn-primary mr-2"><i class="fa fa-pencil"></i></button>
+                    <button type="button" (click)="onCommentDelete(comment.id)" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                  </div>
+                </h5>
+                <p *ngIf="!comment.is_editing" style="margin-top: 12px;">{{comment.content}}</p>
+                <div *ngIf="comment.is_editing" style="padding: 15px;">
+                  <div class="form-group">
+                    <textarea class="form-control" [(ngModel)]="comment.content" cols="30" rows="5"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <button class="btn btn-success" (click)="onCommentUpdate(comment)">Modifier</button>
+                  </div>
+                </div>
+                <ul *ngIf="!comment.is_editing" class="list-inline">
                   <li><a href="javascript:void(0);">{{ago(comment.created_at)}}</a></li>
                 </ul>
               </div>

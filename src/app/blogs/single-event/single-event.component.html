@@ -36,10 +36,24 @@
             </video>
             <iframe *ngIf="evenement.medias[0].type === 'youtube' " style="width: 100%; height: 300px;" [src]="evenement.medias[0].path" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
-          <h3>{{evenement.title}}</h3>
+          <h2>{{evenement.title}}</h2>
+          <hr>
           <p>{{evenement.description}}</p>
+          <hr>
+          <h3 *ngIf="evenement.start_date.slice(0,10) != evenement.end_date.slice(0,10)" style="text-align: center">du {{evenement.start_date.slice(0,10)}} au {{evenement.end_date.slice(0,10)}}</h3>
+          <h3 *ngIf="evenement.start_date.slice(0,10) == evenement.end_date.slice(0,10)" style="text-align: center">le {{evenement.start_date.slice(0,10)}}</h3>
+          <hr>
+          <ul *ngIf="evenement.participants.length > 0" class="list-unstyled team-info m-t-20 m-b-20">
+            <li class="m-r-15"><small class="text-muted">Qui Participe</small></li>
+            <li *ngFor="let p of evenement.participants"><img [src]="getUserMedia(p.owner.avatar)" [title]="p.owner.name + ' ' + p.owner.last_name " alt="Avatar"></li>
+          </ul>
+          <hr>
+          <button (click)="onParticipateSubmit()" class="btn" [ngClass]="{'btn-success': !is_participated, 'btn-danger': is_participated}">
+            <i class="fa" [ngClass]="{'fa-hand-o-up': !is_participated, 'fa-hand-o-down': is_participated}"></i>
+            {{is_participated ? 'J\'y participe plus' : 'J\'y participe !' }}
+          </button>
         </div>
-        <div class="footer">
+        <div class="footer" style="border-top: solid 1px #e8e8e8;padding-top: 15px;">
           <button (click)="onLikeSubmit()" class="btn btn-primary" style="margin-right: 5px;">
             <i [ngClass]="{'fa' : true, 'fa-thumbs-up': !is_liked, 'fa-thumbs-down': is_liked }" style="color: white;margin-right: 2px;"></i>
             {{is_liked ? 'J\'aime plus' : 'J\'aime' }} ({{evenement.likes_count}})
@@ -61,9 +75,22 @@
                 <img style="width: 150px; height: 150px;object-fit: cover;" class="img-fluid img-thumbnail" [src]="getUserMedia(comment.owner.avatar)" alt="Awesome Image">
               </div>
               <div class="text-box col-md-10 col-8 p-l-0 p-r0">
-                <h5 class="m-b-0">{{comment.owner.name}} {{comment.owner.last_name}} </h5>
-                <p>{{comment.content}}</p>
-                <ul class="list-inline">
+                <h5 class="m-b-0">{{comment.owner.name}} {{comment.owner.last_name}}
+                  <div *ngIf="getId() == comment.createdby_id" style="display: inline;margin-left: 5px;">
+                    <button type="button" (click)="onEditComment(comment);" class="btn btn-primary mr-2"><i class="fa fa-pencil"></i></button>
+                    <button type="button" (click)="onCommentDelete(comment.id)" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                  </div>
+                </h5>
+                <p *ngIf="!comment.is_editing" style="margin-top: 12px;">{{comment.content}}</p>
+                <div *ngIf="comment.is_editing" style="padding: 15px;">
+                  <div class="form-group">
+                    <textarea class="form-control" [(ngModel)]="comment.content" cols="30" rows="5"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <button class="btn btn-success" (click)="onCommentUpdate(comment)">Modifier</button>
+                  </div>
+                </div>
+                <ul *ngIf="!comment.is_editing" class="list-inline">
                   <li><a href="javascript:void(0);">{{ago(comment.created_at)}}</a></li>
                 </ul>
               </div>

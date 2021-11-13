@@ -32,6 +32,11 @@ export class EventService {
 			.set('authorization', 'Bearer ' + localStorage.getItem('token'));
 		return this.httpClient.put(this.url + 'likes', {entry_id}, {headers});
 	}
+	participateEvent(entry_id) {
+		const headers = new HttpHeaders()
+			.set('authorization', 'Bearer ' + localStorage.getItem('token'));
+		return this.httpClient.put(this.url + 'participations', {entry_id}, {headers});
+	}
 	addEvent(evenement) {
 		const headers = new HttpHeaders()
 			.set('authorization', 'Bearer ' + localStorage.getItem('token'));

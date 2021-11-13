@@ -7,6 +7,8 @@ import {Globals} from '../../Globals';
 import {NotifService} from '../../services/notif.service';
 import {Feed} from '../../models/feed';
 import {DomSanitizer} from '@angular/platform-browser';
+import {AuthService} from '../../services/auth.service';
+import {Article} from '../../models/article';
 
 @Component({
   selector: 'app-single-event',
@@ -19,10 +21,12 @@ export class SingleEventComponent implements OnInit {
   commentclicked = false;
   mycomment: string;
   is_liked: boolean;
+  is_participated: boolean;
   @ViewChild('commentinput', {static: false}) commentInput: ElementRef;
   @ViewChild('scrollMe', {static: false}) private scrollMe: ElementRef;
   constructor(private sidebarService: SidebarService,
               private eventService: EventService,
+              private authService: AuthService,
               private cdr: ChangeDetectorRef,
               private router: Router,
               private sanitizer: DomSanitizer,
@@ -35,6 +39,7 @@ export class SingleEventComponent implements OnInit {
     this.eventService.getSingleEvent(this.route.snapshot.params.id).subscribe(
         (res: Evenement) => {
           this.evenement = res;
+          console.log(this.evenement);
         },
         (err) => {
           if (err.status === 401) {
@@ -123,6 +128,37 @@ export class SingleEventComponent implements OnInit {
     );
   }
 
+  onCommentDelete(comment_id) {
+    this.authService.deleteComment(comment_id).subscribe(
+        (res: Evenement) => {
+          this.evenement = res;
+          if (this.evenement.medias.length > 0) {
+            if (this.evenement.medias[0].type === 'youtube') {
+              this.evenement.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>this.evenement.medias[0].path);
+            }
+          }
+        }
+    );
+  }
+
+  onCommentUpdate(comment) {
+    this.authService.editComment(comment.id, comment.content).subscribe(
+        (res: Evenement) => {
+          this.evenement = res;
+          if (this.evenement.medias.length > 0) {
+            if (this.evenement.medias[0].type === 'youtube') {
+              this.evenement.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>this.evenement.medias[0].path);
+            }
+          }
+          this.evenement.comments.forEach(c => c.is_editing = false);
+        }
+    );
+  }
+
+  onEditComment(comment) {
+    comment.is_editing = !comment.is_editing;
+  }
+
   onLikeSubmit() {
     this.eventService.likeEvent(this.evenement.id).subscribe(
         (res: Feed) => {
@@ -132,6 +168,20 @@ export class SingleEventComponent implements OnInit {
           if (like) { this.is_liked = true; } else { this.is_liked = false; }
         }
     );
+  }
+
+  onParticipateSubmit() {
+    this.eventService.participateEvent(this.evenement.id).subscribe(
+        (res: Evenement) => {
+          this.evenement.participants = res.participants;
+          const participate = this.evenement.participants.find(p => p.user_id === parseInt(localStorage.getItem('id'), 10));
+          if (participate) { this.is_participated = true; } else { this.is_participated = false; }
+        }
+    );
+  }
+
+  getId() {
+    return localStorage.getItem('id');
   }
 
 }

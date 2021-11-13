@@ -6,6 +6,7 @@ import {ArticleService} from '../../services/article.service';
 import {DomSanitizer} from '@angular/platform-browser';
 import {Globals} from '../../Globals';
 import {Feed} from '../../models/feed';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-single-article',
@@ -18,9 +19,11 @@ export class SingleArticleComponent implements OnInit {
   commentclicked = false;
   mycomment: string;
   is_liked: boolean;
+  editMode = false;
   @ViewChild('commentinput', {static: false}) commentInput: ElementRef;
   public sidebarVisible = true;
   constructor(private articleService: ArticleService,
+              private authService: AuthService,
               private router: Router,
               private route: ActivatedRoute,
               private sanitizer: DomSanitizer,
@@ -118,6 +121,42 @@ export class SingleArticleComponent implements OnInit {
           this.commentInput.nativeElement.value = '';
         }
     );
+  }
+
+  onCommentDelete(comment_id) {
+    this.authService.deleteComment(comment_id).subscribe(
+        (res: Article) => {
+          this.article = res;
+          if (this.article.medias.length > 0) {
+            if (this.article.medias[0].type === 'youtube') {
+              this.article.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>this.article.medias[0].path);
+            }
+          }
+          this.article.comments.forEach(c => c.is_editing = false);
+        }
+    );
+  }
+
+  onCommentUpdate(comment) {
+    this.authService.editComment(comment.id, comment.content).subscribe(
+        (res: Article) => {
+          this.article = res;
+          if (this.article.medias.length > 0) {
+            if (this.article.medias[0].type === 'youtube') {
+              this.article.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>this.article.medias[0].path);
+            }
+          }
+          this.article.comments.forEach(c => c.is_editing = false);
+        }
+    );
+  }
+
+  onEditComment(comment) {
+    comment.is_editing = !comment.is_editing;
+  }
+
+  getId() {
+    return localStorage.getItem('id');
   }
 
   onLikeSubmit() {

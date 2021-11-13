@@ -63,4 +63,8 @@ export class ArticleListComponent implements OnInit, OnDestroy {
     return this.global.Medias + 'articles/' + path;
   }
 
+  getRole(): string {
+    return localStorage.getItem('role');
+  }
+
 }

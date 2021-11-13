@@ -10,6 +10,7 @@ export class Feed {
   description: string;
   title: string;
   is_featured: boolean;
+  is_valid: boolean;
   created_at: string;
   comments_count: number;
   likes_count: number;

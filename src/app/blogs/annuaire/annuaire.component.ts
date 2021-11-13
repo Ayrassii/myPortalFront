@@ -93,4 +93,8 @@ export class AnnuaireComponent implements OnInit {
     return this.global.Medias + 'people/' + path;
   }
 
+    getRole(): string {
+        return localStorage.getItem('role');
+    }
+
 }

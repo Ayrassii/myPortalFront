@@ -6,6 +6,9 @@ import {SidebarService} from '../../services/sidebar.service';
 import {User} from '../../models/user';
 import {DomSanitizer} from '@angular/platform-browser';
 import {Globals} from '../../Globals';
+import {AuthService} from '../../services/auth.service';
+import {Evenement} from '../../models/evenement';
+import {Article} from '../../models/article';
 
 @Component({
     selector: 'app-single-feed',
@@ -22,6 +25,7 @@ export class SingleFeedComponent implements OnInit {
     public sidebarVisible = true;
     constructor(private feedService: FeedService,
                 private router: Router,
+                private authService: AuthService,
                 private route: ActivatedRoute,
                 private sanitizer: DomSanitizer,
                 private global: Globals,
@@ -123,6 +127,37 @@ export class SingleFeedComponent implements OnInit {
         );
     }
 
+    onCommentDelete(comment_id) {
+        this.authService.deleteComment(comment_id).subscribe(
+            (res: Feed) => {
+                this.feed = res;
+                if (this.feed.medias.length > 0) {
+                    if (this.feed.medias[0].type === 'youtube') {
+                        this.feed.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>this.feed.medias[0].path);
+                    }
+                }
+            }
+        );
+    }
+
+    onCommentUpdate(comment) {
+        this.authService.editComment(comment.id, comment.content).subscribe(
+            (res: Feed) => {
+                this.feed = res;
+                if (this.feed.medias.length > 0) {
+                    if (this.feed.medias[0].type === 'youtube') {
+                        this.feed.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>this.feed.medias[0].path);
+                    }
+                }
+                this.feed.comments.forEach(c => c.is_editing = false);
+            }
+        );
+    }
+
+    onEditComment(comment) {
+        comment.is_editing = !comment.is_editing;
+    }
+
     onLikeSubmit() {
         this.feedService.likeFeed(this.feed.id).subscribe(
             (res: Feed) => {
@@ -132,6 +167,10 @@ export class SingleFeedComponent implements OnInit {
                 if (like) { this.is_liked = true; } else { this.is_liked = false; }
             }
         );
+    }
+
+    getId() {
+        return localStorage.getItem('id');
     }
 
 }

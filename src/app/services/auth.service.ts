@@ -120,4 +120,16 @@ export class AuthService {
             .set('authorization', 'bearer ' + this.getToken());
         return this.httpClient.post(this.url + 'valids', {entry_id, is_valid}, {headers});
     }
+
+    editComment(comment_id, content) {
+        const headers = new HttpHeaders()
+            .set('authorization', 'bearer ' + this.getToken());
+        return this.httpClient.patch(this.url + 'comments', {comment_id, content}, {headers});
+    }
+
+    deleteComment(comment_id) {
+        const headers = new HttpHeaders()
+            .set('authorization', 'bearer ' + this.getToken());
+        return this.httpClient.delete(this.url + 'comments/' + comment_id, {headers});
+    }
 }

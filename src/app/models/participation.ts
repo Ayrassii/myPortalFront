@@ -1,11 +1,9 @@
 import {User} from './user';
 
-export class Comment {
+export class Participation {
     id: number;
-    content: string;
-    createdby_id: number;
+    user_id: number;
     entry_id: number;
-    is_editing: boolean;
     created_at: string;
     owner: User;
 }

@@ -121,7 +121,7 @@
 				</form>
 			</div>
 			<div class="scrollable-khalil">
-				<div class="card single_post" *ngFor="let feed of feeds">
+				<div class="card single_post" *ngFor="let feed of feeds" [ngClass]="{'waiting-approval': feed.is_valid == false}">
 					<div class="body">
 						<div class="user-account">
 							<img [src]="getUserImage(feed.owner)" class="rounded-circle user-photo" style="width: 60px;height: 60px;object-fit: cover;" alt="User Profile Picture">
@@ -132,9 +132,8 @@
 								<span class="datetime">{{ago(feed.created_at)}}</span>
 							</div>
 							<div class="pull-right">
-								<button type="button" (click)="onValidateEntry(feed.id)" class="btn btn-success m-r-10"><i class="fa fa-check"></i></button>
-								<button type="button" (click)="onDismissEntry(feed.id)" class="btn btn-danger m-r-10"><i class="fa fa-times"></i></button>
-								<button class="btn btn-danger" (click)="openModal(deletemodal,'lg', feed)"><i class="fa fa-trash"></i></button>
+								<button *ngIf="feed.is_valid == false && ['ROLE_RH','ROLE_MARK'].includes(getRole())" type="button" (click)="onValidateEntry(feed.id)" class="btn btn-success m-r-10"><i class="fa fa-check"></i></button>
+								<button *ngIf="feed.is_valid == false && ['ROLE_RH','ROLE_MARK'].includes(getRole())" type="button" (click)="onDismissEntry(feed.id)" class="btn btn-danger m-r-10"><i class="fa fa-times"></i></button>
 							</div>
 						</div>
 <!--						<h3>-->

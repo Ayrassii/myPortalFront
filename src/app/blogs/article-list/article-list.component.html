@@ -14,7 +14,7 @@
       </div>
     </div>
   </div>
-  <div class="row clearfix mb-3" >
+  <div *ngIf="['ROLE_RH','ROLE_MARK'].includes(getRole())" class="row clearfix mb-3" >
     <div class="col-md-12">
       <a [routerLink]="['/app/add-article']" type="button" style="background: #7695B3; color: #fff;" class="btn btn-block">Ajouter Article</a>
     </div>

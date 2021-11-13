@@ -2,6 +2,7 @@ import {User} from './user';
 import {Media} from './media';
 import {Comment} from './comment';
 import {Like} from './like';
+import {Participation} from './participation';
 
 export class Evenement {
   id: number;
@@ -17,4 +18,5 @@ export class Evenement {
   medias: Media[];
   comments: Comment[];
   likes: Like[];
+  participants: Participation[];
 }

@@ -19,13 +19,13 @@
   </div>
 </div>
 
-<div class="row clearfix mb-3" >
+<div *ngIf="['ROLE_RH','ROLE_MARK'].includes(getRole())" class="row clearfix mb-3" >
   <div class="col-md-12">
     <button (click)="showAddAnnuaire = !showAddAnnuaire" type="button" style="background: #7695B3; color: #fff;" class="btn btn-block">Ajouter Annuaire</button>
   </div>
 </div>
 
-<div class="row clearfix mb-3" *ngIf="showAddAnnuaire">
+<div *ngIf="['ROLE_RH','ROLE_MARK'].includes(getRole()) && showAddAnnuaire" class="row clearfix mb-3">
   <div class="col-md-12">
     <form [formGroup]="annuaireForm" (ngSubmit)="onAnnuaireSubmit(annuaireForm.value)">
       <div class="card">
