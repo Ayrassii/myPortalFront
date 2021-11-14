@@ -9,6 +9,7 @@ import {Globals} from '../../Globals';
 import {AuthService} from '../../services/auth.service';
 import {Evenement} from '../../models/evenement';
 import {Article} from '../../models/article';
+import { NotifService } from '../../services/notif.service';
 
 @Component({
     selector: 'app-single-feed',
@@ -26,6 +27,7 @@ export class SingleFeedComponent implements OnInit {
     constructor(private feedService: FeedService,
                 private router: Router,
                 private authService: AuthService,
+                private notifService: NotifService,
                 private route: ActivatedRoute,
                 private sanitizer: DomSanitizer,
                 private global: Globals,
@@ -51,6 +53,11 @@ export class SingleFeedComponent implements OnInit {
                 }
             }
         );
+        this.route.queryParams.subscribe(params => {
+            if (params['notif_id']) {
+              this.notifService.readNotif(params['notif_id']).subscribe();
+            }
+          });
     }
     toggleFullWidth() {
         this.sidebarService.toggle();

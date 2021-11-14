@@ -7,6 +7,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {Globals} from '../../Globals';
 import {Feed} from '../../models/feed';
 import {AuthService} from '../../services/auth.service';
+import { NotifService } from '../../services/notif.service';
 
 @Component({
   selector: 'app-single-article',
@@ -24,6 +25,7 @@ export class SingleArticleComponent implements OnInit {
   public sidebarVisible = true;
   constructor(private articleService: ArticleService,
               private authService: AuthService,
+              private notifService: NotifService,
               private router: Router,
               private route: ActivatedRoute,
               private sanitizer: DomSanitizer,
@@ -37,9 +39,11 @@ export class SingleArticleComponent implements OnInit {
           this.article = res;
           console.log(this.article);
           if (this.article.medias.length > 0) {
-            if (this.article.medias[0].type === 'youtube') {
-              this.article.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>this.article.medias[0].path);
-            }
+            this.article.medias.forEach((m) => {
+              if (m.type === 'youtube') {
+                m.path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>m.path);
+              }
+            });
           }
         },
         (err) => {
@@ -48,6 +52,11 @@ export class SingleArticleComponent implements OnInit {
           }
         }
     );
+    this.route.queryParams.subscribe(params => {
+      if (params['notif_id']) {
+        this.notifService.readNotif(params['notif_id']).subscribe();
+      }
+    });
   }
   toggleFullWidth() {
     this.sidebarService.toggle();

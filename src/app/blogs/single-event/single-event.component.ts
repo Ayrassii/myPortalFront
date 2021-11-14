@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {EventService} from '../../services/event.service';
 import {Evenement} from '../../models/evenement';
 import {Globals} from '../../Globals';
-import {NotifService} from '../../services/notif.service';
+import { NotifService } from '../../services/notif.service';
 import {Feed} from '../../models/feed';
 import {DomSanitizer} from '@angular/platform-browser';
 import {AuthService} from '../../services/auth.service';

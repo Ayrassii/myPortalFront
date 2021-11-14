@@ -267,7 +267,7 @@ export class BlogListComponent implements OnInit, OnDestroy {
 		this.feedForm = this.formBuilder.group(
 			{
 				contenu: ['', [Validators.required, Validators.minLength(2)]],
-				titre: ['', [Validators.required, Validators.minLength(2)]],
+				//titre: ['', [Validators.required, Validators.minLength(2)]],
 				image: [null, [requiredFileType(['png', 'jpg'])]],
 				video: [null, [requiredFileType(['mp4'])]],
 				youtube: ['', []],
@@ -294,7 +294,8 @@ export class BlogListComponent implements OnInit, OnDestroy {
 				postedFeed.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>postedFeed.medias[0].path);
 			}
 			this.progress = 0;
-			this.feeds.unshift(postedFeed);
+			if (this.getRole() !== "ROLE_COLLAB")
+				this.feeds.unshift(postedFeed);
 			this.success = true;
 			this.initFeedForm();
 			this.showAddPost = false;

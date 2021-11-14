@@ -98,7 +98,7 @@ export class BlogPostComponent implements OnInit {
 	initArticleForm() {
 		this.articleForm = this.formBuilder.group(
 			{
-				title: ['', [Validators.required, Validators.minLength(5)]],
+				title: ['', [Validators.required, Validators.minLength(1)]],
 				medias: new FormArray([]),
 				nbr_medias: [0]
 			}
