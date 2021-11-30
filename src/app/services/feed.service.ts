@@ -70,11 +70,7 @@ export class FeedService {
                 break;
             }
         }
-        return this.httpClient.post(this.url + 'feeds', formData, {
-            headers,
-            reportProgress: true,
-            observe: 'events'
-        });
+        return this.httpClient.post(this.url + 'feeds', formData, {headers});
     }
 
     deleteFeed(feed) {

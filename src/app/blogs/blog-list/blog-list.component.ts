@@ -283,23 +283,28 @@ export class BlogListComponent implements OnInit, OnDestroy {
 	}
 
 	onFeedSubmit(feed) {
+		console.log("lancit");
 		const youtube_id = this.genEmbedYoutube(feed.youtube);
+		console.log(youtube_id);
+		console.log(this.success);
 		this.success = false;
-		this.feedService.addFeed(feed.titre, feed.contenu, feed.type, youtube_id, feed.image, feed.video).pipe(
-			uploadProgress(progress => (this.progress = progress)),
-			toResponseBody()
-		).subscribe((res: Feed) => {
-			const postedFeed = res;
-			if (postedFeed.medias[0].type === 'youtube') {
-				postedFeed.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>postedFeed.medias[0].path);
-			}
-			this.progress = 0;
-			if (this.getRole() !== "ROLE_COLLAB")
-				this.feeds.unshift(postedFeed);
-			this.success = true;
-			this.initFeedForm();
-			this.showAddPost = false;
-		});
+		console.log(this.success);
+		this.feedService.addFeed(feed.titre, feed.contenu, feed.type, youtube_id, feed.image, feed.video).subscribe(
+			(res: Feed) => {
+				const postedFeed = res;
+				if (postedFeed.medias.length > 0 && postedFeed.medias[0].type === 'youtube') {
+					postedFeed.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>postedFeed.medias[0].path);
+				}
+				if (this.getRole() !== "ROLE_COLLAB") {
+					this.feeds.unshift(postedFeed);
+				}
+				console.log('aaaaaa');
+				this.success = true;
+				console.log(this.showAddPost);
+				this.initFeedForm();
+				this.showAddPost = false;
+				console.log(this.showAddPost);
+		})
 	}
 
 	onLikeSubmit(id) {
@@ -416,8 +421,10 @@ export class BlogListComponent implements OnInit, OnDestroy {
 	}
 
 	genEmbedYoutube(url: string) {
-		console.log(url);
-		return url.split('?v=')[1];
+		if (url) {
+			return url.split('?v=')[1];
+		}
+		return '';
 	}
 
 	changeMediaSelected(event) {
