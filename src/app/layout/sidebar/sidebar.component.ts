@@ -1,11 +1,13 @@
 import { Component, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { ThemeService } from '../../services/theme.service';
 import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 import {AuthService} from '../../services/auth.service';
 import {User} from '../../models/user';
 import {Router} from '@angular/router';
 import {Globals} from '../../Globals';
+import {DiscussionService} from '../../services/discussion.service';
+import {Discussion} from '../../models/discussion';
 
 @Component({
 	selector: 'app-sidebar',
@@ -16,6 +18,7 @@ export class SidebarComponent implements OnDestroy {
 
 	me: User;
 	loading = true;
+	discussions: Discussion[] = [];
 	@Input() sidebarVisible = true;
 	@Input() navTab = 'menu';
 	@Input() currentActiveMenu;
@@ -25,10 +28,12 @@ export class SidebarComponent implements OnDestroy {
     public themeClass = 'theme-cyan';
     public darkClass = '';
     private ngUnsubscribe = new Subject();
+	listUserSubscription: Subscription = new Subscription();
 
 	constructor(private themeService: ThemeService,
 				private authService: AuthService,
 				private global: Globals,
+				private discussionService: DiscussionService,
 				private router: Router) {
 		this.authService.Me().subscribe(
 			(response: User) => {
@@ -47,7 +52,16 @@ export class SidebarComponent implements OnDestroy {
         this.themeService.darkClassChange.pipe(takeUntil(this.ngUnsubscribe)).subscribe(darkClass => {
             this.darkClass = darkClass;
         });
+		this.listUserSubscription = this.discussionService.getDiscussionsFromServer().subscribe(
+			(res: Discussion[]) => {
+				this.discussions = res;
+			}
+		);
     }
+
+	getUserMedia(path) {
+		return this.global.Medias + 'users/' + path;
+	}
 
     ngOnDestroy() {
         this.ngUnsubscribe.next();

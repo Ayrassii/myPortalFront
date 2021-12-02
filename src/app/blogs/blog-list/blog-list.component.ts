@@ -4,7 +4,7 @@ import {pipe, Subscription} from 'rxjs';
 import {Feed} from '../../models/feed';
 import {FeedService} from '../../services/feed.service';
 import {User} from '../../models/user';
-import {FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators} from '@angular/forms';
 import {FileUploadComponent} from '../file-upload/file-upload.component';
 import {HttpEvent, HttpEventType, HttpResponse} from '@angular/common/http';
 import {filter, map, tap} from 'rxjs/operators';
@@ -52,14 +52,18 @@ export class BlogListComponent implements OnInit, OnDestroy {
 	showAddPost = false;
 	mediaselected: string;
 	selectedfeed: Feed;
+	answers: [];
+	nbr_answers = 0;
 	feeds: Feed[] = [];
 	events: Evenement[] = [];
 	birthdays: User[] = [];
 	empofmounth: User;
+	addedQuestion = false;
 	question: Question;
 	slug: string;
 	feedForm: FormGroup;
 	quizForm: FormGroup;
+	addquizForm: FormGroup;
 	feedSubscription: Subscription;
 	birthdaySubscription: Subscription;
 	questionSubscription: Subscription;
@@ -157,6 +161,7 @@ export class BlogListComponent implements OnInit, OnDestroy {
 		this.questionService.emitQuestion();
 		this.initFeedForm();
 		this.initQuizForm();
+		this.initAddQuizForm();
 	}
 
 	toggleFullWidth() {
@@ -276,10 +281,32 @@ export class BlogListComponent implements OnInit, OnDestroy {
 		);
 	}
 
+	getformArray() { return <FormArray>this.addquizForm.get('answers'); }
+
 	initQuizForm() {
 		this.quizForm = new FormGroup({
 			answer_id: new FormControl()
 		});
+	}
+	initAddQuizForm() {
+		this.addquizForm = new FormGroup({
+			contenu: new FormControl(),
+			answers: new FormArray([]),
+		});
+	}
+
+	GenererAnswersform() {
+		this.nbr_answers = this.nbr_answers ++;
+		const anss = this.addquizForm.controls.answers as FormArray;
+		anss.push(this.formBuilder.group({
+			texte: ['', [Validators.required]]
+		}));
+	}
+
+	onRemoveAnswer(index) {
+		const answers = this.addquizForm.controls.answers as FormArray;
+		answers.removeAt(index);
+		this.nbr_answers--;
 	}
 
 	onFeedSubmit(feed) {
@@ -304,7 +331,15 @@ export class BlogListComponent implements OnInit, OnDestroy {
 				this.initFeedForm();
 				this.showAddPost = false;
 				console.log(this.showAddPost);
-		})
+		});
+	}
+	onAddQuizSubmit(value) {
+		this.success = false;
+		this.questionService.addQuestion(value.contenu, value.answers).subscribe(
+			(res) => {
+				this.addedQuestion = true;
+			}
+		);
 	}
 
 	onLikeSubmit(id) {
@@ -339,6 +374,20 @@ export class BlogListComponent implements OnInit, OnDestroy {
 	}
 	onDismissEntry(entry_id) {
 		this.authService.decideEntry(entry_id, 'no').subscribe(
+			(feeds: Feed[] ) => {
+				this.feeds = feeds;
+				this.feeds.forEach((f, i) => {
+					if (f.medias.length > 0) {
+						if (f.medias[0].type === 'youtube') {
+							f.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>f.medias[0].path);
+						}
+					}
+				});
+			}
+		);
+	}
+	onDeleteEntry(entry) {
+		this.feedService.deleteFeed(entry).subscribe(
 			(feeds: Feed[] ) => {
 				this.feeds = feeds;
 				this.feeds.forEach((f, i) => {

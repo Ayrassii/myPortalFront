@@ -28,6 +28,7 @@
     <div class="col-lg-4 d-flex" *ngFor="let evenement of evenements">
       <div class="card single_post flex-fill">
         <div class="body">
+          <button *ngIf="['ROLE_RH','ROLE_MARK'].includes(getRole())" class="btn btn-danger btn-block mb-1 mt-1" (click)="onDeleteEntry(evenement)"><i class="fa fa-trash"></i> Supprimer</button>
           <div class="img-post" *ngIf="evenement && evenement.medias.length > 0">
             <img *ngIf="evenement && evenement.medias[0].type === 'image' " [src]="getEventMedia(evenement.medias[0].path)" class="d-block img-fluid" alt="First slide">
             <video style="width: 100%; height: 300px;" *ngIf="evenement && evenement.medias[0].type === 'video' " class="d-block img-fluid" controls>

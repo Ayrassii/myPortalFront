@@ -139,5 +139,20 @@ export class EventListComponent implements OnInit, OnDestroy {
   getEventMedia(path) {
     return this.global.Medias + 'events/' + path;
   }
+  onDeleteEntry(evenement) {
+    this.eventService.deleteEvent(evenement).subscribe(
+        (evenements: Evenement[] ) => {
+          this.evenements = evenements;
+          this.evenements.forEach((f, i) => {
+            if (f.medias.length > 0) {
+              if (f.medias[0].type === 'youtube') {
+                f.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>f.medias[0].path);
+              }
+            }
+            this.loading = false;
+          });
+        }
+    );
+  }
 
 }

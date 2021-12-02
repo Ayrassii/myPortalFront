@@ -23,6 +23,7 @@
     <div class="col-lg-6 d-flex">
       <div class="card single_post flex-fill">
         <div class="body">
+          <button *ngIf="['ROLE_RH','ROLE_MARK'].includes(getRole())" class="btn btn-danger btn-block mb-1 mt-1" (click)="onDeleteEntry(farticle)"><i class="fa fa-trash"></i> Supprimer</button>
           <div class="img-post" *ngIf="farticle && farticle.medias.length > 0">
             <img *ngIf="farticle && farticle.medias[0].type === 'image' " [src]="getArticleMedia(farticle?.medias[0].path)" class="d-block img-fluid" alt="First slide">
             <video style="width: 100%; height: 300px;" *ngIf="farticle && farticle.medias[0].type === 'video' " class="d-block img-fluid" controls>
@@ -37,6 +38,8 @@
     <div class="col-lg-3" *ngFor="let article of articles?.slice(1,3)">
       <div class="card single_post">
         <div class="body">
+          <button *ngIf="['ROLE_RH','ROLE_MARK'].includes(getRole())" class="btn btn-danger btn-block mb-1 mt-1" (click)="onDeleteEntry(article)"><i class="fa fa-trash"></i> Supprimer</button>
+
           <div class="img-post" *ngIf="article && article.medias.length > 0">
             <img *ngIf="article && article.medias[0].type === 'image' " [src]="getArticleMedia(article.medias[0].path)" class="d-block img-fluid" alt="First slide">
             <video style="width: 100%; height: 300px;" *ngIf="article && article.medias[0].type === 'video' " class="d-block img-fluid" controls>
@@ -53,6 +56,8 @@
     <div class="col-lg-3 d-flex" *ngFor="let oarticle of articles.slice(3)">
       <div class="card single_post flex-fill">
         <div class="body">
+          <button *ngIf="['ROLE_RH','ROLE_MARK'].includes(getRole())" class="btn btn-danger btn-block mb-1 mt-1" (click)="onDeleteEntry(oarticle)"><i class="fa fa-trash"></i> Supprimer</button>
+
           <div class="img-post" *ngIf="oarticle && oarticle.medias.length > 0">
             <img *ngIf="oarticle && oarticle.medias[0].type === 'image' " [src]="getArticleMedia(oarticle?.medias[0].path)" class="d-block img-fluid" alt="First slide">
             <video *ngIf="oarticle && oarticle.medias[0].type === 'video' " class="d-block img-fluid" controls>

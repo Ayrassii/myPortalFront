@@ -48,6 +48,11 @@ export class ArticleService {
         .set('authorization', 'Bearer ' + localStorage.getItem('token'));
     return this.httpClient.put(this.url + 'comments', {body, entry_id}, {headers});
   }
+  deleteArticle(article) {
+    const headers = new HttpHeaders()
+        .set('authorization', 'Bearer ' + localStorage.getItem('token'));
+    return this.httpClient.delete(this.url  + '/' + article.id, {headers});
+  }
   likeArticle(entry_id) {
     const headers = new HttpHeaders()
         .set('authorization', 'Bearer ' + localStorage.getItem('token'));

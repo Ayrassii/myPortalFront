@@ -6,6 +6,7 @@ export class Message {
     createdby_id: number;
     destination_id: number;
     discussion_id: number;
+    read_at: string;
     body: string;
     created_at: string;
     sender: User;

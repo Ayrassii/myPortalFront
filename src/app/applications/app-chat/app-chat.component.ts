@@ -10,6 +10,7 @@ import {AuthService} from '../../services/auth.service';
 // tslint:disable-next-line:import-blacklist
 import {Observable} from 'rxjs/Rx';
 import {Subscription} from 'rxjs';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
 	selector: 'app-app-chat',
@@ -32,23 +33,26 @@ export class AppChatComponent implements OnInit, OnDestroy {
 	me: User;
 	users: User[] = [];
 	message: string;
+	loading: boolean;
 	constructor(private sidebarService: SidebarService,
 				private cdr: ChangeDetectorRef,
+				private route: ActivatedRoute,
 				private discussionService: DiscussionService,
 				private authService: AuthService,
 				private global: Globals
 	) {}
 
 	ngOnInit() {
+		this.loading = true;
 		this.liveDiscussionSubscription = this.discussionService.getDiscussionsFromServer().subscribe(
 			(res: Discussion[]) => {
 				this.discussions = res;
+				this.loading = false;
 			}
 		);
 		this.listUserSubscription = this.authService.getUsers().subscribe(
 			(res: User[]) => {
 				this.users = res;
-				console.log(this.users);
 				this.users = this.users.filter((u) => u.id !== parseInt(localStorage.getItem('id'), 10));
 			}
 		);
@@ -60,6 +64,9 @@ export class AppChatComponent implements OnInit, OnDestroy {
 		this.obSubscription = Observable.interval(5000).subscribe(x => {
 			this.reloadMessages();
 		});
+		if (!this.loading && this.route.snapshot.params.id) {
+			this.onClickContact(this.route.snapshot.params.id);
+		}
 	}
 	ngOnDestroy() {
 		this.him = null;

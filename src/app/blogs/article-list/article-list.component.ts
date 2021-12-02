@@ -66,5 +66,20 @@ export class ArticleListComponent implements OnInit, OnDestroy {
   getRole(): string {
     return localStorage.getItem('role');
   }
+  onDeleteEntry(article) {
+    this.articleService.deleteArticle(article).subscribe(
+        (res: Article[]) => {
+          this.articles = res;
+          this.articles.forEach((f, i) => {
+            if (f.medias.length > 0) {
+              if (f.medias[0].type === 'youtube') {
+                f.medias[0].path = this.sanitizer.bypassSecurityTrustResourceUrl(<string>f.medias[0].path);
+              }
+            }
+          });
+          this.farticle = this.articles[0];
+        }
+    );
+  }
 
 }

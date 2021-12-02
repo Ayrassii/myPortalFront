@@ -37,6 +37,11 @@ export class EventService {
 			.set('authorization', 'Bearer ' + localStorage.getItem('token'));
 		return this.httpClient.put(this.url + 'participations', {entry_id}, {headers});
 	}
+	deleteEvent(evenement) {
+		const headers = new HttpHeaders()
+			.set('authorization', 'Bearer ' + localStorage.getItem('token'));
+		return this.httpClient.delete(this.url + 'events/' + evenement.id, {headers});
+	}
 	addEvent(evenement) {
 		const headers = new HttpHeaders()
 			.set('authorization', 'Bearer ' + localStorage.getItem('token'));

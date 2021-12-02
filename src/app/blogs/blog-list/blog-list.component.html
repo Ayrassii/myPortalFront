@@ -128,6 +128,7 @@
 							<div class="pull-right">
 								<button *ngIf="feed.is_valid == false && ['ROLE_RH','ROLE_MARK'].includes(getRole())" type="button" (click)="onValidateEntry(feed.id)" class="btn btn-success m-r-10"><i class="fa fa-check"></i></button>
 								<button *ngIf="feed.is_valid == false && ['ROLE_RH','ROLE_MARK'].includes(getRole())" type="button" (click)="onDismissEntry(feed.id)" class="btn btn-danger m-r-10"><i class="fa fa-times"></i></button>
+								<button *ngIf="['ROLE_RH','ROLE_MARK'].includes(getRole())" type="button" (click)="onDeleteEntry(feed)" class="btn btn-danger m-r-10"><i class="fa fa-trash"></i></button>
 							</div>
 						</div>
 <!--						<h3>-->
@@ -210,7 +211,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="card">
+			<div *ngIf="getRole() === 'ROLE_COLLAB'" class="card">
 				<div class="header">
 					<h2>Quiz du Jour</h2>
 				</div>
@@ -242,6 +243,44 @@
 							</div>
 						</li>
 					</ul>
+				</div>
+			</div>
+			<div *ngIf="getRole() !== 'ROLE_COLLAB'" class="card">
+				<div class="header">
+					<h2>Ajouter Une Question</h2>
+				</div>
+				<div class="body" *ngIf="loading">
+					Veuillez Patienter...
+				</div>
+				<div class="body" *ngIf="!loading && addedQuestion === false;">
+					<form [formGroup]="addquizForm" (ngSubmit)="onAddQuizSubmit(addquizForm.value)">
+						<div class="form-group">
+							<label for="contenu">Question</label>
+							<textarea class="form-control" formControlName="contenu" id="contenu" cols="30" rows="5"></textarea>
+						</div>
+						<hr>
+						<button type="button" (click)="GenererAnswersform()" class="btn btn-primary">Ajouter Réponse</button>
+						<hr>
+						<div formArrayName="answers" *ngFor="let answer of getformArray().controls; let i = index">
+							<div [formGroupName]="i" class="row">
+								<div class="col-9">
+									<div class="form-group">
+										<label [for]="'answer-text' + (i + 1)">Reponse {{(i + 1)}}</label>
+										<input [id]="'answer-text' + (i + 1)" class="form-control" formControlName="texte" type="text">
+									</div>
+								</div>
+								<div class="col-3">
+									<label style="opacity: 0;">del</label>
+									<button type="button" (click)="onRemoveAnswer(i)" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+								</div>
+							</div>
+						</div>
+						<hr>
+						<button [disabled]="!addquizForm.valid" type="submit" class="btn btn-success">Ajouter</button>
+					</form>
+				</div>
+				<div class="body" *ngIf="!loading && addedQuestion === true;">
+					Votre Question a été ajoutée
 				</div>
 			</div>
 			<div class="card">

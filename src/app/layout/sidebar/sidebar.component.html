@@ -18,9 +18,9 @@
             <hr>
         </div>
         <!-- Nav tabs -->
-<!--        <ul class="nav nav-tabs">-->
-<!--            <li class="nav-item"><a class="nav-link" [ngClass]="{'active':navTab == 'menu'}">Menu</a></li>-->
-<!--        </ul>-->
+        <!--        <ul class="nav nav-tabs">-->
+        <!--            <li class="nav-item"><a class="nav-link" [ngClass]="{'active':navTab == 'menu'}">Menu</a></li>-->
+        <!--        </ul>-->
 
         <!-- Tab panes -->
         <div class="tab-content p-l-0 p-r-0">
@@ -51,40 +51,55 @@
                             <a [routerLink]="['/app/discussions']"><i class="icon-bubbles"></i>
                                 <span>Discussions</span>
                             </a>
+                            <div class="card chat-app">
+                                <div id="plist" class="people-list">
+                                    <ul class="list-unstyled chat-list mt-2 mb-0">
+                                        <li *ngFor="let d of discussions" class="clearfix" [routerLink]="['/app/discussions']">
+                                            <img style="width: 25px;height: 25px;object-fit: cover;"  [src]="getUserMedia(d.creator.id !== me.id ? d.creator.avatar : d.destination.avatar)" alt="avatar" />
+                                            <div class="about">
+                                                <div class="name">{{d.creator.id !== me.id ? d.creator.name : d.destination.name}} {{d.creator.id !== me.id ? d.creator.last_name : d.destination.last_name}}</div>
+                                                <div  style="font-size: 12px;" class="status" *ngIf="d.messages[0].createdby_id !== me.id && d.messages[0].read_at == null">
+                                                    <i style="margin-right: 5px;" class="fa fa-circle online"></i>nouveau message!
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </li>
-<!--                        <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [ngClass]="{'active':currentActiveMenu == 'calendrier'}">-->
-<!--                            <a style="cursor: pointer" class="has-arrow" (click)="activeInactiveMenu('calendrier')"><i class="icon-calendar"></i> <span>Examens</span></a>-->
-<!--                            <ul *ngIf="currentActiveMenu == 'calendrier'">-->
-<!--                                <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><a [routerLink]="['/app/calendrier/app-calendar']">Calendrier</a></li>-->
-<!--                            </ul>-->
-<!--                        </li>-->
-<!--                        <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [ngClass]="{'active': currentActiveMenu =='emplois'}">-->
-<!--                            <a style="cursor: pointer" class="has-arrow" (click)="activeInactiveMenu('emplois')"><i class="icon-grid"></i> <span>Emplois du temps</span></a>-->
-<!--                            <ul *ngIf="currentActiveMenu == 'emplois'">-->
-<!--                                <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><a [routerLink]="['/app/emplois/current']">Emploi de Cette Semaine</a></li>-->
-<!--                                <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><a [routerLink]="['/app/emplois']">Emplois à venir</a></li>-->
-<!--                            </ul>-->
-<!--                        </li>-->
-<!--                        <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">-->
-<!--                            <a [routerLink]="['/app/notes']"><i class="icon-note"></i>-->
-<!--                                <span>Notes</span>-->
-<!--                            </a>-->
-<!--                        </li>-->
-<!--                        <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">-->
-<!--                            <a [routerLink]="['/app/abscences']"><i class="icon-clock"></i>-->
-<!--                                <span>Abscences</span>-->
-<!--                            </a>-->
-<!--                        </li>-->
-<!--                        <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngIf="getRole(me) == 'Etudiant' ">-->
-<!--                            <a [routerLink]="['/app/demandes']"><i class="icon-doc"></i>-->
-<!--                                <span>Demandes</span>-->
-<!--                            </a>-->
-<!--                        </li>-->
-<!--                        <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">-->
-<!--                            <a [routerLink]="['/app/formations']"><i class="fa fa-play"></i>-->
-<!--                                <span>Formations</span>-->
-<!--                            </a>-->
-<!--                        </li>-->
+                        <!--                        <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [ngClass]="{'active':currentActiveMenu == 'calendrier'}">-->
+                        <!--                            <a style="cursor: pointer" class="has-arrow" (click)="activeInactiveMenu('calendrier')"><i class="icon-calendar"></i> <span>Examens</span></a>-->
+                        <!--                            <ul *ngIf="currentActiveMenu == 'calendrier'">-->
+                        <!--                                <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><a [routerLink]="['/app/calendrier/app-calendar']">Calendrier</a></li>-->
+                        <!--                            </ul>-->
+                        <!--                        </li>-->
+                        <!--                        <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [ngClass]="{'active': currentActiveMenu =='emplois'}">-->
+                        <!--                            <a style="cursor: pointer" class="has-arrow" (click)="activeInactiveMenu('emplois')"><i class="icon-grid"></i> <span>Emplois du temps</span></a>-->
+                        <!--                            <ul *ngIf="currentActiveMenu == 'emplois'">-->
+                        <!--                                <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><a [routerLink]="['/app/emplois/current']">Emploi de Cette Semaine</a></li>-->
+                        <!--                                <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><a [routerLink]="['/app/emplois']">Emplois à venir</a></li>-->
+                        <!--                            </ul>-->
+                        <!--                        </li>-->
+                        <!--                        <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">-->
+                        <!--                            <a [routerLink]="['/app/notes']"><i class="icon-note"></i>-->
+                        <!--                                <span>Notes</span>-->
+                        <!--                            </a>-->
+                        <!--                        </li>-->
+                        <!--                        <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">-->
+                        <!--                            <a [routerLink]="['/app/abscences']"><i class="icon-clock"></i>-->
+                        <!--                                <span>Abscences</span>-->
+                        <!--                            </a>-->
+                        <!--                        </li>-->
+                        <!--                        <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngIf="getRole(me) == 'Etudiant' ">-->
+                        <!--                            <a [routerLink]="['/app/demandes']"><i class="icon-doc"></i>-->
+                        <!--                                <span>Demandes</span>-->
+                        <!--                            </a>-->
+                        <!--                        </li>-->
+                        <!--                        <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">-->
+                        <!--                            <a [routerLink]="['/app/formations']"><i class="fa fa-play"></i>-->
+                        <!--                                <span>Formations</span>-->
+                        <!--                            </a>-->
+                        <!--                        </li>-->
                     </ul>
                 </nav>
             </div>
